@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RealEstateManagerKotlin</string>
+    <string name="property_picture">Picture of the property</string>
 </resources>
