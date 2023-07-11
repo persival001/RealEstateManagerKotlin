@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">RealEstateManager</string>
+    <string name="main_activity_description">Vente de biens d\'exception</string>
+    <string name="illustrative_picture">Illustrative picture</string>
+    <string name="map_view">Map view</string>
+    <string name="list_view">List view</string>
+    <string name="option_get_place">Option</string>
+    <string name="settings">Paramètres</string>
+    <string name="exit">Quitter</string>
+    <string name="search_property">Recherche</string>
+    <string name="property_picture">Photo</string>
+    <string name="title"> Real Estate Manager </string>
+    <string name="description">Description</string>
+    <string name="sold">SOLD</string>
+    <string name="sold_label">Sold label</string>
+</resources>

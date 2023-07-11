@@ -8,6 +8,6 @@
     <item
         android:id="@+id/item_2"
         android:enabled="true"
-        android:icon="@drawable/baseline_view_list_24"
-        android:title="@string/list_view"/>
+        android:icon="@drawable/baseline_description_24"
+        android:title="@string/description"/>
 </menu>
