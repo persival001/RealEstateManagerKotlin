@@ -6,7 +6,9 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class AppBindsModule { /*@Singleton
+abstract class DataBindingModule {
+
+/*@Singleton
     @Binds
-    public abstract LoggedUserRepository bindLoggedUserRepository(FirebaseRepository implementation);*/
+    abstract fun bindResourcesRepository(resourcesRepositoryImplementation: ResourcesRepositoryImplementation): ResourcesRepository*/
 }

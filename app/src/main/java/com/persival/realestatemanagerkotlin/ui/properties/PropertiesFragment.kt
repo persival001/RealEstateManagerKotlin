@@ -1,4 +1,8 @@
 package com.persival.realestatemanagerkotlin.ui.properties
 
-class PropertiesFragment {
+import androidx.fragment.app.Fragment
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class PropertiesFragment : Fragment() {
 }

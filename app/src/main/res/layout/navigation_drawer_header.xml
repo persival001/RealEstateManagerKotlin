@@ -11,68 +11,38 @@
         android:layout_height="200dp"
         android:contentDescription="@string/illustrative_picture"
         android:scaleType="centerCrop"
-        android:src="@drawable/background_drawer_header"
+        android:src="@drawable/property_picture"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/go4lunch_title"
+        android:id="@+id/rem_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_large_margin"
-        android:text="@string/app_name"
-        android:textColor="@color/quantum_white_100"
-        android:textSize="40sp"
+        android:layout_margin="40dp"
+        android:text="@string/title"
+        android:textColor="@color/quantum_white"
+        android:background="@color/colorPrimaryDark"
+        android:textSize="25sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/imageView" />
 
-    <LinearLayout
-        android:id="@+id/linearLayoutTexts"
+    <TextView
+        android:id="@+id/subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_margin"
-        android:orientation="vertical"
-        android:theme="@style/AppTheme"
-        app:layout_constraintBottom_toBottomOf="@+id/user_image"
-        app:layout_constraintStart_toEndOf="@+id/user_image"
-        app:layout_constraintTop_toTopOf="@+id/user_image">
-
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/quantum_white_100"
-            android:textStyle="bold"
-            tool:layout_editor_absoluteX="122dp"
-            tool:layout_editor_absoluteY="144dp"
-            tool:text="John Doe" />
-
-        <TextView
-            android:id="@+id/user_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/quantum_white_100"
-            android:textSize="14sp"
-            tool:layout_editor_absoluteX="122dp"
-            tool:layout_editor_absoluteY="163dp"
-            tool:text="contact@johndoe.com" />
-
-
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/user_image"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:contentDescription="@string/avatar_picture"
-        android:padding="@dimen/default_margin"
-        android:src="@drawable/ic_anon_user_48dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/go4lunch_title" />
+        android:layout_margin="@dimen/default_large_margin"
+        android:text="@string/main_activity_description"
+        android:textColor="@color/quantum_white"
+        android:textSize="18sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/imageView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
