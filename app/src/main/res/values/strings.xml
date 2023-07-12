@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">RealEstateManager</string>
     <string name="main_activity_description">Vente de biens d\'exception</string>
-    <string name="illustrative_picture">Illustrative picture</string>
-    <string name="map_view">Map view</string>
-    <string name="list_view">List view</string>
+    <string name="illustrative_picture">Photo d\'illustration</string>
+    <string name="map_view">Carte</string>
+    <string name="list_view">Description</string>
     <string name="option_get_place">Option</string>
     <string name="settings">Paramètres</string>
     <string name="exit">Quitter</string>
@@ -11,6 +11,16 @@
     <string name="property_picture">Photo</string>
     <string name="title"> Real Estate Manager </string>
     <string name="description">Description</string>
-    <string name="sold">SOLD</string>
+    <string name="sold">VENDU</string>
     <string name="sold_label">Sold label</string>
+    <string name="description_image">Photo de la description</string>
+    <string name="caption">Caption</string>
+    <string name="add_property">Ajouter une propriété</string>
+    <string name="modify_property">Modifier l\'annonce</string>
+    <string name="media">Media</string>
+    <string name="description_exemple">Cette luxueuse villa offre un sanctuaire de sérénité niché dans un emplacement privilégié avec une vue imprenable sur l\'océan. Dotée de 5 chambres en suite, cette demeure d\'exception offre un design contemporain, des finitions haut de gamme et des équipements de pointe. Un spa, une salle de sport privée et une piscine à débordement complètent ce joyau architectural. L\'élégance de ses vastes espaces de vie ouverts se marie harmonieusement avec les terrasses extérieures et le jardin paysagé. Une propriété unique qui allie luxe, confort et tranquillité. A saisir sans tarder.</string>
+    <string name="conversion_title">Conversion de devises</string>
+    <string name="conversion_description">Convertir les dollars en euros</string>
+    <string name="date_title">Modifier la date</string>
+    <string name="date_description">Afficher la date en version française</string>
 </resources>

@@ -13,5 +13,15 @@
     <string name="description">Description</string>
     <string name="sold">SOLD</string>
     <string name="sold_label">Sold label</string>
+    <string name="description_image">Description picture</string>
+    <string name="caption">Caption</string>
+    <string name="add_property">Add property</string>
+    <string name="modify_property">Modify property</string>
+    <string name="media">Media</string>
+    <string name="description_exemple">This luxurious villa offers a sanctuary of serenity nestled in a prime location with breathtaking ocean views. With 5 en-suite bedrooms, this exceptional residence offers contemporary design, high-end finishes and state-of-the-art equipment. A spa, private gym and infinity pool complete this architectural gem. The elegance of its vast open living spaces blends harmoniously with the outdoor terraces and the landscaped garden. A unique property that combines luxury, comfort and tranquility. To enter without delay.</string>
+    <string name="conversion_title">Currency conversion</string>
+    <string name="conversion_description">Dollar to euro conversion</string>
+    <string name="date_title">Format date</string>
+    <string name="date_description">Format the date in french version</string>
 
 </resources>
