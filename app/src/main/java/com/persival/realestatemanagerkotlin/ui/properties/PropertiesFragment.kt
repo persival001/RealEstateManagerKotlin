@@ -1,10 +1,11 @@
 package com.persival.realestatemanagerkotlin.ui.properties
 
 import androidx.fragment.app.Fragment
+import com.persival.realestatemanagerkotlin.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PropertiesFragment : Fragment() {
+class PropertiesFragment : Fragment(R.layout.fragment_properties) {
     /*val imageAdapter = ViewpagerAdapter(emptyList())
     viewPager.adapter = imageAdapter
 
