@@ -3,14 +3,14 @@
     <string name="main_activity_description">Vente de biens d\'exception</string>
     <string name="illustrative_picture">Photo d\'illustration</string>
     <string name="map_view">Carte</string>
-    <string name="list_view">Description</string>
+    <string name="list_view">Liste</string>
     <string name="option_get_place">Option</string>
     <string name="settings">Paramètres</string>
     <string name="exit">Quitter</string>
     <string name="search_property">Recherche</string>
     <string name="property_picture">Photo</string>
     <string name="title"> Real Estate Manager </string>
-    <string name="description">Description</string>
+    <string name="description">Déscription</string>
     <string name="sold">VENDU</string>
     <string name="sold_label">Sold label</string>
     <string name="description_image">Photo de la description</string>
@@ -23,4 +23,11 @@
     <string name="conversion_description">Convertir les dollars en euros</string>
     <string name="date_title">Modifier la date</string>
     <string name="date_description">Afficher la date en version française</string>
+    <string name="properties">Propriétés à vendre</string>
+    <string name="surface">Surface</string>
+    <string name="rooms">Pièces</string>
+    <string name="bathrooms">Salles de bains</string>
+    <string name="bedrooms">Chambres</string>
+    <string name="location">Adresse</string>
+    <string name="characteristics">Characteristics</string>
 </resources>

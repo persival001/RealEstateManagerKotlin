@@ -23,5 +23,12 @@
     <string name="conversion_description">Dollar to euro conversion</string>
     <string name="date_title">Format date</string>
     <string name="date_description">Format the date in french version</string>
+    <string name="properties">List of properties for sale</string>
+    <string name="surface">Surface</string>
+    <string name="rooms">Rooms</string>
+    <string name="bathrooms">Bathrooms</string>
+    <string name="bedrooms">Bedrooms</string>
+    <string name="location">Location</string>
+    <string name="characteristics">Characteristics</string>
 
 </resources>

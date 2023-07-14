@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -30,16 +31,183 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/media_textView" />
 
+        <View
+            android:id="@+id/media_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/default_large_margin"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewPager" />
+
+        <TextView
+            android:id="@+id/characteristics_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:text="@string/characteristics"
+            android:textSize="@dimen/default_text_middle_size"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/linear_layout_block"
+            app:layout_constraintTop_toBottomOf="@+id/media_view" />
+
+        <!-- LinearLayout block -->
+        <LinearLayout
+            android:id="@+id/linear_layout_block"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_large_margin"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/description_view"
+            app:layout_constraintTop_toBottomOf="@+id/characteristics_textView">
+
+            <!-- LinearLayout left -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!-- Surface -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:text="@string/surface"
+                    android:textSize="@dimen/default_text_size"
+                    android:textStyle="bold"
+                    app:drawableLeftCompat="@drawable/baseline_settings_overscan_24" />
+
+                <TextView
+                    android:id="@+id/surface_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:text="@string/surface"
+                    android:textSize="@dimen/default_text_size" />
+
+                <!-- Rooms -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:text="@string/rooms"
+                    android:textSize="@dimen/default_text_size"
+                    android:textStyle="bold"
+                    app:drawableLeftCompat="@drawable/baseline_home_24" />
+
+                <TextView
+                    android:id="@+id/rooms_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:text="@string/rooms"
+                    android:textSize="@dimen/default_text_size" />
+
+                <!-- Bathrooms -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:text="@string/bathrooms"
+                    android:textSize="@dimen/default_text_size"
+                    android:textStyle="bold"
+                    app:drawableLeftCompat="@drawable/baseline_bathtub_24" />
+
+                <TextView
+                    android:id="@+id/bathrooms_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:text="@string/bathrooms"
+                    android:textSize="@dimen/default_text_size" />
+
+                <!-- Bedrooms -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:text="@string/bedrooms"
+                    android:textSize="@dimen/default_text_size"
+                    android:textStyle="bold"
+                    app:drawableLeftCompat="@drawable/baseline_bed_24" />
+
+                <TextView
+                    android:id="@+id/bedrooms_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:text="@string/bedrooms"
+                    android:textSize="@dimen/default_text_size" />
+
+                <!-- Location -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:text="@string/location"
+                    android:textSize="@dimen/default_text_size"
+                    android:textStyle="bold"
+                    app:drawableLeftCompat="@drawable/baseline_location_on_24" />
+
+                <TextView
+                    android:id="@+id/location_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="34dp"
+                    android:layout_marginBottom="@dimen/default_margin"
+                    android:text="@string/location"
+                    android:textSize="@dimen/default_text_size" />
+
+            </LinearLayout>
+
+            <!-- LinearLayout right -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:context=".MyMapFragment" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/description_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/default_large_margin"
+            android:layout_marginBottom="@dimen/default_large_margin"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linear_layout_block" />
+
         <TextView
             android:id="@+id/description_text_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_large_margin"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
             android:text="@string/description"
             android:textSize="@dimen/default_text_middle_size"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/viewPager" />
+            app:layout_constraintTop_toBottomOf="@+id/description_view" />
 
         <TextView
             android:id="@+id/description_textView"
@@ -50,13 +218,6 @@
             android:textSize="@dimen/default_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/description_text_textView" />
-
-        <androidx.fragment.app.FragmentContainerView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="@dimen/default_large_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/description_textView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
