@@ -179,7 +179,7 @@
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    tools:context=".MyMapFragment" />
+                    tools:context=".MapFragment" />
 
 
             </LinearLayout>
@@ -213,7 +213,7 @@
             android:id="@+id/description_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginTop="@dimen/default_large_margin"
             android:text="@string/description_exemple"
             android:textSize="@dimen/default_text_size"
             app:layout_constraintStart_toStartOf="parent"
