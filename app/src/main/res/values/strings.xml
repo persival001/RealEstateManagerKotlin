@@ -30,4 +30,9 @@
     <string name="bedrooms">Chambres</string>
     <string name="location">Adresse</string>
     <string name="characteristics">Characteristics</string>
+    <string name="agent_name">Agent immobilier</string>
+    <string name="agent_last_name">Nom  Prénom</string>
+    <string name="type_of_property">Type of property</string>
+    <string name="type_exemple">House, Duplex, Penthouse...</string>
+    <string name="surface_hint">Number of square meters</string>
 </resources>

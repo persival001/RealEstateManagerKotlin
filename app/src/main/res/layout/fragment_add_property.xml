@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -18,83 +23,104 @@
         app:titleTextColor="@color/quantum_white" />
 
     <TextView
-        android:id="@+id/conversion_text_textView"
+        android:id="@+id/agent_title_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        android:text="@string/conversion_title"
+        android:text="@string/agent_name"
         android:textSize="@dimen/default_text_middle_size"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings_toolbar" />
 
-    <TextView
-        android:id="@+id/conversion_textView"
+    <EditText
+        android:id="@+id/agent_EditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        android:text="@string/conversion_description"
+        android:hint="@string/agent_last_name"
+        android:inputType="textPersonName"
         android:textSize="@dimen/default_text_size"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/conversion_text_textView" />
+        app:layout_constraintTop_toBottomOf="@+id/agent_title_textView"
+        android:autofillHints="" />
 
     <View
-        android:id="@+id/conversion_view"
+        android:id="@+id/view1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_margin="@dimen/default_margin"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/conversion_textView" />
-
-    <RadioButton
-        android:id="@+id/conversion_radioButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/conversion_description"
-        app:layout_constraintBottom_toTopOf="@+id/conversion_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/agent_EditText" />
 
     <TextView
-        android:id="@+id/date_text_textView"
+        android:id="@+id/type_title_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        android:text="@string/date_title"
+        android:text="@string/type_of_property"
         android:textSize="@dimen/default_text_middle_size"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/conversion_view" />
+        app:layout_constraintTop_toBottomOf="@+id/view1" />
 
-    <TextView
-        android:id="@+id/date_textView"
+    <EditText
+        android:id="@+id/type_EditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        android:text="@string/date_description"
+        android:hint="@string/type_exemple"
+        android:inputType="textPersonName"
         android:textSize="@dimen/default_text_size"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_text_textView" />
+        app:layout_constraintTop_toBottomOf="@+id/type_title_textView"
+        android:autofillHints="" />
 
     <View
-        android:id="@+id/date_view"
+        android:id="@+id/view2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_margin="@dimen/default_margin"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_textView" />
+        app:layout_constraintTop_toBottomOf="@+id/type_EditText" />
 
-    <RadioButton
-        android:id="@+id/date_radioButton"
+    <TextView
+        android:id="@+id/surface_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/date_description"
-        app:layout_constraintBottom_toTopOf="@+id/date_view"
+        android:layout_margin="@dimen/default_margin"
+        android:text="@string/surface"
+        android:textSize="@dimen/default_text_middle_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+    <EditText
+        android:id="@+id/surface_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:hint="@string/surface_hint"
+        android:inputType="textPersonName"
+        android:textSize="@dimen/default_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/surface_title_text_view"
+        android:autofillHints="" />
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="@dimen/default_margin"
+        android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/conversion_view" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/surface_edit_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
