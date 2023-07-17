@@ -35,5 +35,16 @@
     <string name="type_of_property">Type of property</string>
     <string name="type_exemple">House, Duplex, Penthouse...</string>
     <string name="surface_hint">Number of square meters</string>
+    <string name="rooms_hint">Number of rooms</string>
+    <string name="bathrooms_hint">Number of bathrooms</string>
+    <string name="bedrooms_hint">Number of bedrooms</string>
+    <string name="location_hint">Full address where the property is located</string>
+    <string name="poi">Point of interest</string>
+    <string name="poi_hint">Point of interest next to the property</string>
+    <string name="price">Price</string>
+    <string name="price_hint">Property price in dollars</string>
+    <string name="description_hint">Description of the property</string>
+    <string name="add_pictures">Add pictures</string>
+    <string name="validate_information">Validate the information</string>
 
 </resources>
