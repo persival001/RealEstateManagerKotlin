@@ -1,6 +1,8 @@
 package com.persival.realestatemanagerkotlin.ui.main
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commitNow
@@ -10,9 +12,11 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
+import com.persival.realestatemanagerkotlin.ui.add.AddPropertyFragment
 import com.persival.realestatemanagerkotlin.ui.description.DescriptionFragment
 import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
 import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
+import com.persival.realestatemanagerkotlin.ui.settings.SettingsFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -78,16 +82,44 @@ class MainActivity : AppCompatActivity() {
 
             when (menuItem.itemId) {
                 R.id.nav_settings -> {
-                    // handle navigation
+                    supportFragmentManager.commitNow {
+                        replace(binding.fragmentContainerView.id, SettingsFragment.newInstance())
+                    }
                     true
                 }
                 R.id.nav_logout -> {
-                    // handle navigation to settings
+                    finish()
+
                     true
                 }
 
                 else -> false
             }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_add -> {
+                supportFragmentManager.commitNow {
+                    replace(binding.fragmentContainerView.id, AddPropertyFragment.newInstance())
+                }
+                true
+            }
+            R.id.action_modify -> {
+                // TODO: Handle modify action
+                true
+            }
+            R.id.action_search -> {
+                // TODO: Handle search action
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

@@ -75,7 +75,7 @@
             android:layout_margin="@dimen/default_margin"
             android:autofillHints=""
             android:hint="@string/type_exemple"
-            android:inputType="textPersonName"
+            android:inputType="text"
             android:textSize="@dimen/default_edit_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/type_title_textView" />
@@ -109,7 +109,7 @@
             android:layout_margin="@dimen/default_margin"
             android:autofillHints=""
             android:hint="@string/surface_hint"
-            android:inputType="textPersonName"
+            android:inputType="number"
             android:textSize="@dimen/default_edit_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/surface_title_text_view" />
@@ -143,7 +143,7 @@
             android:layout_margin="@dimen/default_margin"
             android:autofillHints=""
             android:hint="@string/rooms_hint"
-            android:inputType="textPersonName"
+            android:inputType="number"
             android:textSize="@dimen/default_edit_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rooms_title_text_view" />
@@ -177,7 +177,7 @@
             android:layout_margin="@dimen/default_margin"
             android:autofillHints=""
             android:hint="@string/bathrooms_hint"
-            android:inputType="textPersonName"
+            android:inputType="number"
             android:textSize="@dimen/default_edit_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bathrooms_title_text_view" />
@@ -211,7 +211,7 @@
             android:layout_margin="@dimen/default_margin"
             android:autofillHints=""
             android:hint="@string/bedrooms_hint"
-            android:inputType="textPersonName"
+            android:inputType="number"
             android:textSize="@dimen/default_edit_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bedrooms_title_text_view" />
@@ -245,7 +245,7 @@
             android:layout_margin="@dimen/default_margin"
             android:autofillHints=""
             android:hint="@string/location_hint"
-            android:inputType="textPersonName"
+            android:inputType="text|textPostalAddress"
             android:textSize="@dimen/default_edit_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/location_title_text_view" />
@@ -279,7 +279,7 @@
             android:layout_margin="@dimen/default_margin"
             android:autofillHints=""
             android:hint="@string/poi_hint"
-            android:inputType="textPersonName"
+            android:inputType="text"
             android:textSize="@dimen/default_edit_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poi_title_text_view" />
@@ -313,7 +313,7 @@
             android:layout_margin="@dimen/default_margin"
             android:autofillHints=""
             android:hint="@string/description_hint"
-            android:inputType="textPersonName"
+            android:inputType="text"
             android:textSize="@dimen/default_edit_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/description_title_text_view" />
@@ -347,7 +347,7 @@
             android:layout_margin="@dimen/default_margin"
             android:autofillHints=""
             android:hint="@string/price_hint"
-            android:inputType="textPersonName"
+            android:inputType="number|numberDecimal"
             android:textSize="@dimen/default_edit_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/price_title_text_view" />
