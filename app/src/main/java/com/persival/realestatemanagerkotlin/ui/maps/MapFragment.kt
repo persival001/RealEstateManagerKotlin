@@ -19,7 +19,7 @@ import com.persival.realestatemanagerkotlin.utils.viewBinding
 class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
     companion object {
-        fun newInstance() = PropertiesFragment()
+        fun newInstance() = MapFragment()
     }
 
     private val binding by viewBinding { FragmentMapBinding.bind(it) }
