@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_large_margin"
         android:text="@string/main_activity_description"
-        android:textColor="@color/quantum_white"
+        android:textColor="@color/md_theme_light_onPrimary"
         android:textSize="18sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"

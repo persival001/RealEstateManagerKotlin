@@ -52,7 +52,7 @@
             android:layout_marginBottom="@dimen/default_little_margin"
             android:singleLine="true"
             android:textAllCaps="false"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/md_theme_light_tertiary"
             android:textSize="@dimen/default_text_big_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/property_picture"
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/sold"
-                android:textColor="@color/quantum_white"
+                android:textColor="@color/md_theme_light_onPrimary"
                 android:textSize="@dimen/default_text_big_size"
                 android:textStyle="bold" />
 

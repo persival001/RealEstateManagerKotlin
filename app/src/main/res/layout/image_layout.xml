@@ -14,7 +14,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/property_picture" />
+        tools:src="@drawable/property_picture"
+        android:contentDescription="@string/illustrative_picture" />
 
     <TextView
         android:id="@+id/imageCaption"
@@ -22,7 +23,7 @@
         android:layout_height="200dp"
         android:background="#80000000"
         android:text="@string/caption"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/md_theme_light_onPrimary"
         android:textSize="40sp"
         android:gravity="center"
         android:padding="8dp"

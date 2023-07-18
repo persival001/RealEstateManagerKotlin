@@ -14,13 +14,13 @@
             android:id="@+id/settings_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
+            android:background="@color/md_theme_light_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
-            app:navigationIconTint="@color/quantum_white"
-            app:titleTextColor="@color/quantum_white" />
+            app:navigationIconTint="@color/md_theme_light_onPrimary"
+            app:titleTextColor="@color/md_theme_light_onPrimary" />
 
         <!-- Agent full name -->
         <TextView
@@ -370,7 +370,7 @@
             android:layout_margin="@dimen/default_margin"
             android:layout_marginTop="@dimen/default_large_margin"
             android:padding="@dimen/default_large_margin"
-            android:background="@color/colorPrimary"
+            android:background="@color/md_theme_light_primary"
             android:text="@string/add_pictures"
             android:textColor="#fff"
             android:textSize="@dimen/default_text_size"
@@ -386,7 +386,7 @@
             android:layout_margin="@dimen/default_margin"
             android:layout_marginTop="@dimen/default_large_margin"
             android:padding="@dimen/default_large_margin"
-            android:background="@color/colorPrimary"
+            android:background="@color/md_theme_light_primary"
             android:text="@string/validate_information"
             android:textColor="#fff"
             android:textSize="@dimen/default_text_size"
