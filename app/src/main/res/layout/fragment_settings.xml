@@ -7,15 +7,13 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/settings_toolbar"
+        style="@style/Widget.Material3.AppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/md_theme_light_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/baseline_arrow_back_24"
-        app:navigationIconTint="@color/md_theme_light_onPrimary"
-        app:titleTextColor="@color/md_theme_light_onPrimary" />
+        app:navigationIcon="@drawable/baseline_arrow_back_24" />
 
     <TextView
         android:id="@+id/conversion_text_textView"
@@ -48,8 +46,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/conversion_textView" />
 
-    <RadioButton
+    <com.google.android.material.radiobutton.MaterialRadioButton
         android:id="@+id/conversion_radioButton"
+        style="@style/Widget.Material3.CompoundButton.RadioButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/conversion_description"
@@ -88,8 +87,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/date_textView" />
 
-    <RadioButton
+    <com.google.android.material.radiobutton.MaterialRadioButton
         android:id="@+id/date_radioButton"
+        style="@style/Widget.Material3.CompoundButton.RadioButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/date_description"

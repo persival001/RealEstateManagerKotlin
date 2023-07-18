@@ -78,13 +78,11 @@
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
+            style="@style/Widget.Material3.DrawerLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:background="@color/md_theme_light_secondary"
             app:headerLayout="@layout/navigation_drawer_header"
-            app:itemIconTint="@color/md_theme_light_onPrimary"
-            app:itemTextColor="@color/md_theme_light_onPrimary"
             app:menu="@menu/navigation_drawer_menu" />
 
     </ScrollView>

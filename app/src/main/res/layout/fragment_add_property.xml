@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -12,15 +11,13 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/settings_toolbar"
+            style="@style/Widget.Material3.AppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/md_theme_light_primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/baseline_arrow_back_24"
-            app:navigationIconTint="@color/md_theme_light_onPrimary"
-            app:titleTextColor="@color/md_theme_light_onPrimary" />
+            app:navigationIcon="@drawable/baseline_arrow_back_24"/>
 
         <!-- Agent full name -->
         <TextView
@@ -365,14 +362,13 @@
         <!-- Add photos button -->
         <Button
             android:id="@+id/add_photos_button"
+            style="@style/Widget.Material3.Button.TextButton.Dialog"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:layout_marginTop="@dimen/default_large_margin"
             android:padding="@dimen/default_large_margin"
-            android:background="@color/md_theme_light_primary"
             android:text="@string/add_pictures"
-            android:textColor="#fff"
             android:textSize="@dimen/default_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -381,14 +377,13 @@
         <!-- Validation button -->
         <Button
             android:id="@+id/validate_information_button"
+            style="@style/Widget.Material3.Button.TextButton.Dialog"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:layout_marginTop="@dimen/default_large_margin"
             android:padding="@dimen/default_large_margin"
-            android:background="@color/md_theme_light_primary"
             android:text="@string/validate_information"
-            android:textColor="#fff"
             android:textSize="@dimen/default_text_size"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
