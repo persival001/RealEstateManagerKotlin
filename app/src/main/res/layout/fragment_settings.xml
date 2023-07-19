@@ -7,7 +7,7 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/settings_toolbar"
-        style="@style/Widget.Material3.AppBarLayout"
+        style="@style/Widget.MaterialComponents.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,9 +48,9 @@
 
     <com.google.android.material.radiobutton.MaterialRadioButton
         android:id="@+id/conversion_radioButton"
-        style="@style/Widget.Material3.CompoundButton.RadioButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_margin"
         android:contentDescription="@string/conversion_description"
         app:layout_constraintBottom_toTopOf="@+id/conversion_view"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,9 +89,9 @@
 
     <com.google.android.material.radiobutton.MaterialRadioButton
         android:id="@+id/date_radioButton"
-        style="@style/Widget.Material3.CompoundButton.RadioButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/default_margin"
         android:contentDescription="@string/date_description"
         app:layout_constraintBottom_toTopOf="@+id/date_view"
         app:layout_constraintEnd_toEndOf="parent"
