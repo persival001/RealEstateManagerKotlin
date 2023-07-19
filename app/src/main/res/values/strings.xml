@@ -49,4 +49,7 @@
     <string name="navigation_drawer_open">Open the navigation drawer</string>
     <string name="navigation_drawer_close">Close the navigation drawer</string>
     <string name="authentication_failed">Authentication failed, please retry</string>
+    <string name="ok_button">OK</string>
+    <string name="date_to_buy">On-sale date</string>
+    <string name="date_to_sell">Date of sale</string>
 </resources>
