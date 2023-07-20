@@ -1,10 +1,10 @@
 package com.persival.realestatemanagerkotlin.ui.main
 
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commitNow
@@ -23,11 +23,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val binding by viewBinding { ActivityMainBinding.inflate(it) }
+    private val viewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,19 +55,21 @@ class MainActivity : AppCompatActivity() {
 
         // Set up the bottom navigation
         binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when(item.itemId) {
+            when (item.itemId) {
                 R.id.item_1 -> {
                     supportFragmentManager.commitNow {
                         replace(binding.fragmentContainerView.id, MapFragment.newInstance())
                     }
                     true
                 }
+
                 R.id.item_2 -> {
                     supportFragmentManager.commitNow {
                         replace(binding.fragmentContainerView.id, PropertiesFragment.newInstance())
                     }
                     true
                 }
+
                 R.id.item_3 -> {
                     supportFragmentManager.commitNow {
                         replace(binding.fragmentContainerView.id, DescriptionFragment.newInstance())
@@ -91,6 +93,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     true
                 }
+
                 R.id.nav_logout -> {
                     finish()
 
@@ -115,14 +118,17 @@ class MainActivity : AppCompatActivity() {
                 }
                 true
             }
+
             R.id.action_modify -> {
                 // TODO: Handle modify action
                 true
             }
+
             R.id.action_search -> {
                 // TODO: Handle search action
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

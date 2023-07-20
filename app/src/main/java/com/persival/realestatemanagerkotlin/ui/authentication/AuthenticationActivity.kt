@@ -16,10 +16,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.persival.realestatemanagerkotlin.R
+import com.persival.realestatemanagerkotlin.databinding.ActivityAuthenticationBinding
+import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
 import com.persival.realestatemanagerkotlin.ui.main.MainActivity
+import com.persival.realestatemanagerkotlin.utils.viewBinding
 
 class AuthenticationActivity : AppCompatActivity() {
 
+    private val binding by viewBinding { ActivityAuthenticationBinding.inflate(it) }
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
@@ -42,10 +46,21 @@ class AuthenticationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_authentication)
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
+
+        // Check if the user is already signed in
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            // User is already signed in, start MainActivity
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
+
+        setContentView(R.layout.activity_authentication)
 
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -55,8 +70,7 @@ class AuthenticationActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
-        signInButton.setOnClickListener { signIn() }
+        binding.signInButton.setOnClickListener { signIn() }
     }
 
     // On Sign-In button click
