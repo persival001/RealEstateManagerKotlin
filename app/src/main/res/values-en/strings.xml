@@ -46,12 +46,17 @@
     <string name="description_hint">Description of the property</string>
     <string name="add_pictures">Add pictures</string>
     <string name="validate_information">Validate the information</string>
-    <string name="navigation_drawer_open">Open the navigation drawer</string>
-    <string name="navigation_drawer_close">Close the navigation drawer</string>
     <string name="authentication_failed">Authentication failed, please retry</string>
     <string name="ok_button">OK</string>
     <string name="date_to_buy">On-sale date</string>
     <string name="date_to_sell">Date of sale</string>
     <string name="your_position">You are here !</string>
+
+    <!-- GPS FRAGMENT -->
+    <string name="gps_off">Gps is off</string>
+    <string name="please_activate_gps">To make this application work with all its features, we need you to activate your Gps with the precise location.\n\nDon\'t worry, we don\'t collect any of your data.</string>
+    <string name="cancel">Cancel</string>
+    <string name="activate">Activate</string>
+
 
 </resources>

@@ -35,74 +35,20 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.commitNow {
-                replace(binding.fragmentContainerView.id, MapFragment.newInstance())
+                binding.fragmentContainerView?.let {
+                    replace(
+                        it.id,
+                        MapFragment.newInstance()
+                    )
+                }
             }
         }
 
         // Setup the toolbar
         setSupportActionBar(binding.toolbar)
+        // Activate return button
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // Setup the drawer layout toggle and link it with the toolbar
-        val toggle = ActionBarDrawerToggle(
-            this,
-            binding.drawerLayout,
-            binding.toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        // Set up the bottom navigation
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.item_1 -> {
-                    supportFragmentManager.commitNow {
-                        replace(binding.fragmentContainerView.id, MapFragment.newInstance())
-                    }
-                    true
-                }
-
-                R.id.item_2 -> {
-                    supportFragmentManager.commitNow {
-                        replace(binding.fragmentContainerView.id, PropertiesFragment.newInstance())
-                    }
-                    true
-                }
-
-                R.id.item_3 -> {
-                    supportFragmentManager.commitNow {
-                        replace(binding.fragmentContainerView.id, DescriptionFragment.newInstance())
-                    }
-                    true
-                }
-
-                else -> false
-            }
-        }
-
-        // Set up the drawer menu
-        binding.navView.setNavigationItemSelectedListener { menuItem ->
-            menuItem.isChecked = true
-            binding.drawerLayout.closeDrawers()
-
-            when (menuItem.itemId) {
-                R.id.nav_settings -> {
-                    supportFragmentManager.commitNow {
-                        replace(binding.fragmentContainerView.id, SettingsFragment.newInstance())
-                    }
-                    true
-                }
-
-                R.id.nav_logout -> {
-                    finish()
-
-                    true
-                }
-
-                else -> false
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -114,7 +60,12 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_add -> {
                 supportFragmentManager.commitNow {
-                    replace(binding.fragmentContainerView.id, AddPropertyFragment.newInstance())
+                    binding.fragmentContainerView?.let {
+                        replace(
+                            it.id,
+                            AddPropertyFragment.newInstance()
+                        )
+                    }
                 }
                 true
             }

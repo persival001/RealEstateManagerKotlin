@@ -39,18 +39,24 @@
     <string name="bathrooms_hint">Nombre de salles de bains</string>
     <string name="bedrooms_hint">Nombre de chambres</string>
     <string name="location_hint">Adresse complète ou est localisé le bien immobilier</string>
-    <string name="poi">Point of interest</string>
-    <string name="poi_hint">Point of interest next to the property</string>
-    <string name="price">Price</string>
-    <string name="price_hint">Property price in dollars</string>
-    <string name="description_hint">Description of the property</string>
-    <string name="add_pictures">Add pictures</string>
-    <string name="validate_information">Validate the information</string>
-    <string name="navigation_drawer_open">Open the navigation drawer</string>
-    <string name="navigation_drawer_close">Close the navigation drawer</string>
-    <string name="authentication_failed">Authentication failed, please retry</string>
+    <string name="poi">Commodités</string>
+    <string name="poi_hint">Commodités à proximité</string>
+    <string name="price">Prix</string>
+    <string name="price_hint">Prix en dollars</string>
+    <string name="description_hint">Déscription du bien</string>
+    <string name="add_pictures">Ajouter des photos</string>
+    <string name="validate_information">Valider</string>
+    <string name="authentication_failed">L\'authentification a échouée</string>
     <string name="ok_button">OK</string>
-    <string name="date_to_buy">On-sale date</string>
-    <string name="date_to_sell">Date of sale</string>
-    <string name="your_position">You are here !</string>
+    <string name="date_to_buy">Date de mise en vente</string>
+    <string name="date_to_sell">Date d\'achat</string>
+    <string name="your_position">Vous êtes ici !</string>
+
+    <!-- GPS FRAGMENT -->
+    <string name="gps_off">Gps is off</string>
+    <string name="please_activate_gps">Pour faire fonctionner cette application avec toutes ses fonctionnalités, nous avons besoin que vous activiez votre Gps avec la localisation précise.
+        \nNe vous inquiètez pas, nous ne collectons aucune de vos données.</string>
+    <string name="cancel">Annuler</string>
+    <string name="activate">Activer</string>
+
 </resources>

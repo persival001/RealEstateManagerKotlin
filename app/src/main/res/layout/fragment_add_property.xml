@@ -10,27 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/settings_toolbar"
-            style="@style/Widget.Material3.AppBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/baseline_arrow_back_24" />
-
         <!-- Date picker - on-sell -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/date_picker_text_input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
             android:layout_marginEnd="@dimen/default_margin"
             android:hint="@string/date_to_buy"
             app:layout_constraintEnd_toStartOf="@+id/date_picker_to_sell_layout"
             app:layout_constraintStart_toStartOf="@+id/type_of_property_textField"
-            app:layout_constraintTop_toBottomOf="@+id/settings_toolbar"
+            app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -49,11 +40,12 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
             android:layout_marginStart="@dimen/default_margin"
             android:hint="@string/date_to_sell"
             app:layout_constraintEnd_toEndOf="@+id/type_of_property_textField"
             app:layout_constraintStart_toEndOf="@id/date_picker_text_input_layout"
-            app:layout_constraintTop_toBottomOf="@+id/settings_toolbar"
+            app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
             <com.google.android.material.textfield.TextInputEditText

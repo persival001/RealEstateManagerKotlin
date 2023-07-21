@@ -12,7 +12,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class DataBindingModule {
 
-@Singleton
+    @Singleton
     @Binds
     abstract fun bindLocationRepository(locationDataRepository: LocationDataRepository): LocationRepository
 }
