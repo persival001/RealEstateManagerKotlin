@@ -1,8 +1,14 @@
 package com.persival.realestatemanagerkotlin.ui.maps
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -20,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
     private var googleMap: GoogleMap? = null
+
     private val viewModel by viewModels<MapViewModel>()
 
     companion object {

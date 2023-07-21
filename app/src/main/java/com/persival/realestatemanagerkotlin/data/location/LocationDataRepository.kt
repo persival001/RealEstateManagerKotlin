@@ -30,10 +30,12 @@ class LocationDataRepository @Inject constructor(context: Context) : LocationRep
         ) {
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                0L,
-                0f,
+                10000L,
+                250f,
                 locationListener
             )
+        } else {
+            userLocation.value = null
         }
     }
 }
