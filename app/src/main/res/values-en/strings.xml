@@ -60,6 +60,7 @@
     <string name="display_map">Display map</string>
     <string name="show_map">Properties on map</string>
     <string name="cancel_button">Cancel</string>
+    <string name="display_settings">Settings</string>
 
 
 </resources>

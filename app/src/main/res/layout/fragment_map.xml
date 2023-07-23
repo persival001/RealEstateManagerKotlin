@@ -6,29 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<androidx.appcompat.widget.Toolbar
-android:id="@+id/toolbar"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:background="@color/md_theme_light_primary"
-android:textColor="@color/md_theme_light_onPrimary"
-app:layout_constraintEnd_toEndOf="parent"
-app:layout_constraintStart_toStartOf="parent"
-app:layout_constraintTop_toTopOf="parent">
-
-<TextView
-    android:id="@+id/text_view"
-    android:layout_width="match_parent"
-    android:layout_height="35dp"
-    android:layout_margin="@dimen/default_margin"
-    android:gravity="center"
-    android:singleLine="true"
-    android:text="@string/show_map"
-    android:textColor="@color/md_theme_light_onPrimary"
-    android:textSize="20sp" />
-
-</androidx.appcompat.widget.Toolbar>
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -37,7 +14,7 @@ app:layout_constraintTop_toTopOf="parent">
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="parent"
         tools:context=".ui.maps.MapFragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

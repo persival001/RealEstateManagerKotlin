@@ -17,6 +17,7 @@ import com.persival.realestatemanagerkotlin.ui.detail.DetailActivity
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
 import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
 import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
+import com.persival.realestatemanagerkotlin.ui.settings.SettingsFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -83,20 +84,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_map -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(
-                        binding.mainFrameLayoutContainerProperties.id,
-                        MapFragment.newInstance()
-                    )
-                    .addToBackStack(null)
-                    .commit()
 
-                supportActionBar?.hide()
+            // Handle the back button click
+            android.R.id.home -> {
+                supportFragmentManager.popBackStack()
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
                 true
             }
 
             R.id.action_add -> {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
                 supportFragmentManager.beginTransaction()
                     .replace(
                         binding.mainFrameLayoutContainerProperties.id,
@@ -104,8 +102,6 @@ class MainActivity : AppCompatActivity() {
                     )
                     .addToBackStack(null)
                     .commit()
-
-                supportActionBar?.hide()
                 true
             }
 
@@ -118,6 +114,33 @@ class MainActivity : AppCompatActivity() {
                 // TODO: Handle search action
                 true
             }
+
+            R.id.action_map -> {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+                supportFragmentManager.beginTransaction()
+                    .replace(
+                        binding.mainFrameLayoutContainerProperties.id,
+                        MapFragment.newInstance()
+                    )
+                    .addToBackStack(null)
+                    .commit()
+                true
+            }
+
+            R.id.action_settings -> {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+                supportFragmentManager.beginTransaction()
+                    .replace(
+                        binding.mainFrameLayoutContainerProperties.id,
+                        SettingsFragment.newInstance()
+                    )
+                    .addToBackStack(null)
+                    .commit()
+                true
+            }
+
 
             else -> super.onOptionsItemSelected(item)
         }

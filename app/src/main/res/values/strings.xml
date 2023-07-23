@@ -61,5 +61,6 @@
     <string name="display_map">Affiche la carte</string>
     <string name="show_map">Carte des biens</string>
     <string name="cancel_button">Cancel</string>
+    <string name="display_settings">Settings</string>
 
 </resources>

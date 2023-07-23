@@ -57,25 +57,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
                 googleMap?.addCircle(circleOptions)
             }
         }
-
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-        toolbar.navigationIcon =
-            ContextCompat.getDrawable(requireContext(), R.drawable.baseline_arrow_back_24)
-        toolbar.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
     }
-
-    override fun onResume() {
-        super.onResume()
-        (activity as? AppCompatActivity)?.supportActionBar?.hide()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (activity as? AppCompatActivity)?.supportActionBar?.show()
-    }
-
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map

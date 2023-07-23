@@ -109,6 +109,10 @@ dependencies {
 
     // Testing
     testImplementation 'junit:junit:4.13.2'
+
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:2.6.0"
+    implementation "androidx.navigation:navigation-ui-ktx:2.6.0"
 }
 
 // Allow references to generated code

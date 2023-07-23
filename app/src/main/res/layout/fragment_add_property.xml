@@ -18,29 +18,6 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/md_theme_light_primary"
-            android:textColor="@color/md_theme_light_onPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/text_view"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_margin="@dimen/default_margin"
-                android:gravity="center"
-                android:singleLine="true"
-                android:text="@string/add_property"
-                android:textColor="@color/md_theme_light_onPrimary"
-                android:textSize="20sp" />
-
-        </androidx.appcompat.widget.Toolbar>
-
         <!-- Date picker - on-sell -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/date_picker_text_input_layout"
@@ -51,7 +28,7 @@
             android:hint="@string/date_to_buy"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -74,7 +51,7 @@
             android:hint="@string/date_to_sell"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -87,6 +64,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Separator -->
         <View
             android:id="@+id/separator_view"
             android:layout_width="match_parent"

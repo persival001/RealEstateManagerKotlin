@@ -1,21 +1,16 @@
 package com.persival.realestatemanagerkotlin.ui.detail
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.persival.realestatemanagerkotlin.BuildConfig.MAPS_API_KEY
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentDetailBinding
+import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
-import com.bumptech.glide.request.target.Target
-import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
 
 
 @AndroidEntryPoint
