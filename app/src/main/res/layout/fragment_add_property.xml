@@ -10,18 +10,48 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- Guideline -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/md_theme_light_primary"
+            android:textColor="@color/md_theme_light_onPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/text_view"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_margin="@dimen/default_margin"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/add_property"
+                android:textColor="@color/md_theme_light_onPrimary"
+                android:textSize="20sp" />
+
+        </androidx.appcompat.widget.Toolbar>
+
         <!-- Date picker - on-sell -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/date_picker_text_input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_margin"
-            android:layout_marginEnd="@dimen/default_margin"
+            android:layout_margin="@dimen/default_margin"
             android:hint="@string/date_to_buy"
-            app:layout_constraintEnd_toStartOf="@+id/date_picker_to_sell_layout"
-            app:layout_constraintStart_toStartOf="@+id/type_of_property_textField"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -40,12 +70,11 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_margin"
-            android:layout_marginStart="@dimen/default_margin"
+            android:layout_margin="@dimen/default_margin"
             android:hint="@string/date_to_sell"
-            app:layout_constraintEnd_toEndOf="@+id/type_of_property_textField"
-            app:layout_constraintStart_toEndOf="@id/date_picker_text_input_layout"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -58,17 +87,27 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <View
+            android:id="@+id/separator_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="@dimen/default_margin"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date_picker_text_input_layout" />
+
         <!-- Type of property -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/type_of_property_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/type_of_property"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/date_picker_to_sell_layout"
+            app:layout_constraintTop_toBottomOf="@+id/separator_view"
             app:startIconDrawable="@drawable/baseline_home_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -82,11 +121,11 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/surface_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/surface_hint"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/type_of_property_textField"
             app:startIconDrawable="@drawable/baseline_settings_overscan_24">
@@ -102,13 +141,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/rooms_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/rooms_hint"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/surface_textField"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/price_textField"
             app:startIconDrawable="@drawable/baseline_meeting_room_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -122,11 +161,11 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/bathrooms_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/bathrooms_hint"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rooms_textField"
             app:startIconDrawable="@drawable/baseline_bathtub_24">
@@ -142,13 +181,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/bedrooms_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/bedrooms_hint"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bathrooms_textField"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/rooms_textField"
             app:startIconDrawable="@drawable/baseline_bed_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -162,7 +201,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/location_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/location_hint"
@@ -182,7 +221,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/poi_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/poi_hint"
@@ -202,7 +241,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/description_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/description_hint"
@@ -222,13 +261,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/price_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="350dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/price_hint"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/description_textField"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/separator_view"
             app:startIconDrawable="@drawable/baseline_attach_money_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -245,27 +284,39 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:layout_marginTop="@dimen/default_large_margin"
-            android:padding="@dimen/default_large_margin"
+            android:padding="@dimen/default_margin"
             android:text="@string/add_pictures"
             android:textSize="@dimen/default_text_middle_size"
-            app:layout_constraintEnd_toEndOf="@+id/price_textField"
-            app:layout_constraintStart_toStartOf="@+id/price_textField"
-            app:layout_constraintTop_toBottomOf="@id/price_textField" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/description_textField" />
 
-        <!-- Validation button -->
+        <!-- Cancel button -->
         <Button
-            android:id="@+id/validate_information_button"
+            android:id="@+id/cancel_button"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:layout_marginTop="@dimen/default_large_margin"
-            android:padding="@dimen/default_large_margin"
+            android:padding="@dimen/default_margin"
+            android:text="@string/cancel_button"
+            android:textSize="@dimen/default_text_middle_size"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_photos_button" />
+
+        <!-- Ok button -->
+        <Button
+            android:id="@+id/ok_button"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:padding="@dimen/default_margin"
             android:text="@string/ok_button"
             android:textSize="@dimen/default_text_middle_size"
-            app:layout_constraintEnd_toEndOf="@+id/price_textField"
-            app:layout_constraintStart_toStartOf="@+id/price_textField"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/add_photos_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

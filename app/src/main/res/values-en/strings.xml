@@ -57,6 +57,9 @@
     <string name="please_activate_gps">To make this application work with all its features, we need you to activate your Gps with the precise location.\n\nDon\'t worry, we don\'t collect any of your data.</string>
     <string name="cancel">Cancel</string>
     <string name="activate">Activate</string>
+    <string name="display_map">Display map</string>
+    <string name="show_map">Properties on map</string>
+    <string name="cancel_button">Cancel</string>
 
 
 </resources>

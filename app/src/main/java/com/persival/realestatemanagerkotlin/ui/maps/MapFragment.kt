@@ -1,13 +1,10 @@
 package com.persival.realestatemanagerkotlin.ui.maps
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -60,7 +57,25 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
                 googleMap?.addCircle(circleOptions)
             }
         }
+
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+        toolbar.navigationIcon =
+            ContextCompat.getDrawable(requireContext(), R.drawable.baseline_arrow_back_24)
+        toolbar.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (activity as? AppCompatActivity)?.supportActionBar?.show()
+    }
+
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map

@@ -1,11 +1,11 @@
 package com.persival.realestatemanagerkotlin.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commitNow
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -13,10 +13,10 @@ import com.google.android.material.textfield.TextInputEditText
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
 import com.persival.realestatemanagerkotlin.ui.add.AddPropertyFragment
-import com.persival.realestatemanagerkotlin.ui.description.DescriptionFragment
+import com.persival.realestatemanagerkotlin.ui.detail.DetailActivity
+import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
 import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
 import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
-import com.persival.realestatemanagerkotlin.ui.settings.SettingsFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -31,25 +31,50 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(binding.root)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.commitNow {
-                binding.fragmentContainerView?.let {
-                    replace(
-                        it.id,
-                        MapFragment.newInstance()
-                    )
-                }
-            }
+            supportFragmentManager.beginTransaction()
+                .replace(
+                    binding.mainFrameLayoutContainerProperties.id,
+                    PropertiesFragment.newInstance()
+                )
+                .commitNow()
         }
 
         // Setup the toolbar
         setSupportActionBar(binding.toolbar)
         // Activate return button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val containerDetailsId = binding.mainFrameLayoutContainerDetail?.id
+        if (containerDetailsId != null && supportFragmentManager.findFragmentById(containerDetailsId) == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(containerDetailsId, DetailFragment())
+                .commitNow()
+        }
+
+        viewModel.mainViewActionLiveData.observe(this) { event ->
+            event.handleContent {
+                when (it) {
+                    MainViewAction.NavigateToDetailActivity -> startActivity(
+                        Intent(
+                            this,
+                            DetailActivity::class.java
+                        )
+                    )
+                }
+            }
+        }
     }
+
+    override fun onResume() {
+        super.onResume()
+        supportActionBar?.show()
+        viewModel.onResume(resources.getBoolean(R.bool.isTablet))
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
@@ -58,15 +83,29 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_map -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(
+                        binding.mainFrameLayoutContainerProperties.id,
+                        MapFragment.newInstance()
+                    )
+                    .addToBackStack(null)
+                    .commit()
+
+                supportActionBar?.hide()
+                true
+            }
+
             R.id.action_add -> {
-                supportFragmentManager.commitNow {
-                    binding.fragmentContainerView?.let {
-                        replace(
-                            it.id,
-                            AddPropertyFragment.newInstance()
-                        )
-                    }
-                }
+                supportFragmentManager.beginTransaction()
+                    .replace(
+                        binding.mainFrameLayoutContainerProperties.id,
+                        AddPropertyFragment.newInstance()
+                    )
+                    .addToBackStack(null)
+                    .commit()
+
+                supportActionBar?.hide()
                 true
             }
 

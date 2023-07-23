@@ -1,9 +1,9 @@
-package com.persival.realestatemanagerkotlin.ui.description
+package com.persival.realestatemanagerkotlin.ui.detail
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DescriptionViewModel @Inject constructor() : ViewModel() {
+class DetailViewModel @Inject constructor() : ViewModel() {
 }

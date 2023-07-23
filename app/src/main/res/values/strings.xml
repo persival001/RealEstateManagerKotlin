@@ -53,10 +53,13 @@
     <string name="your_position">Vous êtes ici !</string>
 
     <!-- GPS FRAGMENT -->
-    <string name="gps_off">Gps is off</string>
+    <string name="gps_off">Le GPS est désactivé</string>
     <string name="please_activate_gps">Pour faire fonctionner cette application avec toutes ses fonctionnalités, nous avons besoin que vous activiez votre Gps avec la localisation précise.
         \nNe vous inquiètez pas, nous ne collectons aucune de vos données.</string>
     <string name="cancel">Annuler</string>
     <string name="activate">Activer</string>
+    <string name="display_map">Affiche la carte</string>
+    <string name="show_map">Carte des biens</string>
+    <string name="cancel_button">Cancel</string>
 
 </resources>
