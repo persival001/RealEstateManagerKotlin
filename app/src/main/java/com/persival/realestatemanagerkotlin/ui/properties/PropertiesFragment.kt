@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentPropertiesBinding
+import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,7 +27,18 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
         super.onViewCreated(view, savedInstanceState)
 
         propertyListAdapter = PropertyListAdapter { property ->
-            // TODO: handle item click here
+            val detailFragment = DetailFragment.newInstance(property.id)
+            if(resources.getBoolean(R.bool.isTablet)) {
+                activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.main_FrameLayout_container_detail, detailFragment)
+                    ?.addToBackStack(null)
+                    ?.commit()
+            } else {
+                activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.main_FrameLayout_container_properties, detailFragment)
+                    ?.addToBackStack(null)
+                    ?.commit()
+            }
         }
 
         binding.propertiesRecyclerView.layoutManager = LinearLayoutManager(context)

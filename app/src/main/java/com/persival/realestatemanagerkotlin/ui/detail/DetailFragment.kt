@@ -17,7 +17,13 @@ import dagger.hilt.android.AndroidEntryPoint
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     companion object {
-        fun newInstance() = DetailFragment()
+        fun newInstance(propertyId: Int): DetailFragment {
+            val fragment = DetailFragment()
+            val args = Bundle()
+            args.putInt("property_id", propertyId)
+            fragment.arguments = args
+            return fragment
+        }
     }
 
     private val binding by viewBinding { FragmentDetailBinding.bind(it) }
@@ -28,7 +34,12 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         // Show the static map
         val url =
-            "https://maps.googleapis.com/maps/api/staticmap?center=1600+Amphitheatre+Parkway,+Mountain+View,+CA&zoom=14&size=400x400&markers=color:red%7Clabel:C%7C1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=$MAPS_API_KEY"
+            "https://maps.googleapis.com/maps/api/" +
+                    "staticmap?center=1600+Amphitheatre+Parkway," +
+                    "+Mountain+View," +
+                    "+CA&zoom=14&size=400x400&markers=color:red%7Clabel:C%7C1600+Amphitheatre+Parkway," +
+                    "+Mountain+View," +
+                    "+CA&key=$MAPS_API_KEY"
 
         Glide.with(this)
             .load(url)
@@ -45,6 +56,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 .addToBackStack(null)
                 .commit()
         }
+
+        // Show the property details
+        val propertyId = arguments?.getInt("property_id")
+        binding.locationTextView.text = propertyId.toString()
 
     }
 

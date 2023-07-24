@@ -95,6 +95,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         supportActionBar?.show()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         viewModel.onResume(resources.getBoolean(R.bool.isTablet))
     }
 
