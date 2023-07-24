@@ -43,7 +43,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="300dp" />
+        app:layout_constraintGuide_end="500dp" />
 
     <View
         android:id="@+id/main_View_separator"

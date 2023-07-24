@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.persival.realestatemanagerkotlin.R
 
-class ViewpagerAdapter (private var images: List<String>) : RecyclerView.Adapter<ViewpagerAdapter.ImageViewHolder>() {
+class PropertiesViewpagerAdapter (private var images: List<String>) : RecyclerView.Adapter<PropertiesViewpagerAdapter.ImageViewHolder>() {
 
     inner class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageView)

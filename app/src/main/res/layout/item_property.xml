@@ -79,6 +79,7 @@
             app:layout_constraintTop_toTopOf="@+id/property_type">
 
             <ImageView
+                android:id="@+id/sold_imageview"
                 android:layout_width="170dp"
                 android:layout_height="70dp"
                 android:src="@drawable/sold_label"

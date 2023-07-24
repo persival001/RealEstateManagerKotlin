@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commitNow
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.persival.realestatemanagerkotlin.R
@@ -46,8 +46,6 @@ class MainActivity : AppCompatActivity() {
 
         // Setup the toolbar
         setSupportActionBar(binding.toolbar)
-        // Activate return button
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val containerDetailsId = binding.mainFrameLayoutContainerDetail?.id
         if (containerDetailsId != null && supportFragmentManager.findFragmentById(containerDetailsId) == null) {
@@ -68,6 +66,30 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                } else if (resources.getBoolean(R.bool.isTablet)) {
+                    binding.mainFrameLayoutContainerDetail?.let {
+                        supportFragmentManager.beginTransaction()
+                            .replace(
+                                it.id,
+                                DetailFragment()
+                            )
+                            .commit()
+                    }
+                } else {
+                    supportFragmentManager.beginTransaction()
+                        .replace(
+                            binding.mainFrameLayoutContainerProperties.id,
+                            PropertiesFragment.newInstance()
+                        )
+                        .commit()
+                }
+            }
+        })
     }
 
     override fun onResume() {
@@ -75,7 +97,6 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.show()
         viewModel.onResume(resources.getBoolean(R.bool.isTablet))
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
@@ -88,20 +109,28 @@ class MainActivity : AppCompatActivity() {
             // Handle the back button click
             android.R.id.home -> {
                 supportFragmentManager.popBackStack()
-                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
                 true
             }
 
             R.id.action_add -> {
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-                supportFragmentManager.beginTransaction()
-                    .replace(
-                        binding.mainFrameLayoutContainerProperties.id,
-                        AddPropertyFragment.newInstance()
-                    )
-                    .addToBackStack(null)
-                    .commit()
+                val layoutId = if (resources.getBoolean(R.bool.isTablet)) {
+                    binding.mainFrameLayoutContainerDetail?.id
+                } else {
+                    binding.mainFrameLayoutContainerProperties.id
+                }
+
+                if (layoutId != null) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(
+                            layoutId,
+                            AddPropertyFragment.newInstance()
+                        )
+                        .addToBackStack(null)
+                        .commit()
+                }
                 true
             }
 
@@ -118,29 +147,44 @@ class MainActivity : AppCompatActivity() {
             R.id.action_map -> {
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-                supportFragmentManager.beginTransaction()
-                    .replace(
-                        binding.mainFrameLayoutContainerProperties.id,
-                        MapFragment.newInstance()
-                    )
-                    .addToBackStack(null)
-                    .commit()
+                val layoutId = if (resources.getBoolean(R.bool.isTablet)) {
+                    binding.mainFrameLayoutContainerDetail?.id
+                } else {
+                    binding.mainFrameLayoutContainerProperties.id
+                }
+
+                if (layoutId != null) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(
+                            layoutId,
+                            MapFragment.newInstance()
+                        )
+                        .addToBackStack(null)
+                        .commit()
+                }
                 true
             }
 
             R.id.action_settings -> {
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-                supportFragmentManager.beginTransaction()
-                    .replace(
-                        binding.mainFrameLayoutContainerProperties.id,
-                        SettingsFragment.newInstance()
-                    )
-                    .addToBackStack(null)
-                    .commit()
+                val layoutId = if (resources.getBoolean(R.bool.isTablet)) {
+                    binding.mainFrameLayoutContainerDetail?.id
+                } else {
+                    binding.mainFrameLayoutContainerProperties.id
+                }
+
+                if (layoutId != null) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(
+                            layoutId,
+                            SettingsFragment.newInstance()
+                        )
+                        .addToBackStack(null)
+                        .commit()
+                }
                 true
             }
-
 
             else -> super.onOptionsItemSelected(item)
         }
