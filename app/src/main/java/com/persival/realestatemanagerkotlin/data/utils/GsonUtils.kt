@@ -1,4 +1,4 @@
-package fr.delcey.todok.data.utils
+package com.persival.realestatemanagerkotlin.data.utils
 
 import com.google.gson.Gson
 import com.google.gson.JsonParseException

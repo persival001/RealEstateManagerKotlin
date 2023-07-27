@@ -1,4 +1,4 @@
-package fr.delcey.openclassrooms_master_detail_mvvm.data.current_mail
+package com.persival.realestatemanagerkotlin.data.current_mail
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +11,8 @@ import javax.inject.Singleton
 class CurrentPropertyIdRepository @Inject constructor() {
     private val currentPropertyIdMutableSharedFlow = MutableStateFlow<String?>(null)
     val currentPropertyIdChannel = Channel<String>()
-    val currentMPropertyIdFlow: StateFlow<String?> = currentPropertyIdMutableSharedFlow.asStateFlow()
+    val currentMPropertyIdFlow: StateFlow<String?> =
+        currentPropertyIdMutableSharedFlow.asStateFlow()
 
     fun setCurrentPropertyId(currentId: String) {
         currentPropertyIdMutableSharedFlow.value = currentId

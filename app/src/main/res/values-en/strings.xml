@@ -61,6 +61,8 @@
     <string name="show_map">Properties on map</string>
     <string name="cancel_button">Cancel</string>
     <string name="display_settings">Settings</string>
+    <string name="right_arrow">Right arrow</string>
+    <string name="left_arrow">Left arrow</string>
 
 
 </resources>

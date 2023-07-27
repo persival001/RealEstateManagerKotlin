@@ -22,14 +22,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
+        <com.google.android.material.carousel.MaskableFrameLayout
+            android:id="@+id/carousel_item_container"
+            android:layout_width="0dp"
             android:layout_height="200dp"
-            android:layout_marginTop="@dimen/default_large_margin"
+            android:foreground="?attr/selectableItemBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/media_textView" />
+            app:layout_constraintTop_toBottomOf="@+id/media_textView"
+            app:shapeAppearance="?attr/shapeAppearanceCornerExtraLarge">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/carousel_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:clipChildren="false"
+                android:clipToPadding="false" />
+
+        </com.google.android.material.carousel.MaskableFrameLayout>
 
         <View
             android:id="@+id/media_view"
@@ -39,7 +49,7 @@
             android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/viewPager" />
+            app:layout_constraintTop_toBottomOf="@+id/carousel_item_container" />
 
         <TextView
             android:id="@+id/characteristics_textView"

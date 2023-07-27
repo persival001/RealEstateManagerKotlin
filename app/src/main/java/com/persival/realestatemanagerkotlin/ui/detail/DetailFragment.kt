@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.persival.realestatemanagerkotlin.BuildConfig.MAPS_API_KEY
 import com.persival.realestatemanagerkotlin.R
@@ -31,6 +33,20 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Initialize the RecyclerView
+        val imageUrls = listOf(
+            "https://i.pravatar.cc/150?u=a042581f4e29026703b",
+            "https://i.pravatar.cc/150?u=a042581f4e29026703d",
+            "https://i.pravatar.cc/150?u=a042581f4e29026704b"
+        )
+
+        val captions = listOf("Image 1", "Image 2", "Image 3")
+
+        val recyclerView: RecyclerView = view.findViewById(R.id.carousel_recycler_view)
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = context?.let { DetailImageAdapter(it, imageUrls, captions) }
 
         // Show the static map
         val url =

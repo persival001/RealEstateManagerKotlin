@@ -28,25 +28,28 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
 
         propertyListAdapter = PropertyListAdapter { property ->
             val detailFragment = DetailFragment.newInstance(property.id)
-            if(resources.getBoolean(R.bool.isTablet)) {
-                activity?.supportFragmentManager?.beginTransaction()
-                    ?.replace(R.id.main_FrameLayout_container_detail, detailFragment)
-                    ?.addToBackStack(null)
-                    ?.commit()
+            val containerId = if (resources.getBoolean(R.bool.isTablet)) {
+                R.id.main_FrameLayout_container_detail
             } else {
-                activity?.supportFragmentManager?.beginTransaction()
-                    ?.replace(R.id.main_FrameLayout_container_properties, detailFragment)
-                    ?.addToBackStack(null)
-                    ?.commit()
+                R.id.main_FrameLayout_container_properties
             }
+
+            activity?.supportFragmentManager?.beginTransaction()
+                ?.replace(containerId, detailFragment)
+                ?.addToBackStack(null)
+                ?.commit()
+
         }
 
         binding.propertiesRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.propertiesRecyclerView.adapter = propertyListAdapter
 
-        val fakeProperties = generateFakeData()
-        propertyListAdapter.submitList(fakeProperties)
+        binding.propertiesRecyclerView.post {
+            val fakeProperties = generateFakeData()
+            propertyListAdapter.submitList(fakeProperties)
+        }
     }
+
 
     fun generateFakeData(): List<PropertyViewStateItem> {
         val fakeProperties = mutableListOf<PropertyViewStateItem>()

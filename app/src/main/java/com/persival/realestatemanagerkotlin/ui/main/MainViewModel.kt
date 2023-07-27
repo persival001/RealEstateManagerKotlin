@@ -2,10 +2,10 @@ package com.persival.realestatemanagerkotlin.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.persival.realestatemanagerkotlin.data.current_mail.CurrentPropertyIdRepository
 import com.persival.realestatemanagerkotlin.utils.Event
 import com.persival.realestatemanagerkotlin.utils.asLiveDataEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import fr.delcey.openclassrooms_master_detail_mvvm.data.current_mail.CurrentPropertyIdRepository
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
