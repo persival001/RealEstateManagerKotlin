@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace 'com.persival.realestatemanagerkotlin'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.persival.realestatemanagerkotlin"
         minSdk 21
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -86,11 +86,12 @@ dependencies {
     kapt "androidx.room:room-compiler:2.5.2"
     implementation "androidx.room:room-ktx:2.5.2"
 
-    // LiveData
+    // LiveData and Coroutine
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
 
     // Fragment
-    implementation 'androidx.fragment:fragment-ktx:1.6.0'
+    implementation 'androidx.fragment:fragment-ktx:1.6.1'
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -99,13 +100,6 @@ dependencies {
 
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.15.1'
-
-    // Viewpager2
-    implementation 'androidx.viewpager2:viewpager2:1.0.0'
-
-    // Navigation drawer
-    implementation 'androidx.drawerlayout:drawerlayout:1.2.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
 
     // Testing
     testImplementation 'junit:junit:4.13.2'

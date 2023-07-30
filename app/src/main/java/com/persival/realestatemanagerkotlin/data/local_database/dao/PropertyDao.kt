@@ -4,16 +4,21 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.persival.realestatemanagerkotlin.data.local_database.Property
 
 @Dao
 interface PropertyDao {
-    @Query("SELECT * FROM property")
-    fun getAll(): List<Property>
 
     @Insert
-    fun insert(property: Property): Long
+    suspend fun insert(property: Property): Long
+
+    @Update
+    suspend fun update(property: Property)
 
     @Delete
-    fun delete(property: Property)
+    suspend fun delete(property: Property)
+
+    @Query("SELECT * FROM property")
+    suspend fun getAllProperties(): List<Property>
 }

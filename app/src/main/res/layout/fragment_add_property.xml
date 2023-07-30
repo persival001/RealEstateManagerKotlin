@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -77,7 +76,7 @@
 
         <!-- Type of property -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/type_of_property_textField"
+            android:id="@+id/type_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -89,6 +88,7 @@
             app:startIconDrawable="@drawable/baseline_home_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/type_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" />
@@ -97,7 +97,7 @@
 
         <!-- Surface -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/surface_textField"
+            android:id="@+id/area_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -105,10 +105,11 @@
             android:hint="@string/surface_hint"
             app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/type_of_property_textField"
+            app:layout_constraintTop_toBottomOf="@+id/type_textField"
             app:startIconDrawable="@drawable/baseline_settings_overscan_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/area_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal" />
@@ -129,6 +130,7 @@
             app:startIconDrawable="@drawable/baseline_meeting_room_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/rooms_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal" />
@@ -149,6 +151,7 @@
             app:startIconDrawable="@drawable/baseline_bathtub_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/bathrooms_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal" />
@@ -169,6 +172,7 @@
             app:startIconDrawable="@drawable/baseline_bed_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/bedrooms_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal" />
@@ -177,7 +181,7 @@
 
         <!-- Location of real estate -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/location_textField"
+            android:id="@+id/address_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -189,6 +193,7 @@
             app:startIconDrawable="@drawable/baseline_location_on_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/address_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPostalAddress" />
@@ -205,10 +210,11 @@
             android:hint="@string/poi_hint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/location_textField"
+            app:layout_constraintTop_toBottomOf="@+id/address_textField"
             app:startIconDrawable="@drawable/baseline_interests_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/poi_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" />
@@ -229,6 +235,7 @@
             app:startIconDrawable="@drawable/baseline_description_black_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/description_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" />
@@ -249,25 +256,396 @@
             app:startIconDrawable="@drawable/baseline_attach_money_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/price_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Add photos button -->
-        <Button
-            android:id="@+id/add_photos_button"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+        <!-- Add photos card-views -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:padding="@dimen/default_margin"
-            android:text="@string/add_pictures"
-            android:textSize="@dimen/default_text_middle_size"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/description_textField" />
+            app:layout_constraintTop_toBottomOf="@+id/description_textField">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp">
+
+                    <!-- Media -->
+                    <ImageView
+                        android:id="@+id/card1_imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/description_image"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/property_picture" />
+
+                    <!-- Delete button -->
+                    <ImageButton
+                        android:id="@+id/card1_imageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/delete_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_close_24" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/default_margin">
+
+                    <!-- Title of image -->
+                    <EditText
+                        android:id="@+id/card1_editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/image_name"
+                        android:hint="@string/image_name"
+                        android:inputType="text"
+                        android:padding="14dp"
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Add photos card-views -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/description_textField">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp">
+
+                    <!-- Media -->
+                    <ImageView
+                        android:id="@+id/card2_imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/description_image"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/property_picture" />
+
+                    <!-- Delete button -->
+                    <ImageButton
+                        android:id="@+id/card2_imageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/delete_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_close_24" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/default_margin">
+
+                    <!-- Title of image -->
+                    <EditText
+                        android:id="@+id/card2_editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/image_name"
+                        android:hint="@string/image_name"
+                        android:inputType="text"
+                        android:padding="14dp"
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Add photos card-views -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/card1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp">
+
+                    <!-- Media -->
+                    <ImageView
+                        android:id="@+id/card3_imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/description_image"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/property_picture" />
+
+                    <!-- Delete button -->
+                    <ImageButton
+                        android:id="@+id/card3_imageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/delete_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_close_24" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/default_margin">
+
+                    <!-- Title of image -->
+                    <EditText
+                        android:id="@+id/card3_editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/image_name"
+                        android:hint="@string/image_name"
+                        android:inputType="text"
+                        android:padding="14dp"
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Add photos card-views -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/card2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp">
+
+                    <!-- Media -->
+                    <ImageView
+                        android:id="@+id/card4_imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/description_image"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/property_picture" />
+
+                    <!-- Delete button -->
+                    <ImageButton
+                        android:id="@+id/card4_imageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/delete_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_close_24" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/default_margin">
+
+                    <!-- Title of image -->
+                    <EditText
+                        android:id="@+id/card4_editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/image_name"
+                        android:hint="@string/image_name"
+                        android:inputType="text"
+                        android:padding="14dp"
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Add photos card-views -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/card3">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp">
+
+                    <!-- Media -->
+                    <ImageView
+                        android:id="@+id/card5_imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/description_image"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/property_picture" />
+
+                    <!-- Delete button -->
+                    <ImageButton
+                        android:id="@+id/card5_imageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/delete_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_close_24" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/default_margin">
+
+                    <!-- Title of image -->
+                    <EditText
+                        android:id="@+id/card5_editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/image_name"
+                        android:hint="@string/image_name"
+                        android:inputType="text"
+                        android:padding="14dp"
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Add photos card-views -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/card4">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp">
+
+                    <!-- Media -->
+                    <ImageView
+                        android:id="@+id/card6_imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/description_image"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/property_picture" />
+
+                    <!-- Delete button -->
+                    <ImageButton
+                        android:id="@+id/card6_imageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|top"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/delete_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_close_24" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/default_margin">
+
+                    <!-- Title of image -->
+                    <EditText
+                        android:id="@+id/card6_editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="@string/image_name"
+                        android:hint="@string/image_name"
+                        android:inputType="text"
+                        android:padding="14dp"
+                        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Cancel button -->
         <Button
@@ -281,7 +659,7 @@
             android:textSize="@dimen/default_text_middle_size"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/add_photos_button" />
+            app:layout_constraintTop_toBottomOf="@+id/card5" />
 
         <!-- Ok button -->
         <Button
@@ -295,7 +673,7 @@
             android:textSize="@dimen/default_text_middle_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/add_photos_button" />
+            app:layout_constraintTop_toBottomOf="@+id/card6" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

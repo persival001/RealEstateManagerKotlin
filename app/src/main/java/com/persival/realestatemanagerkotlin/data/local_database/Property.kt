@@ -7,13 +7,15 @@ import androidx.room.PrimaryKey
 data class Property(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val type: String,
-    val price: Double,
-    val area: Double,
-    val rooms: Int,
-    val description: String,
     val address: String,
-    val status: String,
-    val entryDate: Long,
-    val saleDate: Long?,
+    val area: Int,
+    val rooms: Int,
+    val bathrooms: Int,
+    val bedrooms: Int,
+    val description: String,
+    val price: Int,
+    val status: Boolean,
+    val entryDate: String,
+    val saleDate: String?,
     val agentId: Long
 )

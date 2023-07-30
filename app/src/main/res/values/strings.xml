@@ -43,7 +43,7 @@
     <string name="poi_hint">Commodités à proximité</string>
     <string name="price">Prix</string>
     <string name="price_hint">Prix en dollars</string>
-    <string name="description_hint">Déscription du bien</string>
+    <string name="description_hint">Description du bien</string>
     <string name="add_pictures">Ajouter des photos</string>
     <string name="validate_information">Valider</string>
     <string name="authentication_failed">L\'authentification a échouée</string>
@@ -61,8 +61,11 @@
     <string name="display_map">Affiche la carte</string>
     <string name="show_map">Carte des biens</string>
     <string name="cancel_button">Cancel</string>
-    <string name="display_settings">Settings</string>
+    <string name="display_settings">Parametres</string>
     <string name="right_arrow">Right arrow</string>
     <string name="left_arrow">Left arrow</string>
+    <string name="error_message">Ce champs ne doit pas être vide</string>
+    <string name="image_name">Image name</string>
+    <string name="delete_image">Delete image</string>
 
 </resources>
