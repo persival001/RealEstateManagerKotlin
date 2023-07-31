@@ -36,12 +36,15 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         // Initialize the RecyclerView
         val imageUrls = listOf(
-            "https://i.pravatar.cc/150?u=a042581f4e29026703b",
-            "https://i.pravatar.cc/150?u=a042581f4e29026703d",
-            "https://i.pravatar.cc/150?u=a042581f4e29026704b"
+            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3DbX53lkaBmAPTqL9DhP-naDAieVWi7FvOEb84_Az02gltJ_LK1x0FWdIR",
+            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3DgO9R07XlDxGjwuiJog9ChTB5IjVhZbo-OoWs5XFMxA00j90S-8Uosd78",
+            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3Dgg4qFnePsiX_StfeK7v3YGxb6R__oAKhUsxdIxjP81GUtkN07cFZPERf",
+            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3D9rgLo8QAZUHgUAFCJov0Oo5o-MpmFkku2MlfPM4J9OmpPhG4IbNPVwLP",
+            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3DgGL_gad-Z6ujV9bGn4cRZo3Q-BnmMK5N5peY1oYgHP0a-pxTCg9bgbSV",
+            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3DQ-oYa22hrv0qvGeHHy_N-8CaBp0qSMtHHl3Qs1kS1EwHBC7NpYGqaY72"
         )
 
-        val captions = listOf("Image 1", "Image 2", "Image 3")
+        val captions = listOf("Image 1", "Image 2", "Image 3", "Image 4", "Image 5", "Image 6")
 
         val recyclerView: RecyclerView = view.findViewById(R.id.carousel_recycler_view)
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

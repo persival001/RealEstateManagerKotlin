@@ -141,8 +141,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                     binding.descriptionEditText.text.toString(),
                     binding.priceEditText.text.toString().toInt(),
                     binding.datePickerEditText.text.toString(),
-                    binding.datePickerToSellText.text.toString(),
-                    binding.poiEditText.text.toString()
+                    binding.datePickerToSellText.text.toString()
                 )
             }
 
