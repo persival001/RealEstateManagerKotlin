@@ -117,6 +117,10 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
         }
 
+        binding.cancelButton.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
         // Get the property added by the user
         binding.okButton.setOnClickListener {
 
@@ -142,6 +146,8 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
 
             if (editTextList.all { it.text?.isEmpty() == false }) {
+                val imageUrisList = imageUris.map { uri -> uri?.toString() }
+
                 viewModel.addNewProperty(
                     binding.typeEditText.text.toString(),
                     binding.addressEditText.text.toString(),
@@ -152,7 +158,8 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                     binding.descriptionEditText.text.toString(),
                     binding.priceEditText.text.toString().toInt(),
                     binding.datePickerEditText.text.toString(),
-                    binding.datePickerToSellText.text.toString()
+                    binding.datePickerToSellText.text.toString(),
+                    imageUrisList
                 )
             }
 

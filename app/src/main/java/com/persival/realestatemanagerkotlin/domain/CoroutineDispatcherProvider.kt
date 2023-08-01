@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.data
+package com.persival.realestatemanagerkotlin.domain
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

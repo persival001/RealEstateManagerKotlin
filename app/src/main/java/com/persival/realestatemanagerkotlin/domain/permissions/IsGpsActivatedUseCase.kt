@@ -8,7 +8,7 @@ import javax.inject.Singleton
 class IsGpsActivatedUseCase @Inject constructor(
     private val permissionRepository: PermissionRepository
 ) {
-    operator fun invoke(): StateFlow<Boolean> {
+    fun invoke(): StateFlow<Boolean> {
         return permissionRepository.gpsActivatedFlow
     }
 }

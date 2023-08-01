@@ -1,9 +1,9 @@
 package com.persival.realestatemanagerkotlin.ui.add
 
 import java.sql.Timestamp
-import java.util.TimeZone
 
 data class AddViewState(
+    val id: Long,
     val propertyType: String,
     val propertyPrice: Long,
     val propertyArea: String,

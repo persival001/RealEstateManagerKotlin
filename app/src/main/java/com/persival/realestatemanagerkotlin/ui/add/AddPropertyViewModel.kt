@@ -4,17 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.data.local_database.LocalDatabaseRepository
 import com.persival.realestatemanagerkotlin.data.local_database.Photo
-import com.persival.realestatemanagerkotlin.data.local_database.PointOfInterest
 import com.persival.realestatemanagerkotlin.data.local_database.Property
-import com.persival.realestatemanagerkotlin.domain.user.GetLoggedUserUseCase
+import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddPropertyViewModel @Inject constructor(
-    private val repository: LocalDatabaseRepository,
-    private val getLoggedUserUseCase: GetLoggedUserUseCase
+    private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
+    private val repository: LocalDatabaseRepository
 ) : ViewModel() {
 
     fun addNewProperty(
@@ -27,9 +26,11 @@ class AddPropertyViewModel @Inject constructor(
         description: String,
         price: Int,
         entryDate: String,
-        saleDate: String?
+        saleDate: String?,
+        imageUris: List<String?>,
+        photoDescriptions: List<String?>
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcherProvider.io) {
             val timestamp = System.currentTimeMillis()
             val property = Property(
                 0,
@@ -47,46 +48,18 @@ class AddPropertyViewModel @Inject constructor(
                 1
             )
 
-            repository.insertProperty(property)
-        }
-    }
+            val propertyId = repository.insertProperty(property)
 
-    fun addPhotosForProperty(
-        description: String,
-        uri: String
-    ) {
-        viewModelScope.launch {
-            val photo = Photo(
-                0,
-                1,
-                description,
-                uri
-            )
-
-            repository.insertPhoto(photo)
-        }
-    }
-
-    fun addPoiForProperty(
-        propertyId: Long,
-        school: Boolean,
-        park: Boolean,
-        store: Boolean,
-        hospital: Boolean,
-        bus: Boolean
-    ) {
-        viewModelScope.launch {
-            val poi = PointOfInterest(
-                0,
-                1,
-                school,
-                park,
-                store,
-                hospital,
-                bus
-            )
-
-            repository.insertPointOfInterest(poi)
+            imageUris.forEachIndexed { index, uri ->
+                if (uri != null) {
+                    val photo = Photo(
+                        propertyId = propertyId,
+                        description = photoDescriptions.getOrNull(index) ?: "",
+                        url = uri
+                    )
+                    repository.insertPhoto(photo)
+                }
+            }
         }
     }
 }

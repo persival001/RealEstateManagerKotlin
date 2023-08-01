@@ -7,7 +7,7 @@ import javax.inject.Singleton
 class RefreshGpsActivationUseCase @Inject constructor(
     private val permissionRepository: PermissionRepository
 ) {
-    operator fun invoke() {
+    fun invoke() {
         return permissionRepository.refreshGpsActivation()
     }
 }

@@ -8,7 +8,7 @@ import javax.inject.Singleton
 class GetCurrentUserUseCase @Inject constructor(
     private val firebaseRepository: FirebaseRepository
 ) {
-    operator fun invoke(): FirebaseUser? {
+    fun invoke(): FirebaseUser? {
         return firebaseRepository.getCurrentUser()
     }
 }
