@@ -1,5 +1,7 @@
 package com.persival.realestatemanagerkotlin.ui.add
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -44,23 +46,28 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
     private lateinit var editTexts: Array<EditText>
     private lateinit var imageButtons: Array<ImageButton>
 
+    private var currentRequestCode = 0
 
-    // Define the callback for image selection
-    private val getContent =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                when (currentRequestCode) {
-                    REQUEST_CODE_IMAGE1 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE1)
-                    REQUEST_CODE_IMAGE2 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE2)
-                    REQUEST_CODE_IMAGE3 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE3)
-                    REQUEST_CODE_IMAGE4 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE4)
-                    REQUEST_CODE_IMAGE5 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE5)
-                    REQUEST_CODE_IMAGE6 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE6)
+    private val openFileResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri: Uri? = result.data?.data
+                uri?.let {
+                    requireContext().contentResolver.takePersistableUriPermission(
+                        it,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                    when (currentRequestCode) {
+                        REQUEST_CODE_IMAGE1 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE1)
+                        REQUEST_CODE_IMAGE2 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE2)
+                        REQUEST_CODE_IMAGE3 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE3)
+                        REQUEST_CODE_IMAGE4 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE4)
+                        REQUEST_CODE_IMAGE5 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE5)
+                        REQUEST_CODE_IMAGE6 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE6)
+                    }
                 }
             }
         }
-
-    private var currentRequestCode = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -95,7 +102,11 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         imageViews.forEachIndexed { index, imageView ->
             imageView.setOnClickListener {
                 currentRequestCode = requestCodes[index]
-                getContent.launch("image/*")
+                val openFileIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "image/*"
+                }
+                openFileResult.launch(openFileIntent)
             }
         }
 
@@ -151,7 +162,6 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 }
             }
         }
-
     }
 
     private fun setImageAndRequireName(uri: Uri, requestCode: Int) {
@@ -169,5 +179,3 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         editTexts[index].text.clear()
     }
 }
-
-

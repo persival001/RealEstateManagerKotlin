@@ -1,11 +1,13 @@
 package com.persival.realestatemanagerkotlin.ui.authentication
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -17,12 +19,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.persival.realestatemanagerkotlin.R
-import com.persival.realestatemanagerkotlin.databinding.ActivityAuthenticationBinding
-import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
 import com.persival.realestatemanagerkotlin.ui.main.MainActivity
-import com.persival.realestatemanagerkotlin.utils.viewBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AuthenticationActivity : AppCompatActivity() {
+
+    private val viewModel by viewModels<AuthenticationViewModel>()
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -44,6 +47,7 @@ class AuthenticationActivity : AppCompatActivity() {
             }
         }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,7 +55,7 @@ class AuthenticationActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         // Check if the user is already signed in
-        val currentUser = auth.currentUser
+        val currentUser = viewModel.getCurrentUser()
         if (currentUser != null) {
             // User is already signed in, start MainActivity
             val intent = Intent(this, MainActivity::class.java)
@@ -86,7 +90,7 @@ class AuthenticationActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success
-                    val user = auth.currentUser
+                    val user = viewModel.getCurrentUser()
                     updateUI(user)
                 } else {
                     // Sign in fails
@@ -98,13 +102,14 @@ class AuthenticationActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            // User is signed in, start MainActivity
+            // User is signed in, check permissions and start MainActivity
             val intent = Intent(this, MainActivity::class.java).apply {
             }
             startActivity(intent)
             finish()
         } else {
-            Toast.makeText(this, getString(R.string.authentication_failed), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.authentication_failed), Toast.LENGTH_SHORT)
+                .show()
         }
     }
 

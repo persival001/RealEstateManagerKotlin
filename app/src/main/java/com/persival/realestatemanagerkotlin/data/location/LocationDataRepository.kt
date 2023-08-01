@@ -6,17 +6,16 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.persival.realestatemanagerkotlin.domain.location.LocationRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class LocationDataRepository @Inject constructor(context: Context) : LocationRepository {
+class LocationDataRepository @Inject constructor(
+    @ApplicationContext private val context: Context
+) : LocationRepository {
 
     private val userLocation = MutableLiveData<Location>()
 

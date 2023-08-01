@@ -6,13 +6,15 @@ import com.persival.realestatemanagerkotlin.data.local_database.LocalDatabaseRep
 import com.persival.realestatemanagerkotlin.data.local_database.Photo
 import com.persival.realestatemanagerkotlin.data.local_database.PointOfInterest
 import com.persival.realestatemanagerkotlin.data.local_database.Property
+import com.persival.realestatemanagerkotlin.domain.user.GetLoggedUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddPropertyViewModel @Inject constructor(
-    private val repository: LocalDatabaseRepository
+    private val repository: LocalDatabaseRepository,
+    private val getLoggedUserUseCase: GetLoggedUserUseCase
 ) : ViewModel() {
 
     fun addNewProperty(

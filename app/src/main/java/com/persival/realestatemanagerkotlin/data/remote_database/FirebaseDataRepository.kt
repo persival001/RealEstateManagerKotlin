@@ -1,6 +1,8 @@
 package com.persival.realestatemanagerkotlin.data.remote_database
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.persival.realestatemanagerkotlin.domain.user.FirebaseRepository
 import com.persival.realestatemanagerkotlin.domain.user.LoggedUserEntity
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -8,10 +10,15 @@ import javax.inject.Singleton
 @Singleton
 class FirebaseDataRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth
-) {
+) : FirebaseRepository {
 
-    // ----- Get a logged user -----
-    fun getLoggedUser(): LoggedUserEntity? {
+    // ----- Get the current user -----
+    override fun getCurrentUser(): FirebaseUser? {
+        return firebaseAuth.currentUser
+    }
+
+    // ----- Get a logged user entity -----
+    override fun getLoggedUser(): LoggedUserEntity {
         val firebaseUser = firebaseAuth.currentUser
         return if (firebaseUser != null && firebaseUser.displayName != null) {
             LoggedUserEntity(
@@ -19,9 +26,9 @@ class FirebaseDataRepository @Inject constructor(
                 firebaseUser.displayName!!
             )
         } else {
-            // TODO: Verify the internet connection
-            null
+            throw IllegalStateException("No logged in user or user has no display name.")
         }
     }
 
 }
+

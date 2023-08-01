@@ -34,22 +34,31 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize the RecyclerView
         val imageUrls = listOf(
-            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3DbX53lkaBmAPTqL9DhP-naDAieVWi7FvOEb84_Az02gltJ_LK1x0FWdIR",
-            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3DgO9R07XlDxGjwuiJog9ChTB5IjVhZbo-OoWs5XFMxA00j90S-8Uosd78",
-            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3Dgg4qFnePsiX_StfeK7v3YGxb6R__oAKhUsxdIxjP81GUtkN07cFZPERf",
-            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3D9rgLo8QAZUHgUAFCJov0Oo5o-MpmFkku2MlfPM4J9OmpPhG4IbNPVwLP",
-            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3DgGL_gad-Z6ujV9bGn4cRZo3Q-BnmMK5N5peY1oYgHP0a-pxTCg9bgbSV",
-            "content://com.google.android.apps.docs.storage/document/acc%3D1%3Bdoc%3Dencoded%3DQ-oYa22hrv0qvGeHHy_N-8CaBp0qSMtHHl3Qs1kS1EwHBC7NpYGqaY72"
+            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_1.png",
+            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_10.png",
+            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_12.png",
+            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_16.png",
+            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_19.png",
+            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_2.png"
         )
 
-        val captions = listOf("Image 1", "Image 2", "Image 3", "Image 4", "Image 5", "Image 6")
+        val captions = listOf(
+            "Front of the house",
+            "Back of the house",
+            "Kitchen",
+            "Living room",
+            "Bedroom",
+            "Bathroom"
+        )
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.carousel_recycler_view)
+        val detailViewStateItems =
+            imageUrls.zip(captions).map { DetailViewStateItem(it.first, it.second) }
+
+        val recyclerView: RecyclerView = binding.carouselRecyclerView
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = context?.let { DetailImageAdapter(it, imageUrls, captions) }
+        recyclerView.adapter = context?.let { DetailImageAdapter(it, detailViewStateItems) }
 
         // Show the static map
         val url =

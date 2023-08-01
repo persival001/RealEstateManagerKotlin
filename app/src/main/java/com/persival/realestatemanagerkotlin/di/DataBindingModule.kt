@@ -1,7 +1,11 @@
 package com.persival.realestatemanagerkotlin.di
 
 import com.persival.realestatemanagerkotlin.data.location.LocationDataRepository
+import com.persival.realestatemanagerkotlin.data.permissions.PermissionDataRepository
+import com.persival.realestatemanagerkotlin.data.remote_database.FirebaseDataRepository
 import com.persival.realestatemanagerkotlin.domain.location.LocationRepository
+import com.persival.realestatemanagerkotlin.domain.permissions.PermissionRepository
+import com.persival.realestatemanagerkotlin.domain.user.FirebaseRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,4 +19,12 @@ abstract class DataBindingModule {
     @Singleton
     @Binds
     abstract fun bindLocationRepository(locationDataRepository: LocationDataRepository): LocationRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindFirebaseRepository(firebaseDataRepository: FirebaseDataRepository): FirebaseRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindPermissionRepository(permissionDataRepository: PermissionDataRepository): PermissionRepository
 }

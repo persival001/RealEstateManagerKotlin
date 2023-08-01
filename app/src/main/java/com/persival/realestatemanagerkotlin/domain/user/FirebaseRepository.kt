@@ -1,5 +1,11 @@
 package com.persival.realestatemanagerkotlin.domain.user
 
+import com.google.firebase.auth.FirebaseUser
+
 interface FirebaseRepository {
-    fun getLoggedUser(): LoggedUserEntity
+
+    fun getCurrentUser(): FirebaseUser?
+
+    fun getLoggedUser(): LoggedUserEntity?
+
 }

@@ -66,6 +66,8 @@
     <string name="error_message">This field must not be empty</string>
     <string name="image_name">Image name</string>
     <string name="delete_image">Delete image</string>
+    <string name="denial_of_authorization">Denial of authorization</string>
+    <string name="denial_of_location_authorization">Denial of location permission</string>
 
 
 </resources>
