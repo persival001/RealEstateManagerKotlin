@@ -3,9 +3,10 @@ package com.persival.realestatemanagerkotlin.ui.add
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.data.local_database.LocalDatabaseRepository
-import com.persival.realestatemanagerkotlin.data.local_database.Photo
-import com.persival.realestatemanagerkotlin.data.local_database.Property
 import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
+import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
+import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
+import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -13,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddPropertyViewModel @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
+    private val getRealEstateAgentUseCase: GetRealEstateAgentUseCase,
     private val repository: LocalDatabaseRepository
 ) : ViewModel() {
 
@@ -31,34 +33,37 @@ class AddPropertyViewModel @Inject constructor(
         photoDescriptions: List<String>
     ) {
         viewModelScope.launch(coroutineDispatcherProvider.io) {
-            val timestamp = System.currentTimeMillis()
-            val property = Property(
-                0,
-                type,
-                address,
-                area,
-                rooms,
-                bathrooms,
-                bedrooms,
-                description,
-                price,
-                true,
-                entryDate,
-                saleDate,
-                1
-            )
+            val propertyEntity = getRealEstateAgentUseCase.invoke()?.let {
+                PropertyEntity(
+                    null,
+                    type,
+                    address,
+                    area,
+                    rooms,
+                    bathrooms,
+                    bedrooms,
+                    description,
+                    price,
+                    true,
+                    entryDate,
+                    saleDate,
+                    it.name
+                )
+            }
 
-            val propertyId: Long = repository.insertProperty(property)
+            val propertyId: Long? = propertyEntity?.let { repository.insertProperty(it) }
 
 
             imageUris.forEachIndexed { index, uri ->
-                if (uri != null) {
-                    val photo = Photo(
-                        propertyId = propertyId,
+                val photoEntity = propertyId?.let {
+                    PhotoEntity(
+                        propertyId = it,
                         description = photoDescriptions.getOrNull(index) ?: "",
                         url = uri
                     )
-                    repository.insertPhoto(photo)
+                }
+                if (photoEntity != null) {
+                    repository.insertPhoto(photoEntity)
                 }
             }
         }

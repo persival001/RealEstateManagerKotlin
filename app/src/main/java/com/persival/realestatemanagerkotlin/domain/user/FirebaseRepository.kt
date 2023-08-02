@@ -6,6 +6,6 @@ interface FirebaseRepository {
 
     fun getCurrentUser(): FirebaseUser?
 
-    fun getLoggedUser(): LoggedUserEntity?
+    fun getRealEstateAgentIdentity(): RealEstateAgentEntity?
 
 }

@@ -1,24 +1,23 @@
-package com.persival.realestatemanagerkotlin.data.local_database
+package com.persival.realestatemanagerkotlin.domain.photo
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 
 @Entity(
-    tableName = "point_of_interest",
+    tableName = "photo",
     foreignKeys = [ForeignKey(
-        entity = Property::class,
+        entity = PropertyEntity::class,
         parentColumns = arrayOf("id"),
         childColumns = arrayOf("propertyId"),
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class PointOfInterest(
+data class PhotoEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val propertyId: Long,
-    val school: Boolean,
-    val park: Boolean,
-    val store: Boolean,
-    val hospital: Boolean,
-    val bus: Boolean
+    val description: String,
+    val url: String
 )
+

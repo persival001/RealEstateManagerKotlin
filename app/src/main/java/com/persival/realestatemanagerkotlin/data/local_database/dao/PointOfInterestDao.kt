@@ -5,20 +5,23 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.persival.realestatemanagerkotlin.data.local_database.PointOfInterest
+import com.persival.realestatemanagerkotlin.domain.poi.PointOfInterestEntity
 
 @Dao
 interface PointOfInterestDao {
 
     @Insert
-    suspend fun insert(poi: PointOfInterest): Long
+    suspend fun insert(poi: PointOfInterestEntity): Long
 
     @Update
-    suspend fun update(poi: PointOfInterest)
+    suspend fun update(poi: PointOfInterestEntity)
 
     @Delete
-    suspend fun delete(poi: PointOfInterest)
+    suspend fun delete(poi: PointOfInterestEntity)
 
     @Query("SELECT * FROM point_of_interest")
-    suspend fun getAllPointsOfInterest(): List<PointOfInterest>
+    suspend fun getAllPointsOfInterest(): List<PointOfInterestEntity>
+
+    @Query("SELECT * FROM point_of_interest WHERE propertyId = :propertyId")
+    suspend fun getPOIsByPropertyId(propertyId: Long): List<PointOfInterestEntity>
 }

@@ -1,13 +1,19 @@
 package com.persival.realestatemanagerkotlin.ui.navigation
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.textfield.TextInputEditText
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.ui.add.AddPropertyFragment
 import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
 import com.persival.realestatemanagerkotlin.ui.settings.SettingsFragment
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class NavigationActivity : AppCompatActivity() {
@@ -50,5 +56,16 @@ class NavigationActivity : AppCompatActivity() {
                     .commit()
             }
         }
+    }
+    
+    fun showDatePicker(view: View) {
+        val datePicker = MaterialDatePicker.Builder.datePicker().build()
+        datePicker.addOnPositiveButtonClickListener { selection: Long? ->
+            val selectedDate: String? =
+                selection?.let { Date(it) }
+                    ?.let { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it) }
+            (view as TextInputEditText).setText(selectedDate)
+        }
+        datePicker.show(supportFragmentManager, "date_picker_tag")
     }
 }

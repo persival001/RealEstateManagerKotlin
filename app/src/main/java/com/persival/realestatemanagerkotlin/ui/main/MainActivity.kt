@@ -4,14 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.textfield.TextInputEditText
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
@@ -19,9 +16,6 @@ import com.persival.realestatemanagerkotlin.ui.navigation.NavigationActivity
 import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -144,17 +138,6 @@ class MainActivity : AppCompatActivity() {
 
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    fun showDatePicker(view: View) {
-        val datePicker = MaterialDatePicker.Builder.datePicker().build()
-        datePicker.addOnPositiveButtonClickListener { selection: Long? ->
-            val selectedDate: String? =
-                selection?.let { Date(it) }
-                    ?.let { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it) }
-            (view as TextInputEditText).setText(selectedDate)
-        }
-        datePicker.show(supportFragmentManager, "date_picker_tag")
     }
 
     override fun onResume() {

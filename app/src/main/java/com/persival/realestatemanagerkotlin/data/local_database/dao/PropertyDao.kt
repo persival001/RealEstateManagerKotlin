@@ -3,23 +3,25 @@ package com.persival.realestatemanagerkotlin.data.local_database.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.persival.realestatemanagerkotlin.data.local_database.Property
+import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 
 @Dao
 interface PropertyDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(property: Property): Long
+    @Insert
+    suspend fun insert(propertyEntity: PropertyEntity): Long
 
     @Update
-    suspend fun update(property: Property)
+    suspend fun update(propertyEntity: PropertyEntity)
 
     @Delete
-    suspend fun delete(property: Property)
+    suspend fun delete(propertyEntity: PropertyEntity)
 
     @Query("SELECT * FROM property")
-    suspend fun getAllProperties(): List<Property>
+    suspend fun getAllProperties(): List<PropertyEntity>
+
+    @Query("SELECT * FROM property WHERE id = :propertyId")
+    suspend fun getPropertyById(propertyId: Long): PropertyEntity
 }

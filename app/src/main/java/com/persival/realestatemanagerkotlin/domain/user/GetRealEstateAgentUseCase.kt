@@ -4,10 +4,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetLoggedUserUseCase @Inject constructor(
+class GetRealEstateAgentUseCase @Inject constructor(
     private val firebaseRepository: FirebaseRepository
 ) {
-    fun invoke(): LoggedUserEntity? {
-        return firebaseRepository.getLoggedUser()
+    fun invoke(): RealEstateAgentEntity? {
+        return firebaseRepository.getRealEstateAgentIdentity()
     }
 }
