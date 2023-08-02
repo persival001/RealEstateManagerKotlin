@@ -44,28 +44,8 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
         binding.propertiesRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.propertiesRecyclerView.adapter = propertyListAdapter
 
-        binding.propertiesRecyclerView.post {
-            val fakeProperties = generateFakeData()
-            propertyListAdapter.submitList(fakeProperties)
+        viewModel.properties.observe(viewLifecycleOwner) { properties ->
+            propertyListAdapter.submitList(properties)
         }
-    }
-
-
-    fun generateFakeData(): List<PropertyViewStateItem> {
-        val fakeProperties = mutableListOf<PropertyViewStateItem>()
-
-        for (i in 1..20) {
-            val property = PropertyViewStateItem(
-                id = i,
-                type = "Property $i",
-                address = "Address $i",
-                price = "$${i}00,000",
-                picture = R.drawable.property_picture,
-                isSold = i % 2 == 0
-            )
-            fakeProperties.add(property)
-        }
-
-        return fakeProperties
     }
 }

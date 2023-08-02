@@ -3,18 +3,20 @@ package com.persival.realestatemanagerkotlin.ui.properties
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.persival.realestatemanagerkotlin.R
 
 class PropertyListAdapter(
-    private val onItemClicked: (PropertyViewStateItem) -> Unit) :
+    private val onItemClicked: (PropertyViewStateItem) -> Unit
+) :
     ListAdapter<PropertyViewStateItem,
-        PropertyListAdapter.PropertyViewHolder>(PropertyDiffCallback()
+            PropertyListAdapter.PropertyViewHolder>(
+        PropertyDiffCallback()
     ) {
     inner class PropertyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val propertyType: TextView = itemView.findViewById(R.id.property_type)
@@ -26,11 +28,17 @@ class PropertyListAdapter(
     }
 
     class PropertyDiffCallback : DiffUtil.ItemCallback<PropertyViewStateItem>() {
-        override fun areItemsTheSame(oldItem: PropertyViewStateItem, newItem: PropertyViewStateItem): Boolean {
+        override fun areItemsTheSame(
+            oldItem: PropertyViewStateItem,
+            newItem: PropertyViewStateItem
+        ): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: PropertyViewStateItem, newItem: PropertyViewStateItem): Boolean {
+        override fun areContentsTheSame(
+            oldItem: PropertyViewStateItem,
+            newItem: PropertyViewStateItem
+        ): Boolean {
             return oldItem == newItem
         }
     }
@@ -47,7 +55,9 @@ class PropertyListAdapter(
             propertyType.text = property.type
             propertyAddress.text = property.address
             propertyPrice.text = property.price
-            propertyPicture.setImageResource(property.picture)
+            Glide.with(holder.itemView.context)
+                .load(property.pictureUri)
+                .into(propertyPicture)
             soldImageView.visibility = if (property.isSold) View.VISIBLE else View.GONE
             soldTextView.visibility = if (property.isSold) View.VISIBLE else View.GONE
             itemView.setOnClickListener { onItemClicked(property) }

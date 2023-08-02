@@ -19,10 +19,10 @@ import dagger.hilt.android.AndroidEntryPoint
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     companion object {
-        fun newInstance(propertyId: Int): DetailFragment {
+        fun newInstance(propertyId: Long): DetailFragment {
             val fragment = DetailFragment()
             val args = Bundle()
-            args.putInt("property_id", propertyId)
+            args.putLong("property_id", propertyId)
             fragment.arguments = args
             return fragment
         }
@@ -34,31 +34,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val imageUrls = listOf(
-            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_1.png",
-            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_10.png",
-            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_12.png",
-            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_16.png",
-            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_19.png",
-            "content://com.android.externalstorage.documents/document/primary%3ADCIM%2FPhoto_2.png"
-        )
-
-        val captions = listOf(
-            "Front of the house",
-            "Back of the house",
-            "Kitchen",
-            "Living room",
-            "Bedroom",
-            "Bathroom"
-        )
-
-        val detailViewStateItems =
-            imageUrls.zip(captions).map { DetailViewStateItem(it.first, it.second) }
-
         val recyclerView: RecyclerView = binding.carouselRecyclerView
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = context?.let { DetailImageAdapter(it, detailViewStateItems) }
+        //recyclerView.adapter = context?.let { DetailImageAdapter(it, detailViewStateItems) }
 
         // Show the static map
         val url =
@@ -86,7 +65,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
 
         // Show the property details
-        val propertyId = arguments?.getInt("property_id")
+        val propertyId = arguments?.getLong("property_id")
         binding.locationTextView.text = propertyId.toString()
 
     }

@@ -15,7 +15,7 @@ data class PropertyEntity(
     val bedrooms: Int,
     val description: String,
     val price: Int,
-    val status: Boolean,
+    val isSold: Boolean,
     val entryDate: String,
     val saleDate: String?,
     val agentName: String

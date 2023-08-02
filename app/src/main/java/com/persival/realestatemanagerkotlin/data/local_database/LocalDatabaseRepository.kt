@@ -52,5 +52,16 @@ class LocalDatabaseRepository @Inject constructor(
             emit(PropertyWithPhotosAndPOIEntity(property, photos, poi))
         }
 
+    override fun getAllPropertiesWithPhotosAndPOI(): Flow<PropertyWithPhotosAndPOIEntity> =
+        flow {
+            val properties = propertyDao.getAllProperties()
+            for (property in properties) {
+                val photos = property.id?.let { photoDao.getPhotosByPropertyId(it) } ?: emptyList()
+                val poi =
+                    property.id?.let { pointOfInterestDao.getPOIsByPropertyId(it) } ?: emptyList()
+                emit(PropertyWithPhotosAndPOIEntity(property, photos, poi))
+            }
+        }
+
 }
 

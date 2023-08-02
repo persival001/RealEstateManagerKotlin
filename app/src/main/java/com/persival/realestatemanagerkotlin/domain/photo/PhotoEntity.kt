@@ -18,6 +18,6 @@ data class PhotoEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val propertyId: Long,
     val description: String,
-    val url: String
+    val photoUrl: String
 )
 

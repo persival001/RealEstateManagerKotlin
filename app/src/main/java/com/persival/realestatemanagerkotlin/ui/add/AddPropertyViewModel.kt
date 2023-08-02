@@ -59,7 +59,7 @@ class AddPropertyViewModel @Inject constructor(
                     PhotoEntity(
                         propertyId = it,
                         description = photoDescriptions.getOrNull(index) ?: "",
-                        url = uri
+                        photoUrl = uri
                     )
                 }
                 if (photoEntity != null) {

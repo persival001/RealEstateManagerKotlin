@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.persival.realestatemanagerkotlin.data.local_database.AppDatabase
+import com.persival.realestatemanagerkotlin.data.local_database.LocalDatabaseRepository
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
@@ -22,18 +23,33 @@ import javax.inject.Singleton
 class DataModule {
 
     @Provides
-    fun provideLocationDataRepository(@ApplicationContext app: Context): LocationDataRepository {
+    fun provideLocationDataRepository(
+        @ApplicationContext app: Context
+    ): LocationDataRepository {
         return LocationDataRepository(app)
     }
 
     @Provides
-    fun provideFirebaseDataRepository(firebaseAuth: FirebaseAuth): FirebaseDataRepository {
+    fun provideFirebaseDataRepository(
+        firebaseAuth: FirebaseAuth
+    ): FirebaseDataRepository {
         return FirebaseDataRepository(firebaseAuth)
     }
 
     @Provides
-    fun providePermissionDataRepository(@ApplicationContext app: Context): PermissionDataRepository {
+    fun providePermissionDataRepository(
+        @ApplicationContext app: Context
+    ): PermissionDataRepository {
         return PermissionDataRepository(app)
+    }
+
+    @Provides
+    fun provideLocalDatabaseRepository(
+        propertyDao: PropertyDao,
+        photoDao: PhotoDao,
+        pointOfInterestDao: PointOfInterestDao
+    ): LocalDatabaseRepository {
+        return LocalDatabaseRepository(propertyDao, photoDao, pointOfInterestDao)
     }
 
     @Provides
