@@ -3,6 +3,7 @@ package com.persival.realestatemanagerkotlin.data.local_database.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.persival.realestatemanagerkotlin.data.local_database.Property
@@ -10,7 +11,7 @@ import com.persival.realestatemanagerkotlin.data.local_database.Property
 @Dao
 interface PropertyDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(property: Property): Long
 
     @Update

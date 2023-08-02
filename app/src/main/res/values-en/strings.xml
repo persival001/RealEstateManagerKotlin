@@ -68,6 +68,7 @@
     <string name="delete_image">Delete image</string>
     <string name="denial_of_authorization">Denial of authorization</string>
     <string name="denial_of_location_authorization">Denial of location permission</string>
+    <string name="menu">Menu</string>
 
 
 </resources>

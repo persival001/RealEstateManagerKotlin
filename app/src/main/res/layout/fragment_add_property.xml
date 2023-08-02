@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -27,7 +28,7 @@
             android:hint="@string/date_to_buy"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_add_property"
             app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -36,7 +37,8 @@
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:inputType="none"
-                android:onClick="showDatePicker" />
+                android:onClick="showDatePicker"
+                tools:ignore="UsingOnClickInXml" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -50,7 +52,7 @@
             android:hint="@string/date_to_sell"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_add_property"
             app:startIconDrawable="@drawable/baseline_calendar_month_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -59,7 +61,8 @@
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:inputType="none"
-                android:onClick="showDatePicker" />
+                android:onClick="showDatePicker"
+                tools:ignore="UsingOnClickInXml" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

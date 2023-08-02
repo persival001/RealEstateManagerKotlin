@@ -8,16 +8,15 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
-import com.persival.realestatemanagerkotlin.ui.add.AddPropertyFragment
-import com.persival.realestatemanagerkotlin.ui.detail.DetailActivity
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
-import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
+import com.persival.realestatemanagerkotlin.ui.navigation.NavigationActivity
 import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
-import com.persival.realestatemanagerkotlin.ui.settings.SettingsFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -29,6 +28,17 @@ class MainActivity : AppCompatActivity() {
 
     private val binding by viewBinding { ActivityMainBinding.inflate(it) }
     private val viewModel by viewModels<MainViewModel>()
+
+    private val fragmentLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
+        override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+            super.onFragmentResumed(fm, f)
+            if (f is DetailFragment && !resources.getBoolean(R.bool.isTablet)) {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            } else {
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +54,8 @@ class MainActivity : AppCompatActivity() {
                 .commitNow()
         }
 
+        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
+
         // Setup the toolbar
         setSupportActionBar(binding.toolbar)
 
@@ -52,19 +64,6 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(containerDetailsId, DetailFragment())
                 .commitNow()
-        }
-
-        viewModel.mainViewActionLiveData.observe(this) { event ->
-            event.handleContent {
-                when (it) {
-                    MainViewAction.NavigateToDetailActivity -> startActivity(
-                        Intent(
-                            this,
-                            DetailActivity::class.java
-                        )
-                    )
-                }
-            }
         }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -92,13 +91,6 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        supportActionBar?.show()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        viewModel.onResume(resources.getBoolean(R.bool.isTablet))
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return true
@@ -114,77 +106,40 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
+            // Handle the toolbar menu items
             R.id.action_add -> {
-                supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-                val layoutId = if (resources.getBoolean(R.bool.isTablet)) {
-                    binding.mainFrameLayoutContainerDetail?.id
-                } else {
-                    binding.mainFrameLayoutContainerProperties.id
-                }
-
-                if (layoutId != null) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(
-                            layoutId,
-                            AddPropertyFragment.newInstance()
-                        )
-                        .addToBackStack(null)
-                        .commit()
-                }
-                true
+                val intent = Intent(this, NavigationActivity::class.java)
+                intent.putExtra("selectedItem", "item_add")
+                startActivity(intent)
+                return true
             }
 
             R.id.action_modify -> {
-                // TODO: Handle modify action
-                true
+                val intent = Intent(this, NavigationActivity::class.java)
+                intent.putExtra("selectedItem", "item_modify")
+                startActivity(intent)
+                return true
             }
 
             R.id.action_search -> {
-                // TODO: Handle search action
-                true
+                val intent = Intent(this, NavigationActivity::class.java)
+                intent.putExtra("selectedItem", "item_search")
+                startActivity(intent)
+                return true
             }
 
             R.id.action_map -> {
-                supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-                val layoutId = if (resources.getBoolean(R.bool.isTablet)) {
-                    binding.mainFrameLayoutContainerDetail?.id
-                } else {
-                    binding.mainFrameLayoutContainerProperties.id
-                }
-
-                if (layoutId != null) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(
-                            layoutId,
-                            MapFragment.newInstance()
-                        )
-                        .addToBackStack(null)
-                        .commit()
-                }
-                true
+                val intent = Intent(this, NavigationActivity::class.java)
+                intent.putExtra("selectedItem", "item_map")
+                startActivity(intent)
+                return true
             }
 
             R.id.action_settings -> {
-                supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-                val layoutId = if (resources.getBoolean(R.bool.isTablet)) {
-                    binding.mainFrameLayoutContainerDetail?.id
-                } else {
-                    binding.mainFrameLayoutContainerProperties.id
-                }
-
-                if (layoutId != null) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(
-                            layoutId,
-                            SettingsFragment.newInstance()
-                        )
-                        .addToBackStack(null)
-                        .commit()
-                }
-                true
+                val intent = Intent(this, NavigationActivity::class.java)
+                intent.putExtra("selectedItem", "item_settings")
+                startActivity(intent)
+                return true
             }
 
             else -> super.onOptionsItemSelected(item)
@@ -200,6 +155,20 @@ class MainActivity : AppCompatActivity() {
             (view as TextInputEditText).setText(selectedDate)
         }
         datePicker.show(supportFragmentManager, "date_picker_tag")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        supportActionBar?.show()
+        if (!resources.getBoolean(R.bool.isTablet)) {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+        viewModel.onResume(resources.getBoolean(R.bool.isTablet))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
     }
 
 }

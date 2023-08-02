@@ -13,15 +13,16 @@ class LocalDatabaseRepository @Inject constructor(
     private val pointOfInterestDao: PointOfInterestDao
 ) {
 
-    suspend fun insertProperty(property: Property) {
-        propertyDao.insert(property)
+    suspend fun insertProperty(property: Property): Long {
+        return propertyDao.insert(property)
     }
 
-    suspend fun insertPhoto(photo: Photo) {
-        photoDao.insert(photo)
+    suspend fun insertPhoto(photo: Photo): Long {
+        return photoDao.insert(photo)
     }
 
-    suspend fun insertPointOfInterest(pointOfInterest: PointOfInterest) {
-        pointOfInterestDao.insert(pointOfInterest)
+    suspend fun insertPointOfInterest(pointOfInterest: PointOfInterest): Long {
+        return pointOfInterestDao.insert(pointOfInterest)
     }
 }
+

@@ -146,7 +146,8 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
 
             if (editTextList.all { it.text?.isEmpty() == false }) {
-                val imageUrisList = imageUris.map { uri -> uri?.toString() }
+                val imageUrisList = imageUris.mapNotNull { uri -> uri?.toString() }
+                val photoDescriptionsList = editTexts.mapNotNull { it.text?.toString() }
 
                 viewModel.addNewProperty(
                     binding.typeEditText.text.toString(),
@@ -159,7 +160,8 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                     binding.priceEditText.text.toString().toInt(),
                     binding.datePickerEditText.text.toString(),
                     binding.datePickerToSellText.text.toString(),
-                    imageUrisList
+                    imageUrisList,
+                    photoDescriptionsList
                 )
             }
 

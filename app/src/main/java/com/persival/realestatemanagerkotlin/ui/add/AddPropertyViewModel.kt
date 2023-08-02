@@ -27,8 +27,8 @@ class AddPropertyViewModel @Inject constructor(
         price: Int,
         entryDate: String,
         saleDate: String?,
-        imageUris: List<String?>,
-        photoDescriptions: List<String?>
+        imageUris: List<String>,
+        photoDescriptions: List<String>
     ) {
         viewModelScope.launch(coroutineDispatcherProvider.io) {
             val timestamp = System.currentTimeMillis()
@@ -48,7 +48,8 @@ class AddPropertyViewModel @Inject constructor(
                 1
             )
 
-            val propertyId = repository.insertProperty(property)
+            val propertyId: Long = repository.insertProperty(property)
+
 
             imageUris.forEachIndexed { index, uri ->
                 if (uri != null) {
