@@ -8,7 +8,5 @@ import javax.inject.Singleton
 class GetAllPropertiesWithPhotosAndPOIUseCase @Inject constructor(
     private val localRepository: LocalRepository
 ) {
-    operator fun invoke(): Flow<PropertyWithPhotosAndPOIEntity> {
-        return localRepository.getAllPropertiesWithPhotosAndPOI()
-    }
+    fun invoke(): Flow<List<PropertyWithPhotosAndPOIEntity>> = localRepository.getAllProperties()
 }

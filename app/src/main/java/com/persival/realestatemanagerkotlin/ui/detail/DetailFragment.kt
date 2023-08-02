@@ -18,6 +18,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
+    private lateinit var detailImageAdapter: DetailImageAdapter
+
     companion object {
         fun newInstance(propertyId: Long): DetailFragment {
             val fragment = DetailFragment()
@@ -37,7 +39,29 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         val recyclerView: RecyclerView = binding.carouselRecyclerView
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        //recyclerView.adapter = context?.let { DetailImageAdapter(it, detailViewStateItems) }
+
+        // observe the detailItem livedata
+        viewModel.detailItem.observe(viewLifecycleOwner) { detailViewStateItem ->
+            context?.let { safeContext ->
+                // you need to make sure that detailViewStateItem is a list
+                val detailImageAdapter =
+                    DetailImageAdapter(safeContext, listOf(detailViewStateItem))
+                recyclerView.adapter = detailImageAdapter
+            }
+        }
+
+        val propertyId = arguments?.getLong("property_id") ?: return
+        viewModel.setPropertyId(propertyId)
+
+        // Show the property details
+        viewModel.details.observe(viewLifecycleOwner) { details ->
+            binding.roomsTextView.text = details.rooms
+            binding.bedroomsTextView.text = details.bedrooms
+            binding.bathroomsTextView.text = details.bathrooms
+            binding.descriptionTextView.text = details.description
+            binding.surfaceTextView.text = details.surface
+            binding.locationTextView.text = details.address
+        }
 
         // Show the static map
         val url =
@@ -63,10 +87,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 .addToBackStack(null)
                 .commit()
         }
-
-        // Show the property details
-        val propertyId = arguments?.getLong("property_id")
-        binding.locationTextView.text = propertyId.toString()
 
     }
 

@@ -11,6 +11,7 @@ import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
 import com.persival.realestatemanagerkotlin.data.location.LocationDataRepository
 import com.persival.realestatemanagerkotlin.data.permissions.PermissionDataRepository
 import com.persival.realestatemanagerkotlin.data.remote_database.FirebaseDataRepository
+import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,11 +46,17 @@ class DataModule {
 
     @Provides
     fun provideLocalDatabaseRepository(
+        coroutineDispatcherProvider: CoroutineDispatcherProvider,
         propertyDao: PropertyDao,
         photoDao: PhotoDao,
         pointOfInterestDao: PointOfInterestDao
     ): LocalDatabaseRepository {
-        return LocalDatabaseRepository(propertyDao, photoDao, pointOfInterestDao)
+        return LocalDatabaseRepository(
+            coroutineDispatcherProvider,
+            propertyDao,
+            photoDao,
+            pointOfInterestDao
+        )
     }
 
     @Provides

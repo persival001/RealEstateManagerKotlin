@@ -165,7 +165,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
 
             // Return to main activity
-            requireActivity().supportFragmentManager.popBackStack()
+            requireActivity().finish()
 
         }
     }

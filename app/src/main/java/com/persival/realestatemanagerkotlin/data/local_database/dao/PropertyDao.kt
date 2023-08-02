@@ -4,8 +4,11 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PropertyDao {
@@ -20,8 +23,11 @@ interface PropertyDao {
     suspend fun delete(propertyEntity: PropertyEntity)
 
     @Query("SELECT * FROM property")
-    suspend fun getAllProperties(): List<PropertyEntity>
+    @Transaction
+    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>>
 
     @Query("SELECT * FROM property WHERE id = :propertyId")
-    suspend fun getPropertyById(propertyId: Long): PropertyEntity
+    @Transaction
+    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
+
 }

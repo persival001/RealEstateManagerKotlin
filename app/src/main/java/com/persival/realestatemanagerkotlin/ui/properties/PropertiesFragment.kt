@@ -38,7 +38,6 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
                 ?.replace(containerId, detailFragment)
                 ?.addToBackStack(null)
                 ?.commit()
-
         }
 
         binding.propertiesRecyclerView.layoutManager = LinearLayoutManager(context)

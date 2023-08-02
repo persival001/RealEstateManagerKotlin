@@ -4,8 +4,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalRepository {
 
-    suspend fun getPropertyWithPhotosAndPOI(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
+    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>>
 
-    fun getAllPropertiesWithPhotosAndPOI(): Flow<PropertyWithPhotosAndPOIEntity>
+    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
 
 }

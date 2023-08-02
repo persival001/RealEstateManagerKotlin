@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.persival.realestatemanagerkotlin.domain.poi.PointOfInterestEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PointOfInterestDao {
@@ -20,7 +21,7 @@ interface PointOfInterestDao {
     suspend fun delete(poi: PointOfInterestEntity)
 
     @Query("SELECT * FROM point_of_interest")
-    suspend fun getAllPointsOfInterest(): List<PointOfInterestEntity>
+    fun getAllPointsOfInterest(): Flow<List<PointOfInterestEntity>>
 
     @Query("SELECT * FROM point_of_interest WHERE propertyId = :propertyId")
     suspend fun getPOIsByPropertyId(propertyId: Long): List<PointOfInterestEntity>

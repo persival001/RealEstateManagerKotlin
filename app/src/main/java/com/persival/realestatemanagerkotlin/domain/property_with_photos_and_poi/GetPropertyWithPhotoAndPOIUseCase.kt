@@ -9,5 +9,5 @@ class GetPropertyWithPhotoAndPOIUseCase @Inject constructor(
     private val localRepository: LocalRepository
 ) {
     suspend fun invoke(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity> =
-        localRepository.getPropertyWithPhotosAndPOI(propertyId)
+        localRepository.getPropertyById(propertyId)
 }

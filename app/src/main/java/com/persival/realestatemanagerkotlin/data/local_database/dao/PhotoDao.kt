@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PhotoDao {
@@ -20,7 +21,7 @@ interface PhotoDao {
     suspend fun delete(photoEntity: PhotoEntity)
 
     @Query("SELECT * FROM photo")
-    suspend fun getAllPhotos(): List<PhotoEntity>
+    fun getAllPhotos(): Flow<List<PhotoEntity>>
 
     @Query("SELECT * FROM photo WHERE propertyId = :propertyId")
     suspend fun getPhotosByPropertyId(propertyId: Long): List<PhotoEntity>
