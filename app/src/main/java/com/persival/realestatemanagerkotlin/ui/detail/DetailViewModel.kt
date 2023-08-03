@@ -37,7 +37,7 @@ class DetailViewModel @Inject constructor(
                     description = details.property.description,
                     address = details.property.address,
                     pointOfInterest = "School", //TODO: get from POI
-                    isSold = details.property.isSold.toString(),
+                    isSold = details.property.isSold,
                     entryDate = details.property.entryDate,
                     saleDate = details.property.saleDate ?: "",
                     agentName = details.property.agentName
@@ -51,13 +51,17 @@ class DetailViewModel @Inject constructor(
     private fun loadItemDetails(propertyId: Long) {
         viewModelScope.launch {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { details ->
+                val urls = details.photos.map { it.photoUrl }
+                val captions = details.photos.map { it.description }
+
                 val detailViewState = DetailViewStateItem(
-                    url = details.photos.firstOrNull()?.photoUrl ?: "",
-                    caption = details.photos.firstOrNull()?.description ?: "",
+                    url = urls,
+                    caption = captions
                 )
 
                 detailItemLiveData.value = detailViewState
             }
         }
     }
+
 }

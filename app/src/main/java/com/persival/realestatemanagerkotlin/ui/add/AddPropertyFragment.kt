@@ -11,10 +11,15 @@ import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.textfield.TextInputEditText
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentAddPropertyBinding
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
@@ -71,6 +76,15 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialize the date picker "for sale"
+        val datePickerEditText: TextInputEditText = view.findViewById(R.id.date_picker_edit_text)
+        datePickerEditText.setOnClickListener { showDatePicker(it) }
+
+        // Initialize the date picker "sold"
+        val datePickerSoldEditText: TextInputEditText =
+            view.findViewById(R.id.date_picker_to_sell_text)
+        datePickerSoldEditText.setOnClickListener { showDatePicker(it) }
+
         // Initialize the arrays of views
         imageViews = arrayOf(
             binding.card1ImageView,
@@ -117,7 +131,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         }
 
         binding.cancelButton.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            requireActivity().finish()
         }
 
         // Get the property added by the user
@@ -183,5 +197,16 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         imageViews[index].setImageResource(R.drawable.property_picture)
         imageUris[index] = null
         editTexts[index].text.clear()
+    }
+
+    private fun showDatePicker(view: View) {
+        val datePicker = MaterialDatePicker.Builder.datePicker().build()
+        datePicker.addOnPositiveButtonClickListener { selection: Long? ->
+            val selectedDate: String? =
+                selection?.let { Date(it) }
+                    ?.let { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it) }
+            (view as TextInputEditText).setText(selectedDate)
+        }
+        datePicker.show(parentFragmentManager, "date_picker_tag")
     }
 }

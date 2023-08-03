@@ -11,7 +11,7 @@ data class DetailViewState(
     val description: String,
     val address: String,
     val pointOfInterest: String,
-    val isSold: String,
+    val isSold: Boolean,
     val entryDate: String,
     val saleDate: String,
     val agentName: String

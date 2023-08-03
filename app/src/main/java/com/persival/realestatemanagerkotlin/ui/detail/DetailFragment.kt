@@ -18,8 +18,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
-    private lateinit var detailImageAdapter: DetailImageAdapter
-
     companion object {
         fun newInstance(propertyId: Long): DetailFragment {
             val fragment = DetailFragment()
@@ -43,15 +41,23 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         // observe the detailItem livedata
         viewModel.detailItem.observe(viewLifecycleOwner) { detailViewStateItem ->
             context?.let { safeContext ->
-                // you need to make sure that detailViewStateItem is a list
-                val detailImageAdapter =
-                    DetailImageAdapter(safeContext, listOf(detailViewStateItem))
+                val detailImageAdapter = DetailImageAdapter(
+                    safeContext,
+                    detailViewStateItem.url,
+                    detailViewStateItem.caption
+                )
                 recyclerView.adapter = detailImageAdapter
             }
         }
 
-        val propertyId = arguments?.getLong("property_id") ?: return
-        viewModel.setPropertyId(propertyId)
+        val propertyId = arguments?.getLong("property_id")
+
+        if (propertyId == null) {
+            binding.root.visibility = View.GONE
+        } else {
+            binding.root.visibility = View.VISIBLE
+            viewModel.setPropertyId(propertyId)
+        }
 
         // Show the property details
         viewModel.details.observe(viewLifecycleOwner) { details ->
@@ -61,6 +67,18 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             binding.descriptionTextView.text = details.description
             binding.surfaceTextView.text = details.surface
             binding.locationTextView.text = details.address
+
+            val isSoldString = if (details.isSold) {
+                getString(
+                    R.string.information_is_sold,
+                    details.agentName,
+                    details.entryDate,
+                    details.saleDate
+                )
+            } else {
+                getString(R.string.information_on_sale, details.agentName, details.entryDate)
+            }
+            binding.contactTextView.text = isSoldString
         }
 
         // Show the static map

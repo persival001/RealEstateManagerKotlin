@@ -18,7 +18,7 @@
     <string name="add_property">Add property</string>
     <string name="modify_property">Modify property</string>
     <string name="media">Media</string>
-    <string name="description_exemple">This luxurious villa offers a sanctuary of serenity nestled in a prime location with breathtaking ocean views. With 5 en-suite bedrooms, this exceptional residence offers contemporary design, high-end finishes and state-of-the-art equipment. A spa, private gym and infinity pool complete this architectural gem. The elegance of its vast open living spaces blends harmoniously with the outdoor terraces and the landscaped garden. A unique property that combines luxury, comfort and tranquility. To enter without delay.</string>
+    <string name="description_exemple">This luxurious villa offers a sanctuary of serenity nestled in a prime location with breathtaking ocean views. With 5 en-suite bedrooms, this exceptional residence offers contemporary design, high-end finishes and state-of-the-art equipment.</string>
     <string name="conversion_title">Currency conversion</string>
     <string name="conversion_description">Dollar to euro conversion</string>
     <string name="date_title">Format date</string>
@@ -61,14 +61,16 @@
     <string name="show_map">Properties on map</string>
     <string name="cancel_button">Cancel</string>
     <string name="display_settings">Settings</string>
-    <string name="right_arrow">Right arrow</string>
-    <string name="left_arrow">Left arrow</string>
     <string name="error_message">This field must not be empty</string>
     <string name="image_name">Image name</string>
     <string name="delete_image">Delete image</string>
     <string name="denial_of_authorization">Denial of authorization</string>
     <string name="denial_of_location_authorization">Denial of location permission</string>
     <string name="menu">Menu</string>
+    <string name="contact">Information</string>
+    <string name="contact_exemple">The property was put up for sale by %s on %s</string>
+    <string name="information_is_sold">The property was listed for sale by %s on %s and was sold on %s</string>
+    <string name="information_on_sale">The property was listed for sale by %s on %s</string>
 
 
 </resources>

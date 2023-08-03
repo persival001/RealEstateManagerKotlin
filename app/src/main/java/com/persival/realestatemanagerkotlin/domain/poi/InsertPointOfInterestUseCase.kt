@@ -1,14 +1,14 @@
 package com.persival.realestatemanagerkotlin.domain.poi
 
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class InsertPointOfInterestUseCase @Inject constructor(
-    private val pointOfInterestDao: PointOfInterestDao
+    private val localRepository: LocalRepository
 ) {
-    suspend fun invoke(pointOfInterestEntity: PointOfInterestEntity) {
-        pointOfInterestDao.insert(pointOfInterestEntity)
+    suspend fun invoke(pointOfInterestEntity: PointOfInterestEntity): Long {
+        return localRepository.insertPointOfInterest(pointOfInterestEntity)
     }
 }

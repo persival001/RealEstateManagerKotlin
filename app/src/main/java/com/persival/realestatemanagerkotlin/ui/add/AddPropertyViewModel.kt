@@ -2,9 +2,11 @@ package com.persival.realestatemanagerkotlin.ui.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.persival.realestatemanagerkotlin.data.local_database.LocalDatabaseRepository
 import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
+import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
+import com.persival.realestatemanagerkotlin.domain.poi.InsertPointOfInterestUseCase
+import com.persival.realestatemanagerkotlin.domain.property.InsertPropertyUseCase
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +17,9 @@ import javax.inject.Inject
 class AddPropertyViewModel @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
     private val getRealEstateAgentUseCase: GetRealEstateAgentUseCase,
-    private val repository: LocalDatabaseRepository
+    private val insertPropertyUseCase: InsertPropertyUseCase,
+    private val insertPhotoUseCase: InsertPhotoUseCase,
+    private val insertPointOfInterestUseCase: InsertPointOfInterestUseCase
 ) : ViewModel() {
 
     fun addNewProperty(
@@ -44,14 +48,14 @@ class AddPropertyViewModel @Inject constructor(
                     bedrooms,
                     description,
                     price,
-                    true,
+                    isThePropertyForSale(saleDate),
                     entryDate,
                     saleDate,
                     it.name
                 )
             }
 
-            val propertyId: Long? = propertyEntity?.let { repository.insertProperty(it) }
+            val propertyId: Long? = propertyEntity?.let { insertPropertyUseCase.invoke(it) }
 
 
             imageUris.forEachIndexed { index, uri ->
@@ -63,9 +67,13 @@ class AddPropertyViewModel @Inject constructor(
                     )
                 }
                 if (photoEntity != null) {
-                    repository.insertPhoto(photoEntity)
+                    insertPhotoUseCase.invoke(photoEntity)
                 }
             }
         }
+    }
+
+    private fun isThePropertyForSale(saleDate: String?): Boolean {
+        return !(saleDate == null || saleDate == "")
     }
 }

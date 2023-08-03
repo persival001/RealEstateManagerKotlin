@@ -10,7 +10,7 @@
     <string name="search_property">Recherche</string>
     <string name="property_picture">Photo</string>
     <string name="title"> Real Estate Manager </string>
-    <string name="description">Déscription</string>
+    <string name="description">Description</string>
     <string name="sold">VENDU</string>
     <string name="sold_label">Sold label</string>
     <string name="description_image">Photo de la description</string>
@@ -18,7 +18,7 @@
     <string name="add_property">Ajouter une propriété</string>
     <string name="modify_property">Modifier l\'annonce</string>
     <string name="media">Media</string>
-    <string name="description_exemple">Cette luxueuse villa offre un sanctuaire de sérénité niché dans un emplacement privilégié avec une vue imprenable sur l\'océan. Dotée de 5 chambres en suite, cette demeure d\'exception offre un design contemporain, des finitions haut de gamme et des équipements de pointe. Un spa, une salle de sport privée et une piscine à débordement complètent ce joyau architectural. L\'élégance de ses vastes espaces de vie ouverts se marie harmonieusement avec les terrasses extérieures et le jardin paysagé. Une propriété unique qui allie luxe, confort et tranquillité. A saisir sans tarder.</string>
+    <string name="description_exemple">Cette luxueuse villa offre un sanctuaire de sérénité niché dans un emplacement privilégié avec une vue imprenable sur l\'océan. Dotée de 5 chambres en suite, cette demeure d\'exception offre un design contemporain, des finitions haut de gamme et des équipements de pointe.</string>
     <string name="conversion_title">Conversion de devises</string>
     <string name="conversion_description">Convertir les dollars en euros</string>
     <string name="date_title">Modifier la date</string>
@@ -62,13 +62,14 @@
     <string name="show_map">Carte des biens</string>
     <string name="cancel_button">Cancel</string>
     <string name="display_settings">Parametres</string>
-    <string name="right_arrow">Right arrow</string>
-    <string name="left_arrow">Left arrow</string>
     <string name="error_message">Ce champs ne doit pas être vide</string>
     <string name="image_name">Image name</string>
     <string name="delete_image">Delete image</string>
-    <string name="denial_of_authorization">Denial of authorization</string>
-    <string name="denial_of_location_authorization">Denial of location permission</string>
+    <string name="denial_of_authorization">Authorisation stockage refusée</string>
+    <string name="denial_of_location_authorization">Authorisation de localisation refusée</string>
     <string name="menu">Menu</string>
+    <string name="contact">Informations</string>
+    <string name="information_is_sold">Le bien immobilier a été mis en vente par %s le %s et a été vendu le %s</string>
+    <string name="information_on_sale">Le bien immobilier a été mis en vente par %s le %s</string>
 
 </resources>

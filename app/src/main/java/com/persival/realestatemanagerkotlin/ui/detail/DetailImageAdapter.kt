@@ -13,7 +13,8 @@ import com.persival.realestatemanagerkotlin.R
 
 class DetailImageAdapter(
     private val context: Context,
-    private val imageItems: List<DetailViewStateItem>
+    private val urls: List<String>,
+    private val captions: List<String>
 ) : RecyclerView.Adapter<DetailImageAdapter.DetailImageViewHolder>() {
 
     inner class DetailImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -27,30 +28,28 @@ class DetailImageAdapter(
     }
 
     override fun onBindViewHolder(holder: DetailImageViewHolder, position: Int) {
-        val currentItem = imageItems[position]
+        val url = urls[position]
+        val caption = captions.getOrNull(position) ?: ""
 
-        val uri = currentItem.url
-        if (uri.startsWith("http://") || uri.startsWith("https://")) {
+        if (url.startsWith("http://") || url.startsWith("https://")) {
             // It's a web URL, load it directly
             Glide.with(context)
-                .load(uri)
+                .load(url)
                 .into(holder.imageView)
-        } else if (uri.startsWith("content://") || uri.startsWith("file://")) {
+        } else if (url.startsWith("content://") || url.startsWith("file://")) {
             // It's a local file URI, load it directly
             Glide.with(context)
-                .load(Uri.parse(uri))
+                .load(Uri.parse(url))
                 .into(holder.imageView)
         }
 
-        holder.captionView.text = currentItem.caption
+        holder.captionView.text = caption
     }
 
     override fun getItemCount(): Int {
-        return imageItems.size
+        return urls.size
     }
 }
-
-
 
 
 
