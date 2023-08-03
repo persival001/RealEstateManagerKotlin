@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -46,11 +45,11 @@ class PropertiesViewModel @Inject constructor(
         }
     }
 
-
     private fun getFormattedPrice(price: Int): String {
-        val formatter = NumberFormat.getNumberInstance(Locale.US)
-        val formattedPrice = formatter.format(price)
-        return "$formattedPrice ${resources.getString(R.string.currency)}"
+        val format = NumberFormat.getCurrencyInstance(Locale.getDefault())
+        format.maximumFractionDigits = 0
+        return format.format(price)
     }
+
 
 }

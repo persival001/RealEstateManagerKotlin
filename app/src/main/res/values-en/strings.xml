@@ -70,7 +70,5 @@
     <string name="contact">Information</string>
     <string name="information_is_sold">The property was listed for sale by %s on %s and was sold on %s</string>
     <string name="information_on_sale">The property was listed for sale by %s on %s</string>
-    <string name="currency">$</string>
-
 
 </resources>
