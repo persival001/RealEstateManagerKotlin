@@ -1,6 +1,7 @@
 package com.persival.realestatemanagerkotlin.di
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.persival.realestatemanagerkotlin.data.local_database.AppDatabase
@@ -22,6 +23,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
+
+    @Provides
+    @Singleton
+    fun provideResources(@ApplicationContext context: Context): Resources {
+        return context.resources
+    }
 
     @Provides
     fun provideLocationDataRepository(

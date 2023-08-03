@@ -71,5 +71,6 @@
     <string name="contact">Informations</string>
     <string name="information_is_sold">Le bien immobilier a été mis en vente par %s le %s et a été vendu le %s</string>
     <string name="information_on_sale">Le bien immobilier a été mis en vente par %s le %s</string>
+    <string name="currency">€</string>
 
 </resources>
