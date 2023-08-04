@@ -81,6 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/type_of_property"
+            app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/separator_view"
@@ -102,6 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/surface_hint"
+            app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/type_textField"
@@ -109,6 +111,28 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/area_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Price -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/price_textField"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:hint="@string/price_hint"
+            app:endIconMode="clear_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/separator_view"
+            app:startIconDrawable="@drawable/baseline_attach_money_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/price_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal" />
@@ -123,6 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/rooms_hint"
+            app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/price_textField"
@@ -144,6 +169,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/bathrooms_hint"
+            app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rooms_textField"
@@ -165,6 +191,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/bedrooms_hint"
+            app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/rooms_textField"
@@ -186,6 +213,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/location_hint"
+            app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bedrooms_textField"
@@ -199,27 +227,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Point of interest at proximity -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/poi_textField"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:hint="@string/poi_hint"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/address_textField"
-            app:startIconDrawable="@drawable/baseline_interests_24">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/poi_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
         <!-- Description of the property -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/description_textField"
@@ -228,9 +235,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:hint="@string/description_hint"
+            app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poi_textField"
+            app:layout_constraintTop_toBottomOf="@+id/address_textField"
             app:startIconDrawable="@drawable/baseline_description_black_24">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -241,26 +249,19 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Price -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/price_textField"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <!-- Point of interest at proximity -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/poiButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:hint="@string/price_hint"
+            android:padding="@dimen/default_margin"
+            android:text="@string/poi_hint"
+            android:textSize="@dimen/default_text_middle_size"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/separator_view"
-            app:startIconDrawable="@drawable/baseline_attach_money_24">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/price_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
-
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description_textField" />
 
         <!-- Add photos card-views -->
         <com.google.android.material.card.MaterialCardView
@@ -270,7 +271,7 @@
             android:layout_margin="@dimen/default_margin"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/description_textField">
+            app:layout_constraintTop_toBottomOf="@+id/poiButton">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -334,7 +335,7 @@
             android:layout_margin="@dimen/default_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/description_textField">
+            app:layout_constraintTop_toBottomOf="@+id/poiButton">
 
             <LinearLayout
                 android:layout_width="match_parent"

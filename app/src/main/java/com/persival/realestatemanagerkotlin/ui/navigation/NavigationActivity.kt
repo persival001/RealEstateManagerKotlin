@@ -26,9 +26,18 @@ class NavigationActivity : AppCompatActivity() {
         }
 
         when (intent.getStringExtra("selectedItem")) {
-            "item_add", "item_modify", "item_search" -> {
+            "item_add", "item_search" -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_menu_container, AddPropertyFragment())
+                    .commit()
+            }
+
+            "item_modify" -> {
+                val propertyId = 1L //intent.getLongExtra("propertyId", 0L)
+                val addPropertyFragment = AddPropertyFragment.newInstance(propertyId)
+
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_menu_container, addPropertyFragment)
                     .commit()
             }
 

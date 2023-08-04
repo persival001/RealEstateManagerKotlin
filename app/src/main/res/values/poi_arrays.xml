@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="poi_items">
+        <item>Écoles</item>
+        <item>Transports en commun</item>
+        <item>Commerces</item>
+        <item>Espaces verts</item>
+        <item>Hôpitaux</item>
+        <item>Restaurants</item>
+        <item>Sécurité</item>
+        <item>Accessibilité</item>
+        <item>Lieux de travail</item>
+        <item>Attractions culturelles</item>
+        <item>Quartiers animés</item>
+        <item>Internet haut débit</item>
+    </string-array>
+</resources>
+

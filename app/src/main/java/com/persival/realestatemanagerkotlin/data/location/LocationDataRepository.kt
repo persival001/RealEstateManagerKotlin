@@ -1,6 +1,7 @@
 package com.persival.realestatemanagerkotlin.data.location
 
 import android.Manifest
+import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -10,11 +11,11 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.persival.realestatemanagerkotlin.domain.location.LocationRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 class LocationDataRepository @Inject constructor(
-    @ApplicationContext private val context: Context
+    application: Application,
 ) : LocationRepository {
 
     private val userLocation = MutableLiveData<Location>()
@@ -22,18 +23,20 @@ class LocationDataRepository @Inject constructor(
     override fun getCurrentLocation(): LiveData<Location> = userLocation
 
     private val locationManager =
-        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     private val locationListener: LocationListener =
         LocationListener { location -> userLocation.value = location }
 
     init {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(
+                application,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
-                10000L,
+                10.seconds.inWholeMilliseconds,
                 250f,
                 locationListener
             )

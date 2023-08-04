@@ -14,24 +14,24 @@ import javax.inject.Singleton
 
 @Singleton
 class PermissionDataRepository @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
 ) : PermissionRepository {
-    private val _locationPermissionFlow = MutableStateFlow(false)
-    override val locationPermissionFlow: StateFlow<Boolean> = _locationPermissionFlow
+    private val mutableLocationPermissionFlow = MutableStateFlow(false)
+    override val locationPermissionFlow: StateFlow<Boolean> = mutableLocationPermissionFlow
 
-    private val _gpsActivatedFlow = MutableStateFlow(false)
-    override val gpsActivatedFlow: StateFlow<Boolean> = _gpsActivatedFlow
+    private val mutableGpsActivatedFlow = MutableStateFlow(false)
+    override val gpsActivatedFlow: StateFlow<Boolean> = mutableGpsActivatedFlow
 
     override fun refreshLocationPermission() {
         val hasPermission = ContextCompat.checkSelfPermission(
             context, Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
-        _locationPermissionFlow.tryEmit(hasPermission)
+        mutableLocationPermissionFlow.tryEmit(hasPermission)
     }
 
     override fun refreshGpsActivation() {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        _gpsActivatedFlow.tryEmit(isGPSEnabled)
+        mutableGpsActivatedFlow.tryEmit(isGPSEnabled)
     }
 }

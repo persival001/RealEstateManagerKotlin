@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -25,7 +26,13 @@ import java.util.Locale
 class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     companion object {
-        fun newInstance() = AddPropertyFragment()
+        private const val ARG_PROPERTY_ID = "propertyId"
+        fun newInstance(propertyId: Long) = AddPropertyFragment().apply {
+            arguments = Bundle().apply {
+                putLong(ARG_PROPERTY_ID, propertyId)
+            }
+        }
+
         private const val REQUEST_CODE_IMAGE1 = 1
         private const val REQUEST_CODE_IMAGE2 = 2
         private const val REQUEST_CODE_IMAGE3 = 3
@@ -75,6 +82,28 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val propertyId = arguments?.getLong(ARG_PROPERTY_ID)
+        val items = resources.getStringArray(R.array.poi_items)
+        val checkedItems = BooleanArray(items.size)
+        var multiChoiceItemsSelected = ""
+
+        // Initialize the POI button
+        binding.poiButton.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.select_poi))
+                .setMultiChoiceItems(items, checkedItems) { _, which, isChecked ->
+                    checkedItems[which] = isChecked
+                }
+                .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                    multiChoiceItemsSelected = items.withIndex()
+                        .filter { (index, _) -> checkedItems[index] }
+                        .joinToString(", ") { (_, item) -> item }
+                    binding.poiButton.text = multiChoiceItemsSelected
+                }
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show()
+        }
 
         // Initialize the date picker "for sale"
         val datePickerEditText: TextInputEditText = view.findViewById(R.id.date_picker_edit_text)
@@ -130,58 +159,54 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
         }
 
+        // Set the property information in the form if the propertyId is not null
+        if (propertyId != null) {
+            viewModel.getProperty(propertyId).observe(viewLifecycleOwner) { property ->
+                binding.typeEditText.setText(property.property.type)
+                binding.datePickerToSellText.setText(property.property.saleDate)
+                binding.datePickerEditText.setText(property.property.entryDate)
+                binding.priceEditText.setText(property.property.price.toString())
+                binding.areaEditText.setText(property.property.area.toString())
+                binding.roomsEditText.setText(property.property.rooms.toString())
+                binding.bedroomsEditText.setText(property.property.bedrooms.toString())
+                binding.bathroomsEditText.setText(property.property.bathrooms.toString())
+                binding.descriptionEditText.setText(property.property.description)
+                binding.addressEditText.setText(property.property.address)
+
+                binding.card1EditText.setText(property.photos[0].description)
+                binding.card2EditText.setText(property.photos[1].description)
+                binding.card3EditText.setText(property.photos[2].description)
+                binding.card4EditText.setText(property.photos[3].description)
+                binding.card5EditText.setText(property.photos[4].description)
+                binding.card6EditText.setText(property.photos[5].description)
+
+                property.pointsOfInterest.forEach { poi ->
+                    binding.poiButton.text = poi.poi
+                }
+            }
+        }
+
+        // Initialize the cancel button
         binding.cancelButton.setOnClickListener {
             requireActivity().finish()
         }
 
         // Get the property added by the user
         binding.okButton.setOnClickListener {
+            if (validateFields()) {
+                val addViewState = retrieveFormData()
 
-            val editTextList = listOf(
-                binding.typeEditText,
-                binding.addressEditText,
-                binding.areaEditText,
-                binding.roomsEditText,
-                binding.bathroomsEditText,
-                binding.bedroomsEditText,
-                binding.descriptionEditText,
-                binding.priceEditText,
-                binding.datePickerEditText,
-                binding.poiEditText
-            )
-
-            editTextList.forEach { editText ->
-                if (editText.text?.isEmpty() == true) {
-                    editText.error = getString(R.string.error_message)
+                if (propertyId != null && propertyId != -1L) {
+                    viewModel.updateProperty(propertyId, addViewState)
                 } else {
-                    editText.error = null
+                    viewModel.addNewProperty(addViewState)
                 }
+
+                // Return to main activity
+                requireActivity().finish()
             }
-
-            if (editTextList.all { it.text?.isEmpty() == false }) {
-                val imageUrisList = imageUris.mapNotNull { uri -> uri?.toString() }
-                val photoDescriptionsList = editTexts.mapNotNull { it.text?.toString() }
-
-                viewModel.addNewProperty(
-                    binding.typeEditText.text.toString(),
-                    binding.addressEditText.text.toString(),
-                    binding.areaEditText.text.toString().toInt(),
-                    binding.roomsEditText.text.toString().toInt(),
-                    binding.bathroomsEditText.text.toString().toInt(),
-                    binding.bedroomsEditText.text.toString().toInt(),
-                    binding.descriptionEditText.text.toString(),
-                    binding.priceEditText.text.toString().toInt(),
-                    binding.datePickerEditText.text.toString(),
-                    binding.datePickerToSellText.text.toString(),
-                    imageUrisList,
-                    photoDescriptionsList
-                )
-            }
-
-            // Return to main activity
-            requireActivity().finish()
-
         }
+
     }
 
     private fun setImageAndRequireName(uri: Uri, requestCode: Int) {
@@ -197,6 +222,54 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         imageViews[index].setImageResource(R.drawable.property_picture)
         imageUris[index] = null
         editTexts[index].text.clear()
+    }
+
+    private fun retrieveFormData(): AddViewState {
+        val imageUrisList = imageUris.mapNotNull { uri -> uri?.toString() }
+        val photoDescriptionsList = editTexts.mapNotNull { it.text?.toString() }
+
+        return AddViewState(
+            binding.typeEditText.text.toString(),
+            binding.addressEditText.text.toString(),
+            binding.areaEditText.text.toString().toInt(),
+            binding.roomsEditText.text.toString().toInt(),
+            binding.bathroomsEditText.text.toString().toInt(),
+            binding.bedroomsEditText.text.toString().toInt(),
+            binding.descriptionEditText.text.toString(),
+            binding.priceEditText.text.toString().toInt(),
+            binding.datePickerEditText.text.toString(),
+            binding.datePickerToSellText.text.toString(),
+            imageUrisList,
+            photoDescriptionsList,
+            binding.poiButton.text.toString()
+        )
+    }
+
+    private fun validateFields(): Boolean {
+        val editTextList = listOf(
+            binding.typeEditText,
+            binding.addressEditText,
+            binding.areaEditText,
+            binding.roomsEditText,
+            binding.bathroomsEditText,
+            binding.bedroomsEditText,
+            binding.descriptionEditText,
+            binding.priceEditText,
+            binding.datePickerEditText
+        )
+
+        var allFieldsFilled = true
+
+        editTextList.forEach { editText ->
+            if (editText.text?.isEmpty() == true) {
+                editText.error = getString(R.string.error_message)
+                allFieldsFilled = false
+            } else {
+                editText.error = null
+            }
+        }
+
+        return allFieldsFilled
     }
 
     private fun showDatePicker(view: View) {

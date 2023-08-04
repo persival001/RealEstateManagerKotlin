@@ -1,6 +1,5 @@
 package com.persival.realestatemanagerkotlin.ui.properties
 
-import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,7 +14,6 @@ import javax.inject.Inject
 @HiltViewModel
 class PropertiesViewModel @Inject constructor(
     private val getAllPropertiesWithPhotosAndPOIUseCase: GetAllPropertiesWithPhotosAndPOIUseCase,
-    private val resources: Resources
 ) : ViewModel() {
 
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
@@ -50,6 +48,5 @@ class PropertiesViewModel @Inject constructor(
         format.maximumFractionDigits = 0
         return format.format(price)
     }
-
 
 }

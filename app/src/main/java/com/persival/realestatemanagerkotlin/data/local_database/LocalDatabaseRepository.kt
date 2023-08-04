@@ -19,7 +19,7 @@ class LocalDatabaseRepository @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
     private val propertyDao: PropertyDao,
     private val photoDao: PhotoDao,
-    private val pointOfInterestDao: PointOfInterestDao
+    private val pointOfInterestDao: PointOfInterestDao,
 ) : LocalRepository {
 
     override suspend fun insertProperty(propertyEntity: PropertyEntity): Long {

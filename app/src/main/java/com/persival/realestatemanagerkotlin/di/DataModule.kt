@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.di
 
+import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import androidx.room.Room
@@ -32,9 +33,9 @@ class DataModule {
 
     @Provides
     fun provideLocationDataRepository(
-        @ApplicationContext app: Context
+        application: Application
     ): LocationDataRepository {
-        return LocationDataRepository(app)
+        return LocationDataRepository(application)
     }
 
     @Provides
