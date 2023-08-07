@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.persival.realestatemanagerkotlin.R
@@ -162,6 +163,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         // Set the property information in the form if the propertyId is not null
         if (propertyId != null) {
             viewModel.getProperty(propertyId).observe(viewLifecycleOwner) { property ->
+                // Set the property information
                 binding.typeEditText.setText(property.property.type)
                 binding.datePickerToSellText.setText(property.property.saleDate)
                 binding.datePickerEditText.setText(property.property.entryDate)
@@ -173,16 +175,57 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 binding.descriptionEditText.setText(property.property.description)
                 binding.addressEditText.setText(property.property.address)
 
-                binding.card1EditText.setText(property.photos[0].description)
-                binding.card2EditText.setText(property.photos[1].description)
-                binding.card3EditText.setText(property.photos[2].description)
-                binding.card4EditText.setText(property.photos[3].description)
-                binding.card5EditText.setText(property.photos[4].description)
-                binding.card6EditText.setText(property.photos[5].description)
-
-                property.pointsOfInterest.forEach { poi ->
-                    binding.poiButton.text = poi.poi
+                // Set the card photos and descriptions
+                if (property.photos.isNotEmpty()) {
+                    binding.card1EditText.setText(property.photos[0].description)
                 }
+                if (property.photos.size > 1) {
+                    binding.card2EditText.setText(property.photos[1].description)
+                }
+                if (property.photos.size > 2) {
+                    binding.card3EditText.setText(property.photos[2].description)
+                }
+                if (property.photos.size > 3) {
+                    binding.card4EditText.setText(property.photos[3].description)
+                }
+                if (property.photos.size > 4) {
+                    binding.card5EditText.setText(property.photos[4].description)
+                }
+                if (property.photos.size > 5) {
+                    binding.card6EditText.setText(property.photos[5].description)
+                }
+
+
+                val imageViews = listOf(
+                    binding.card1ImageView,
+                    binding.card2ImageView,
+                    binding.card3ImageView,
+                    binding.card4ImageView,
+                    binding.card5ImageView,
+                    binding.card6ImageView
+                )
+                property.photos.forEachIndexed { index, photo ->
+                    if (index < imageViews.size && index < property.photos.size) {
+                        Glide.with(imageViews[index])
+                            .load(photo.photoUrl)
+                            .into(imageViews[index])
+                    }
+                }
+
+                // Set the POI button text
+                if (property.pointsOfInterest.isNotEmpty()) {
+                    val poiStringBuilder = StringBuilder()
+                    property.pointsOfInterest.forEachIndexed { index, poi ->
+                        poiStringBuilder.append(poi.poi)
+                        if (index < property.pointsOfInterest.size - 1) {
+                            poiStringBuilder.append(", ")
+                        }
+                    }
+                    binding.poiButton.text = poiStringBuilder.toString()
+                } else {
+                    binding.poiButton.text = getString(R.string.select_poi)
+                }
+
             }
         }
 

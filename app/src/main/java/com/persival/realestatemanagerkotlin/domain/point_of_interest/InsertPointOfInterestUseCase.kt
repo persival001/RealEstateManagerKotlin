@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.domain.poi
+package com.persival.realestatemanagerkotlin.domain.point_of_interest
 
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import javax.inject.Inject

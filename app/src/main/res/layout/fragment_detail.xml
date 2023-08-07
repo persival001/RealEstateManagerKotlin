@@ -41,6 +41,7 @@
 
         </com.google.android.material.carousel.MaskableFrameLayout>
 
+        <!-- Characteristics -->
         <View
             android:id="@+id/media_view"
             android:layout_width="match_parent"
@@ -62,7 +63,6 @@
             app:layout_constraintStart_toStartOf="@+id/linear_layout_block"
             app:layout_constraintTop_toBottomOf="@+id/media_view" />
 
-        <!-- LinearLayout block -->
         <LinearLayout
             android:id="@+id/linear_layout_block"
             android:layout_width="match_parent"
@@ -70,7 +70,6 @@
             android:layout_marginTop="@dimen/default_large_margin"
             android:baselineAligned="false"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/description_view"
             app:layout_constraintTop_toBottomOf="@+id/characteristics_textView">
 
             <!-- LinearLayout left -->
@@ -197,6 +196,41 @@
 
         </LinearLayout>
 
+        <!-- Point of interest -->
+        <View
+            android:id="@+id/poi_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/default_large_margin"
+            android:layout_marginBottom="@dimen/default_large_margin"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linear_layout_block" />
+
+        <TextView
+            android:id="@+id/poi_text_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:text="@string/point_of_interest"
+            android:textSize="@dimen/default_text_middle_size"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_view" />
+
+        <TextView
+            android:id="@+id/poi_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_large_margin"
+            android:textSize="@dimen/default_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poi_text_textView"
+            tools:text="@string/description_poi" />
+
+        <!-- Description -->
         <View
             android:id="@+id/description_view"
             android:layout_width="match_parent"
@@ -206,7 +240,7 @@
             android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linear_layout_block" />
+            app:layout_constraintTop_toBottomOf="@+id/poi_textView" />
 
         <TextView
             android:id="@+id/description_text_textView"
@@ -230,6 +264,7 @@
             app:layout_constraintTop_toBottomOf="@+id/description_text_textView"
             tools:text="@string/description_exemple" />
 
+        <!-- Information -->
         <View
             android:id="@+id/contact_view"
             android:layout_width="match_parent"

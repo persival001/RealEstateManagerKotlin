@@ -6,12 +6,6 @@
         <item>Shops</item>
         <item>Green Spaces</item>
         <item>Hospitals</item>
-        <item>Restaurants and Cafes</item>
-        <item>Safety</item>
-        <item>Accessibility</item>
-        <item>Workplaces</item>
-        <item>Cultural Attractions</item>
-        <item>Lively Neighborhoods</item>
-        <item>High-Speed Internet</item>
+        <item>Restaurants</item>
     </string-array>
 </resources>

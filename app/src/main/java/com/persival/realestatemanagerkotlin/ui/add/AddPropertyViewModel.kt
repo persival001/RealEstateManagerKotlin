@@ -7,13 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
-import com.persival.realestatemanagerkotlin.domain.poi.InsertPointOfInterestUseCase
-import com.persival.realestatemanagerkotlin.domain.poi.PointOfInterestEntity
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.InsertPointOfInterestUseCase
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property.InsertPropertyUseCase
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
-import com.persival.realestatemanagerkotlin.domain.property.UpdatePropertyUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.UpdatePropertyWithPhotoAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -26,13 +26,13 @@ class AddPropertyViewModel @Inject constructor(
     private val insertPropertyUseCase: InsertPropertyUseCase,
     private val insertPhotoUseCase: InsertPhotoUseCase,
     private val insertPointOfInterestUseCase: InsertPointOfInterestUseCase,
-    private val updatePropertyUseCase: UpdatePropertyUseCase,
     private val getPropertyWithPhotoAndPOIUseCase: GetPropertyWithPhotoAndPOIUseCase,
+    private val updatePropertyWithPhotoAndPOIUseCase: UpdatePropertyWithPhotoAndPOIUseCase,
 ) : ViewModel() {
 
     fun addNewProperty(addViewState: AddViewState) {
         viewModelScope.launch(coroutineDispatcherProvider.io) {
-            val propertyEntity = getRealEstateAgentUseCase.invoke()?.let {
+            val propertyEntity = getRealEstateAgentUseCase.invoke()?.let { propertyEntity ->
                 PropertyEntity(
                     null,
                     addViewState.type,
@@ -46,7 +46,7 @@ class AddPropertyViewModel @Inject constructor(
                     isThePropertyForSale(addViewState.soldAt),
                     addViewState.availableFrom,
                     addViewState.soldAt,
-                    it.name
+                    propertyEntity.name
                 )
             }
 
@@ -77,29 +77,43 @@ class AddPropertyViewModel @Inject constructor(
         }
     }
 
-    fun updateProperty(
-        propertyId: Long, addViewState: AddViewState
-    ) {
-        viewModelScope.launch(coroutineDispatcherProvider.io) {
-            updatePropertyUseCase.invoke(
-                PropertyEntity(
-                    propertyId,
-                    addViewState.type,
-                    addViewState.address,
-                    addViewState.area,
-                    addViewState.rooms,
-                    addViewState.bathrooms,
-                    addViewState.bedrooms,
-                    addViewState.description,
-                    addViewState.price,
-                    isThePropertyForSale(addViewState.soldAt),
-                    addViewState.availableFrom,
-                    addViewState.soldAt,
-                    getRealEstateAgentUseCase.invoke()?.name ?: ""
-                )
+    fun updateProperty(propertyId: Long, addViewState: AddViewState) {
+        viewModelScope.launch {
+            val propertyEntity = PropertyEntity(
+                propertyId,
+                addViewState.type,
+                addViewState.address,
+                addViewState.area,
+                addViewState.rooms,
+                addViewState.bathrooms,
+                addViewState.bedrooms,
+                addViewState.description,
+                addViewState.price,
+                isThePropertyForSale(addViewState.soldAt),
+                addViewState.availableFrom,
+                addViewState.soldAt,
+                getRealEstateAgentUseCase.invoke()?.name ?: ""
             )
+
+            val photoEntities = addViewState.photoUris.mapIndexed { index, uri ->
+                PhotoEntity(
+                    propertyId = propertyId,
+                    description = addViewState.photoDescriptions.getOrNull(index) ?: "",
+                    photoUrl = uri
+                )
+            }
+
+            val pointOfInterestEntities = addViewState.pointsOfInterest.split(",").map { poi ->
+                PointOfInterestEntity(
+                    propertyId = propertyId,
+                    poi = poi.trim()
+                )
+            }
+
+            updatePropertyWithPhotoAndPOIUseCase.invoke(propertyEntity, photoEntities, pointOfInterestEntities)
         }
     }
+
 
     fun getProperty(propertyId: Long): LiveData<PropertyWithPhotosAndPOIEntity> {
         return getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).asLiveData()

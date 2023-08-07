@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class DetailViewModel @Inject constructor(
                     bathrooms = details.property.bathrooms.toString(),
                     description = details.property.description,
                     address = details.property.address,
-                    pointOfInterest = "School", //TODO: get from POI
+                    pointOfInterest = convertPOIToString(details.pointsOfInterest),
                     isSold = details.property.isSold,
                     entryDate = details.property.entryDate,
                     saleDate = details.property.saleDate ?: "",
@@ -63,5 +64,14 @@ class DetailViewModel @Inject constructor(
             }
         }
     }
+
+    private fun convertPOIToString(pointsOfInterest: List<PointOfInterestEntity>): String {
+        return if (pointsOfInterest.isNotEmpty()) {
+            pointsOfInterest.joinToString(", ") { it.poi }
+        } else {
+            "No Points of Interest"
+        }
+    }
+
 
 }

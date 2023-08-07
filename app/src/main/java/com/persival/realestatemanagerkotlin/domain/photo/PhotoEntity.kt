@@ -17,7 +17,7 @@ import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 data class PhotoEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val propertyId: Long,
-    val description: String,
-    val photoUrl: String
+    var description: String,
+    var photoUrl: String
 )
 

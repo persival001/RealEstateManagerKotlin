@@ -67,6 +67,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             binding.descriptionTextView.text = details.description
             binding.surfaceTextView.text = details.surface
             binding.locationTextView.text = details.address
+            binding.poiTextView.text = details.pointOfInterest
 
             val isSoldString = if (details.isSold) {
                 getString(
