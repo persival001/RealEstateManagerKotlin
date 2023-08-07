@@ -1,14 +1,14 @@
 package com.persival.realestatemanagerkotlin.domain.permissions
 
-import kotlinx.coroutines.flow.StateFlow
+import android.app.Activity
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class IsLocationPermissionUseCase @Inject constructor(
+class RequestStoragePermissionUseCase @Inject constructor(
     private val permissionRepository: PermissionRepository
 ) {
-    fun invoke(): StateFlow<Boolean> {
-        return permissionRepository.locationPermissionFlow
+    fun invoke(activity: Activity) {
+        permissionRepository.requestStoragePermission(activity)
     }
 }

@@ -1,6 +1,7 @@
 package com.persival.realestatemanagerkotlin.ui.authentication
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -32,6 +33,8 @@ class AuthenticationActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "ActivityAuthentication"
+        const val LOCATION_REQUEST_CODE = 1
+        const val STORAGE_REQUEST_CODE = 2
     }
 
     private val signInLauncher =
@@ -102,9 +105,10 @@ class AuthenticationActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            // User is signed in, check permissions and start MainActivity
-            val intent = Intent(this, MainActivity::class.java).apply {
-            }
+            viewModel.onLocationButtonClicked(this)
+            viewModel.onStorageButtonClicked(this)
+
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         } else {
@@ -112,5 +116,30 @@ class AuthenticationActivity : AppCompatActivity() {
                 .show()
         }
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            LOCATION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Permission de localisation accordée", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Permission de localisation refusée", Toast.LENGTH_SHORT).show()
+                    finish() // Ferme l'application
+                }
+            }
+
+            STORAGE_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Permission de stockage accordée", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Permission de stockage refusée", Toast.LENGTH_SHORT).show()
+                    finish() // Ferme l'application
+                }
+            }
+
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
 
 }

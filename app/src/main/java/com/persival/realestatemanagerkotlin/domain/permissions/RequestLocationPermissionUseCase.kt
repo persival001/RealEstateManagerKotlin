@@ -1,13 +1,14 @@
 package com.persival.realestatemanagerkotlin.domain.permissions
 
+import android.app.Activity
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RefreshGpsActivationUseCase @Inject constructor(
+class RequestLocationPermissionUseCase @Inject constructor(
     private val permissionRepository: PermissionRepository
 ) {
-    fun invoke() {
-        return permissionRepository.refreshGpsActivation()
+    fun invoke(activity: Activity) {
+        permissionRepository.requestLocationPermission(activity)
     }
 }

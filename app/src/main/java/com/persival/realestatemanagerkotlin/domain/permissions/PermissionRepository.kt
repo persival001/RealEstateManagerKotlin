@@ -1,11 +1,8 @@
 package com.persival.realestatemanagerkotlin.domain.permissions
 
-import kotlinx.coroutines.flow.StateFlow
+import android.app.Activity
 
 interface PermissionRepository {
-    val locationPermissionFlow: StateFlow<Boolean>
-    val gpsActivatedFlow: StateFlow<Boolean>
-
-    fun refreshLocationPermission()
-    fun refreshGpsActivation()
+    fun requestLocationPermission(activity: Activity)
+    fun requestStoragePermission(activity: Activity)
 }
