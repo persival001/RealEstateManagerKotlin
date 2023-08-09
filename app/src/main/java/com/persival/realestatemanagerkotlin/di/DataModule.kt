@@ -55,15 +55,11 @@ class DataModule {
     @Provides
     fun provideLocalDatabaseRepository(
         coroutineDispatcherProvider: CoroutineDispatcherProvider,
-        propertyDao: PropertyDao,
-        photoDao: PhotoDao,
-        pointOfInterestDao: PointOfInterestDao
+        @ApplicationContext context: Context
     ): LocalDatabaseRepository {
         return LocalDatabaseRepository(
             coroutineDispatcherProvider,
-            propertyDao,
-            photoDao,
-            pointOfInterestDao
+            context
         )
     }
 

@@ -4,15 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.NumberFormat
 import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class PropertiesViewModel @Inject constructor(
+    private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
     private val getAllPropertiesWithPhotosAndPOIUseCase: GetAllPropertiesWithPhotosAndPOIUseCase,
 ) : ViewModel() {
 
@@ -24,9 +28,9 @@ class PropertiesViewModel @Inject constructor(
     }
 
     private fun loadProperties() {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineDispatcherProvider.io) {
             getAllPropertiesWithPhotosAndPOIUseCase.invoke().collect { properties ->
-                propertiesViewStateItem.value = properties
+                val viewStateItems = properties
                     .map { propertyWithPhotosAndPOI ->
                         PropertyViewStateItem(
                             id = propertyWithPhotosAndPOI.property.id!!,
@@ -39,6 +43,10 @@ class PropertiesViewModel @Inject constructor(
                         )
                     }
                     .sortedBy { it.isSold }
+
+                withContext(Dispatchers.Main) {
+                    propertiesViewStateItem.value = viewStateItems
+                }
             }
         }
     }

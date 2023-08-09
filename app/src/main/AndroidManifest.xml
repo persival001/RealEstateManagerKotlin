@@ -49,6 +49,11 @@
         </activity>
 
         <provider
+            android:name=".data.ContentDataProvider"
+            android:authorities="com.persival.realestatemanagerkotlin.data.ContentDataProvider"
+            android:exported="false" />
+
+        <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"

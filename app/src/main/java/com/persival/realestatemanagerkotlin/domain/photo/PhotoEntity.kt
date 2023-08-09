@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.domain.photo
 
+import android.content.ContentValues
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -19,5 +20,27 @@ data class PhotoEntity(
     val propertyId: Long,
     var description: String,
     var photoUrl: String
-)
+) {
+    companion object {
+        fun fromContentValues(values: ContentValues?): PhotoEntity {
+            return PhotoEntity(
+                id = values?.getAsLong("id") ?: 0L,
+                propertyId = values?.getAsLong("propertyId") ?: 0L,
+                description = values?.getAsString("description") ?: "",
+                photoUrl = values?.getAsString("photoUrl") ?: ""
+            )
+        }
+
+        fun PhotoEntity.toContentValues(): ContentValues {
+            return ContentValues().apply {
+                put("id", id)
+                put("propertyId", propertyId)
+                put("description", description)
+                put("photoUrl", photoUrl)
+            }
+        }
+    }
+
+}
+
 
