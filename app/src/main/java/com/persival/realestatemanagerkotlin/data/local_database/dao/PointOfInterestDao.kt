@@ -8,6 +8,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PointOfInterestDao {
@@ -15,20 +16,21 @@ interface PointOfInterestDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(poi: PointOfInterestEntity): Long
 
+    @Insert
+    suspend fun insertAll(pois: List<PointOfInterestEntity>)
+
     @Update
-    fun update(poi: PointOfInterestEntity): Int
+    suspend fun update(poi: PointOfInterestEntity)
 
     @Delete
-    fun delete(poi: PointOfInterestEntity): Int
+    suspend fun delete(poi: PointOfInterestEntity)
 
     @Query("DELETE FROM point_of_interest WHERE propertyId = :propertyId")
     suspend fun deletePOIsByPropertyId(propertyId: Long)
 
     @Query("SELECT * FROM point_of_interest")
-    fun getAllPointsOfInterest(): Cursor
+    fun getAllPointsOfInterest(): Flow<List<PointOfInterestEntity>>
 
-    @Query("SELECT * FROM point_of_interest WHERE propertyId = :propertyId")
-    fun getPointsOfInterestByPropertyId(propertyId: Long): Cursor
 
     @Query("DELETE FROM point_of_interest WHERE propertyId = :propertyId")
     fun deleteBySelection(propertyId: Long): Int
@@ -42,5 +44,7 @@ interface PointOfInterestDao {
     @Query("SELECT * FROM point_of_interest")
     fun getAllPointsOfInterestAsCursor(): Cursor
 
+    @Query("SELECT * FROM point_of_interest WHERE propertyId = :propertyId")
+    fun getPointsOfInterestByPropertyIdAsCursor(propertyId: Long): Cursor
 
 }

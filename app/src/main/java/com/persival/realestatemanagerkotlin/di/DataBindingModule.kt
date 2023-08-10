@@ -33,4 +33,5 @@ abstract class DataBindingModule {
     @Singleton
     @Binds
     abstract fun bindLocalRepository(localDatabaseRepository: LocalDatabaseRepository): LocalRepository
+
 }

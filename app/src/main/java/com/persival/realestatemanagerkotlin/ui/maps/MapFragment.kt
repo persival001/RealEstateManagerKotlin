@@ -3,9 +3,6 @@ package com.persival.realestatemanagerkotlin.ui.maps
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -57,9 +54,21 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
                 googleMap?.addCircle(circleOptions)
             }
         }
+
+        viewModel.propertiesLatLng.observe(viewLifecycleOwner) { mapViewStateList ->
+            mapViewStateList.forEach { mapViewState ->
+                val markerOptions = MarkerOptions()
+                    .position(mapViewState.latLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    .title("Property")
+                googleMap?.addMarker(markerOptions)
+            }
+        }
+
     }
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
+        viewModel.getAllPropertiesLatLng()
     }
 }

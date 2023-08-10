@@ -9,6 +9,8 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PropertyDao {
@@ -17,17 +19,19 @@ interface PropertyDao {
     fun insert(propertyEntity: PropertyEntity): Long
 
     @Update
-    fun update(propertyEntity: PropertyEntity): Int
+    suspend fun update(propertyEntity: PropertyEntity)
 
     @Delete
-    fun delete(propertyEntity: PropertyEntity): Int
+    suspend fun delete(propertyEntity: PropertyEntity)
 
     @Query("SELECT * FROM property")
-    fun getAllProperties(): Cursor
+    @Transaction
+    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>>
 
     @Query("SELECT * FROM property WHERE id = :propertyId")
     @Transaction
-    fun getPropertyById(propertyId: Long): Cursor
+    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
+
 
     @Query("DELETE FROM property WHERE id = :propertyId")
     fun deleteBySelection(propertyId: Long): Int
@@ -37,5 +41,19 @@ interface PropertyDao {
 
     @Query("SELECT * FROM property WHERE id = :propertyId")
     fun getById(propertyId: Long): PropertyEntity?
+
+    @Update
+    suspend fun updateAsCursor(propertyEntity: PropertyEntity): Int
+
+    @Query("SELECT * FROM property")
+    fun getAllPropertiesAsCursor(): Cursor
+
+    @Query("SELECT * FROM property WHERE id = :propertyId")
+    @Transaction
+    fun getPropertyByIdAsCursor(propertyId: Long): Cursor
+
+    @Query("SELECT latLng FROM property")
+    fun getAllLatLng(): Flow<List<String>>
+
 
 }

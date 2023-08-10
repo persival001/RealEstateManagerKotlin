@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.data
+package com.persival.realestatemanagerkotlin.data.local_database.content_provider
 
 import android.content.ContentProvider
 import android.content.ContentValues
@@ -13,6 +13,7 @@ import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
+import kotlinx.coroutines.runBlocking
 
 class ContentDataProvider : ContentProvider() {
 
@@ -25,10 +26,11 @@ class ContentDataProvider : ContentProvider() {
         uriMatcher.addURI(AUTHORITY, "properties", PROPERTY)
         uriMatcher.addURI(AUTHORITY, "photos", PHOTO)
         uriMatcher.addURI(AUTHORITY, "points_of_interest", POI)
+        uriMatcher.addURI(AUTHORITY, "properties/#", PROPERTY_ID)
     }
 
     companion object {
-        const val AUTHORITY = "com.persival.realestatemanagerkotlin.data.ContentDataProvider"
+        const val AUTHORITY = "com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentDataProvider"
         val PROPERTY_TABLE: Uri = Uri.parse("content://$AUTHORITY/properties")
         val PHOTO_TABLE: Uri = Uri.parse("content://$AUTHORITY/photos")
         val POI_TABLE: Uri = Uri.parse("content://$AUTHORITY/points_of_interest")
@@ -36,6 +38,7 @@ class ContentDataProvider : ContentProvider() {
         private const val PROPERTY = 1
         private const val PHOTO = 2
         private const val POI = 3
+        private const val PROPERTY_ID = 4
     }
 
     private var propertyDao: PropertyDao? = null
@@ -56,7 +59,7 @@ class ContentDataProvider : ContentProvider() {
     ): Cursor {
         val cursor: Cursor = when (uriMatcher.match(uri)) {
             PROPERTY -> {
-                appDatabase.propertyDao().getAllProperties()
+                appDatabase.propertyDao().getAllPropertiesAsCursor()
             }
 
             PHOTO -> {
@@ -65,6 +68,12 @@ class ContentDataProvider : ContentProvider() {
 
             POI -> {
                 appDatabase.pointOfInterestDao().getAllPointsOfInterestAsCursor()
+            }
+
+            PROPERTY_ID -> {
+                val id = uri.lastPathSegment?.toLongOrNull()
+                    ?: throw IllegalArgumentException("ID must be provided for the property")
+                appDatabase.propertyDao().getPropertyByIdAsCursor(id)
             }
 
             else -> throw IllegalArgumentException("Unknown URI: $uri")
@@ -78,6 +87,7 @@ class ContentDataProvider : ContentProvider() {
             PROPERTY -> "vnd.android.cursor.dir/$AUTHORITY.properties"
             PHOTO -> "vnd.android.cursor.dir/$AUTHORITY.photos"
             POI -> "vnd.android.cursor.dir/$AUTHORITY.points_of_interest"
+            PROPERTY_ID -> "vnd.android.cursor.item/$AUTHORITY.properties"
             else -> throw IllegalArgumentException("Unknown URI: $uri")
         }
     }
@@ -112,20 +122,24 @@ class ContentDataProvider : ContentProvider() {
         val propertyId = selectionArgs?.first()?.toLongOrNull()
             ?: throw IllegalArgumentException("propertyId must be provided for update operation")
 
-        val count: Int = when (uriMatcher.match(uri)) {
-            PROPERTY -> {
-                val property = propertyDao?.getById(propertyId)
-                property?.apply {
-                    type = values?.getAsString("type") ?: type
-                    address = values?.getAsString("address") ?: address
+        var count = 0
+        runBlocking {
+            count = when (uriMatcher.match(uri)) {
+                PROPERTY -> {
+                    val property = propertyDao?.getById(propertyId)
+                    property?.apply {
+                        type = values?.getAsString("type") ?: type
+                        address = values?.getAsString("address") ?: address
+                    }
+                    property?.let { propertyDao?.updateAsCursor(it) } ?: 0
                 }
-                property?.let { propertyDao?.update(it) } ?: 0
-            }
 
-            else -> throw IllegalArgumentException("Unknown URI: $uri")
+                else -> throw IllegalArgumentException("Unknown URI: $uri")
+            }
         }
         context?.contentResolver?.notifyChange(uri, null)
         return count
     }
+
 
 }

@@ -76,5 +76,7 @@
     <string name="point_of_interest">Point of interest</string>
     <string name="description_poi">School, Hospital, Restaurant</string>
     <string name="contact_exemple">Sell the 12/02/2023</string>
+    <string name="property_added">The property has been added</string>
+    <string name="property_modified">The property has been modified</string>
 
 </resources>

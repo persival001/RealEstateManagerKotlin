@@ -112,6 +112,8 @@ class AuthenticationActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         } else {
+            viewModel.onLocationButtonClicked(this)
+            viewModel.onStorageButtonClicked(this)
             Toast.makeText(this, getString(R.string.authentication_failed), Toast.LENGTH_SHORT)
                 .show()
         }

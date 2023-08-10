@@ -32,7 +32,7 @@ class PropertyListAdapter(
             oldItem: PropertyViewStateItem,
             newItem: PropertyViewStateItem
         ): Boolean {
-            return oldItem == newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(

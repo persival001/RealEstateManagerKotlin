@@ -8,13 +8,21 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
+import com.persival.realestatemanagerkotlin.BuildConfig.MAPS_API_KEY
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentAddPropertyBinding
 import com.persival.realestatemanagerkotlin.utils.viewBinding
@@ -58,6 +66,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
     private lateinit var editTexts: Array<EditText>
     private lateinit var imageButtons: Array<ImageButton>
 
+    private var latLongString: String? = null
     private var currentRequestCode = 0
 
     private val openFileResult =
@@ -88,6 +97,43 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         val items = resources.getStringArray(R.array.poi_items)
         val checkedItems = BooleanArray(items.size)
         var multiChoiceItemsSelected = ""
+
+        // Initialize the Places API
+        if (!Places.isInitialized()) {
+            Places.initialize(requireContext(), MAPS_API_KEY)
+        }
+
+        // Google Places UI for address autocompletion
+        val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
+
+        val autocompleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                Activity.RESULT_OK -> {
+                    val place = Autocomplete.getPlaceFromIntent(result.data!!)
+                    binding.addressEditText.setText(place.address)
+                    place.latLng?.let { latLng ->
+                        latLongString = "${latLng.latitude},${latLng.longitude}"
+                    }
+                }
+
+                AutocompleteActivity.RESULT_ERROR -> {
+                    val status = Autocomplete.getStatusFromIntent(result.data!!)
+                    Toast.makeText(requireContext(), status.statusMessage, Toast.LENGTH_LONG).show()
+                }
+
+                Activity.RESULT_CANCELED -> {
+                    binding.addressEditText.setText("")
+                }
+            }
+        }
+
+        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+            .setTypeFilter(TypeFilter.ADDRESS)
+            .setCountry("US")
+            .build(requireContext())
+        binding.addressEditText.setOnClickListener {
+            autocompleteResultLauncher.launch(intent)
+        }
 
         // Initialize the POI button
         binding.poiButton.setOnClickListener {
@@ -241,11 +287,20 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
                 if (propertyId != null && propertyId != -1L) {
                     viewModel.updateProperty(propertyId, addViewState)
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.property_modified),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
                     viewModel.addNewProperty(addViewState)
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.property_added),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
-                // Return to main activity
                 requireActivity().finish()
             }
         }
@@ -274,6 +329,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         return AddViewState(
             binding.typeEditText.text.toString(),
             binding.addressEditText.text.toString(),
+            latLongString ?: "",
             binding.areaEditText.text.toString().toInt(),
             binding.roomsEditText.text.toString().toInt(),
             binding.bathroomsEditText.text.toString().toInt(),
@@ -325,4 +381,5 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         }
         datePicker.show(parentFragmentManager, "date_picker_tag")
     }
+
 }

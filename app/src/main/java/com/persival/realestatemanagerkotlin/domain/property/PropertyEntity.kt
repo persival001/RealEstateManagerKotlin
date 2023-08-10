@@ -10,6 +10,7 @@ data class PropertyEntity(
     val id: Long? = null,
     var type: String,
     var address: String,
+    val latLng: String,
     val area: Int,
     val rooms: Int,
     val bathrooms: Int,
@@ -27,6 +28,7 @@ data class PropertyEntity(
                 id = values?.getAsLong("id"),
                 type = values?.getAsString("type") ?: "",
                 address = values?.getAsString("address") ?: "",
+                latLng = values?.getAsString("latLng") ?: "",
                 area = values?.getAsInteger("area") ?: 0,
                 rooms = values?.getAsInteger("rooms") ?: 0,
                 bathrooms = values?.getAsInteger("bathrooms") ?: 0,
@@ -45,6 +47,7 @@ data class PropertyEntity(
             propertyEntity.id?.let { contentValues.put("id", it) }
             contentValues.put("type", propertyEntity.type)
             contentValues.put("address", propertyEntity.address)
+            contentValues.put("latLng", propertyEntity.latLng)
             contentValues.put("area", propertyEntity.area)
             contentValues.put("rooms", propertyEntity.rooms)
             contentValues.put("bathrooms", propertyEntity.bathrooms)

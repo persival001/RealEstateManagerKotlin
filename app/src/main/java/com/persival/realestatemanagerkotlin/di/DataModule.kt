@@ -25,6 +25,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class DataModule {
 
+    private val GOOGLE_PLACES_API_BASE_URL = "https://maps.googleapis.com/"
+
     @Provides
     @Singleton
     fun provideResources(@ApplicationContext context: Context): Resources {
@@ -51,20 +53,24 @@ class DataModule {
     ): PermissionDataRepository {
         return PermissionDataRepository(app)
     }
-
+    
     @Provides
     fun provideLocalDatabaseRepository(
         coroutineDispatcherProvider: CoroutineDispatcherProvider,
-        @ApplicationContext context: Context
+        propertyDao: PropertyDao,
+        photoDao: PhotoDao,
+        pointOfInterestDao: PointOfInterestDao,
     ): LocalDatabaseRepository {
         return LocalDatabaseRepository(
             coroutineDispatcherProvider,
-            context
+            propertyDao,
+            photoDao,
+            pointOfInterestDao
         )
     }
 
-    @Provides
     @Singleton
+    @Provides
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(
             context,
@@ -78,16 +84,19 @@ class DataModule {
         return FirebaseAuth.getInstance()
     }
 
+    @Singleton
     @Provides
     fun providePropertyDao(database: AppDatabase): PropertyDao {
         return database.propertyDao()
     }
 
+    @Singleton
     @Provides
     fun providePhotoDao(database: AppDatabase): PhotoDao {
         return database.photoDao()
     }
 
+    @Singleton
     @Provides
     fun providePointOfInterestDao(database: AppDatabase): PointOfInterestDao {
         return database.pointOfInterestDao()

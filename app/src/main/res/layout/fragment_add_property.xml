@@ -205,26 +205,25 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Location of real estate -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/address_textField"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:hint="@string/location_hint"
             app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bedrooms_textField"
             app:startIconDrawable="@drawable/baseline_location_on_24">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/address_editText"
+            <AutoCompleteTextView
+                android:id="@+id/addressEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPostalAddress" />
-
+                android:hint="@string/location_hint"
+                android:inputType="none"
+                android:padding="@dimen/default_large_margin" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Description of the property -->

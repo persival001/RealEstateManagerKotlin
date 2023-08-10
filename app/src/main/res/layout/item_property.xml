@@ -37,10 +37,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_little_margin"
-            android:singleLine="true"
+            android:layout_marginEnd="@dimen/default_little_margin"
+            android:maxLines="2"
             android:textSize="@dimen/default_text_size"
             android:textStyle="normal"
             app:layout_constraintBottom_toTopOf="@+id/property_price"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/property_picture"
             app:layout_constraintTop_toBottomOf="@+id/property_type"
             tools:text="Brooklyn" />
@@ -82,8 +84,8 @@
                 android:id="@+id/sold_imageview"
                 android:layout_width="170dp"
                 android:layout_height="70dp"
-                android:src="@drawable/sold_label"
-                android:contentDescription="@string/sold_label" />
+                android:contentDescription="@string/sold_label"
+                android:src="@drawable/sold_label" />
 
             <TextView
                 android:id="@+id/sold_textview"

@@ -3,6 +3,7 @@ package com.persival.realestatemanagerkotlin.ui.add
 data class AddViewState(
     val type: String,
     val address: String,
+    val latLng: String,
     val area: Int,
     val rooms: Int,
     val bathrooms: Int,

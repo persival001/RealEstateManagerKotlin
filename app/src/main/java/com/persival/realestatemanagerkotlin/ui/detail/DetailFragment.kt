@@ -80,21 +80,26 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 getString(R.string.information_on_sale, details.agentName, details.entryDate)
             }
             binding.contactTextView.text = isSoldString
+
+            // Show the static map
+            val address = details.address.replace(" ", "+")
+            val zoomLevel = 14
+            val imageSize = "400x400"
+            val markerColor = "red"
+            val markerLabel = "Property is here !"
+
+            val url = "https://maps.googleapis.com/maps/api/staticmap?" +
+                    "center=$address&" +
+                    "zoom=$zoomLevel&" +
+                    "size=$imageSize&" +
+                    "markers=color:$markerColor%7Clabel:$markerLabel%7C$address&" +
+                    "key=$MAPS_API_KEY"
+
+            Glide.with(this)
+                .load(url)
+                .override(500, 500)
+                .into(binding.mapImageView)
         }
-
-        // Show the static map
-        val url =
-            "https://maps.googleapis.com/maps/api/" +
-                    "staticmap?center=1600+Amphitheatre+Parkway," +
-                    "+Mountain+View," +
-                    "+CA&zoom=14&size=400x400&markers=color:red%7Clabel:C%7C1600+Amphitheatre+Parkway," +
-                    "+Mountain+View," +
-                    "+CA&key=$MAPS_API_KEY"
-
-        Glide.with(this)
-            .load(url)
-            .override(500, 500)
-            .into(binding.mapImageView)
 
         // Open the map fragment if clicked
         binding.mapImageView.setOnClickListener {

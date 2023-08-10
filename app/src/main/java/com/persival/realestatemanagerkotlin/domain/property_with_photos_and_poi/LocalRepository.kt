@@ -1,6 +1,5 @@
 package com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi
 
-import android.database.Cursor
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
@@ -18,11 +17,11 @@ interface LocalRepository {
 
     suspend fun insertPhoto(photoEntity: PhotoEntity): Long
 
-    suspend fun updateProperty(propertyEntity: PropertyEntity): Int
+    suspend fun updateProperty(propertyEntity: PropertyEntity)
 
-    suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Int
+    suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity)
 
-    suspend fun updatePhoto(photoEntity: PhotoEntity): Int
+    suspend fun updatePhoto(photoEntity: PhotoEntity)
 
     suspend fun updatePropertyWithPhotosAndPOIs(
         property: PropertyEntity,
@@ -30,12 +29,6 @@ interface LocalRepository {
         pois: List<PointOfInterestEntity>
     )
 
-    suspend fun deleteProperty(propertyId: Long): Int
-
-    suspend fun deletePhoto(photoId: Long): Int
-
-    suspend fun deletePointOfInterest(poiId: Long): Int
-
-    suspend fun queryAllProperties(): Cursor?
+    fun getAllPropertiesLatLng(): Flow<List<String>>
 
 }
