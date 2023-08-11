@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PointOfInterestDao {
 
+    // Local database
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(poi: PointOfInterestEntity): Long
 
@@ -31,7 +32,7 @@ interface PointOfInterestDao {
     @Query("SELECT * FROM point_of_interest")
     fun getAllPointsOfInterest(): Flow<List<PointOfInterestEntity>>
 
-
+    // Content provider
     @Query("DELETE FROM point_of_interest WHERE propertyId = :propertyId")
     fun deleteBySelection(propertyId: Long): Int
 

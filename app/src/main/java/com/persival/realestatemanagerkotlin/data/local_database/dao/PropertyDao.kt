@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PropertyDao {
 
+    // Local database
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(propertyEntity: PropertyEntity): Long
 
@@ -32,7 +33,7 @@ interface PropertyDao {
     @Transaction
     fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
 
-
+    // Content provider
     @Query("DELETE FROM property WHERE id = :propertyId")
     fun deleteBySelection(propertyId: Long): Int
 

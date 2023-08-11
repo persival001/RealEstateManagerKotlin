@@ -16,7 +16,8 @@ import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
     )]
 )
 data class PointOfInterestEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
     val propertyId: Long,
     var poi: String
 ) {

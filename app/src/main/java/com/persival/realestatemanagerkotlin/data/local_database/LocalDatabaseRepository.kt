@@ -48,7 +48,6 @@ class LocalDatabaseRepository @Inject constructor(
         pointOfInterestDao.insertAll(pois)
     }
 
-
     override suspend fun updateProperty(propertyEntity: PropertyEntity) {
         return propertyDao.update(propertyEntity)
     }

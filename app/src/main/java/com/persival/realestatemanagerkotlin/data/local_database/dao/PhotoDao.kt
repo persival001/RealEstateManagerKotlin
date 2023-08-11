@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PhotoDao {
 
+    // Local database
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(photoEntity: PhotoEntity): Long
 
@@ -31,7 +32,7 @@ interface PhotoDao {
     @Query("SELECT * FROM photo")
     fun getAllPhotos(): Flow<List<PhotoEntity>>
 
-
+    // Content provider
     @Query("DELETE FROM photo WHERE propertyId = :propertyId")
     fun deleteBySelection(propertyId: Long): Int
 
