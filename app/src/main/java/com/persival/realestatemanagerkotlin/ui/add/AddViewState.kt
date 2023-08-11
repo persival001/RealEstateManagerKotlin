@@ -14,5 +14,5 @@ data class AddViewState(
     val soldAt: String,
     val photoUris: List<String>,
     val photoDescriptions: List<String>,
-    val pointsOfInterest: String
+    val pointsOfInterest: String,
 )

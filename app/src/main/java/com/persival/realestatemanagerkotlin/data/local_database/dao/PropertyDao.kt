@@ -15,36 +15,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PropertyDao {
 
-    // Local database
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(propertyEntity: PropertyEntity): Long
 
-    @Update
-    suspend fun update(propertyEntity: PropertyEntity)
-
-    @Delete
-    suspend fun delete(propertyEntity: PropertyEntity)
-
-    @Query("SELECT * FROM property")
-    @Transaction
-    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>>
-
-    @Query("SELECT * FROM property WHERE id = :propertyId")
-    @Transaction
-    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
-
-    // Content provider
-    @Query("DELETE FROM property WHERE id = :propertyId")
-    fun deleteBySelection(propertyId: Long): Int
-
-    @Update
-    fun updateBySelection(property: PropertyEntity): Int
-
     @Query("SELECT * FROM property WHERE id = :propertyId")
     fun getById(propertyId: Long): PropertyEntity?
-
-    @Update
-    suspend fun updateAsCursor(propertyEntity: PropertyEntity): Int
 
     @Query("SELECT * FROM property")
     fun getAllPropertiesAsCursor(): Cursor
@@ -56,5 +31,23 @@ interface PropertyDao {
     @Query("SELECT latLng FROM property")
     fun getAllLatLng(): Flow<List<String>>
 
+    @Query("SELECT * FROM property")
+    @Transaction
+    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>>
 
+    @Query("SELECT * FROM property WHERE id = :propertyId")
+    @Transaction
+    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
+
+    @Update
+    suspend fun update(propertyEntity: PropertyEntity): Int
+
+    @Update
+    fun updateBySelection(property: PropertyEntity): Int
+
+    @Delete
+    suspend fun delete(propertyEntity: PropertyEntity)
+
+    @Query("DELETE FROM property WHERE id = :propertyId")
+    fun deleteBySelection(propertyId: Long): Int
 }

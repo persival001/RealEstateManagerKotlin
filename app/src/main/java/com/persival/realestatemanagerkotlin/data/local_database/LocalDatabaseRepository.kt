@@ -10,8 +10,10 @@ import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInte
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,8 +25,8 @@ class LocalDatabaseRepository @Inject constructor(
     private val pointOfInterestDao: PointOfInterestDao,
 ) : LocalRepository {
 
-    override suspend fun insertProperty(propertyEntity: PropertyEntity): Long {
-        return propertyDao.insert(propertyEntity)
+    override suspend fun insertProperty(propertyEntity: PropertyEntity): Long = withContext(coroutineDispatcherProvider.io){
+        propertyDao.insert(propertyEntity)
     }
 
     override suspend fun insertPhoto(photoEntity: PhotoEntity): Long {

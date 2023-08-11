@@ -35,7 +35,7 @@ import java.util.Locale
 class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     companion object {
-        private const val ARG_PROPERTY_ID = "propertyId"
+        const val ARG_PROPERTY_ID = "propertyId"
         fun newInstance(propertyId: Long) = AddPropertyFragment().apply {
             arguments = Bundle().apply {
                 putLong(ARG_PROPERTY_ID, propertyId)
@@ -208,7 +208,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
         // Set the property information in the form if the propertyId is not null
         if (propertyId != null) {
-            viewModel.getProperty(propertyId).observe(viewLifecycleOwner) { property ->
+            viewModel.viewStateLiveData.observe(viewLifecycleOwner) { property ->
                 // Set the property information
                 binding.typeEditText.setText(property.property.type)
                 binding.datePickerToSellText.setText(property.property.saleDate)

@@ -8,7 +8,5 @@ import javax.inject.Singleton
 class InsertPropertyUseCase @Inject constructor(
     private val localRepository: LocalRepository
 ) {
-    suspend fun invoke(propertyEntity: PropertyEntity): Long {
-        return localRepository.insertProperty(propertyEntity)
-    }
+    suspend fun invoke(propertyEntity: PropertyEntity): Long = localRepository.insertProperty(propertyEntity)
 }

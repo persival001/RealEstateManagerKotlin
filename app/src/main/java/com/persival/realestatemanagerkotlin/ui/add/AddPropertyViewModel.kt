@@ -1,8 +1,10 @@
 package com.persival.realestatemanagerkotlin.ui.add
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
@@ -15,12 +17,15 @@ import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.UpdatePropertyWithPhotoAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
+import com.persival.realestatemanagerkotlin.ui.add.AddPropertyFragment.Companion.ARG_PROPERTY_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddPropertyViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
     private val getRealEstateAgentUseCase: GetRealEstateAgentUseCase,
     private val insertPropertyUseCase: InsertPropertyUseCase,
@@ -30,8 +35,17 @@ class AddPropertyViewModel @Inject constructor(
     private val updatePropertyWithPhotoAndPOIUseCase: UpdatePropertyWithPhotoAndPOIUseCase,
 ) : ViewModel() {
 
+    // TODO Persival use ViewState
+    val viewStateLiveData : LiveData<PropertyWithPhotosAndPOIEntity> = liveData {
+        val propertyId = requireNotNull(savedStateHandle.get<Long>(ARG_PROPERTY_ID))
+
+        getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect {
+            emit(it)
+        }
+    }
+
     fun addNewProperty(addViewState: AddViewState) {
-        viewModelScope.launch(coroutineDispatcherProvider.io) {
+        viewModelScope.launch {
             val propertyEntity = getRealEstateAgentUseCase.invoke()?.let { propertyEntity ->
                 PropertyEntity(
                     null,
@@ -114,12 +128,5 @@ class AddPropertyViewModel @Inject constructor(
         }
     }
 
-
-    fun getProperty(propertyId: Long): LiveData<PropertyWithPhotosAndPOIEntity> {
-        return getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).asLiveData()
-    }
-
-    private fun isThePropertyForSale(saleDate: String?): Boolean {
-        return !(saleDate == null || saleDate == "")
-    }
+    private fun isThePropertyForSale(saleDate: String?): Boolean = !(saleDate == null || saleDate == "")
 }

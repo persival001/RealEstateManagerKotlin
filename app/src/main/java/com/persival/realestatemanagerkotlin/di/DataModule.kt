@@ -25,34 +25,24 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class DataModule {
 
-    private val GOOGLE_PLACES_API_BASE_URL = "https://maps.googleapis.com/"
-
-    @Provides
-    @Singleton
-    fun provideResources(@ApplicationContext context: Context): Resources {
-        return context.resources
+    companion object {
+        private const val GOOGLE_PLACES_API_BASE_URL = "https://maps.googleapis.com/"
     }
 
     @Provides
     fun provideLocationDataRepository(
         application: Application
-    ): LocationDataRepository {
-        return LocationDataRepository(application)
-    }
+    ): LocationDataRepository = LocationDataRepository(application)
 
     @Provides
     fun provideFirebaseDataRepository(
         firebaseAuth: FirebaseAuth
-    ): FirebaseDataRepository {
-        return FirebaseDataRepository(firebaseAuth)
-    }
+    ): FirebaseDataRepository = FirebaseDataRepository(firebaseAuth)
 
     @Provides
     fun providePermissionDataRepository(
         @ApplicationContext app: Context
-    ): PermissionDataRepository {
-        return PermissionDataRepository(app)
-    }
+    ): PermissionDataRepository = PermissionDataRepository(app)
     
     @Provides
     fun provideLocalDatabaseRepository(
@@ -60,46 +50,34 @@ class DataModule {
         propertyDao: PropertyDao,
         photoDao: PhotoDao,
         pointOfInterestDao: PointOfInterestDao,
-    ): LocalDatabaseRepository {
-        return LocalDatabaseRepository(
-            coroutineDispatcherProvider,
-            propertyDao,
-            photoDao,
-            pointOfInterestDao
-        )
-    }
+    ): LocalDatabaseRepository = LocalDatabaseRepository(
+        coroutineDispatcherProvider,
+        propertyDao,
+        photoDao,
+        pointOfInterestDao
+    )
 
     @Singleton
     @Provides
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java, "database-room"
-        ).build()
-    }
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase = Room.databaseBuilder(
+        context,
+        AppDatabase::class.java, "database-room"
+    ).build()
 
     @Singleton
     @Provides
-    fun provideFirebaseAuth(): FirebaseAuth {
-        return FirebaseAuth.getInstance()
-    }
+    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Singleton
     @Provides
-    fun providePropertyDao(database: AppDatabase): PropertyDao {
-        return database.propertyDao()
-    }
+    fun providePropertyDao(database: AppDatabase): PropertyDao = database.propertyDao()
 
     @Singleton
     @Provides
-    fun providePhotoDao(database: AppDatabase): PhotoDao {
-        return database.photoDao()
-    }
+    fun providePhotoDao(database: AppDatabase): PhotoDao = database.photoDao()
 
     @Singleton
     @Provides
-    fun providePointOfInterestDao(database: AppDatabase): PointOfInterestDao {
-        return database.pointOfInterestDao()
-    }
+    fun providePointOfInterestDao(database: AppDatabase): PointOfInterestDao = database.pointOfInterestDao()
 
 }

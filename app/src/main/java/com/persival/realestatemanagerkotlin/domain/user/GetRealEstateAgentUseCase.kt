@@ -7,7 +7,5 @@ import javax.inject.Singleton
 class GetRealEstateAgentUseCase @Inject constructor(
     private val firebaseRepository: FirebaseRepository
 ) {
-    fun invoke(): RealEstateAgentEntity? {
-        return firebaseRepository.getRealEstateAgentIdentity()
-    }
+    fun invoke(): RealEstateAgentEntity? = firebaseRepository.getRealEstateAgentIdentity()
 }

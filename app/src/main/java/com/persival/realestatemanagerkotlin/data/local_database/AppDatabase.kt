@@ -9,7 +9,14 @@ import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 
-@Database(entities = [PropertyEntity::class, PointOfInterestEntity::class, PhotoEntity::class], version = 1)
+@Database(
+    entities = [
+        PropertyEntity::class,
+        PointOfInterestEntity::class,
+        PhotoEntity::class,
+    ],
+    version = 1,
+)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun propertyDao(): PropertyDao

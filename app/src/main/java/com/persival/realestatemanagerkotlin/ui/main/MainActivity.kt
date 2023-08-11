@@ -129,9 +129,9 @@ class MainActivity : AppCompatActivity(), PropertyIdListener {
             }
 
             R.id.action_modify -> {
+                // TODO Persival respect the UDF and use a small im memory repository to store and use the "current property id" !
                 val intent = Intent(this, NavigationActivity::class.java)
                 intent.putExtra("selectedItem", "item_modify")
-                propertyId?.let { intent.putExtra("property_id", it) }
                 startActivity(intent)
                 return true
             }

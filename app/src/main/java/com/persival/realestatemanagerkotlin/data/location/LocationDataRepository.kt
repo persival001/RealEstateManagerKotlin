@@ -22,18 +22,12 @@ class LocationDataRepository @Inject constructor(
 
     override fun getCurrentLocation(): LiveData<Location> = userLocation
 
-    private val locationManager =
-        application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private val locationManager = application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-    private val locationListener: LocationListener =
-        LocationListener { location -> userLocation.value = location }
+    private val locationListener: LocationListener = LocationListener { location -> userLocation.value = location }
 
     init {
-        if (ContextCompat.checkSelfPermission(
-                application,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ContextCompat.checkSelfPermission(application, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 10.seconds.inWholeMilliseconds,

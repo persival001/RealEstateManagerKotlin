@@ -3,6 +3,7 @@ package com.persival.realestatemanagerkotlin.ui.properties
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.persival.realestatemanagerkotlin.R
@@ -14,8 +15,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class PropertiesFragment : Fragment(R.layout.fragment_properties) {
 
-    private lateinit var propertyListAdapter: PropertyListAdapter
-
     companion object {
         fun newInstance() = PropertiesFragment()
     }
@@ -26,7 +25,7 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        propertyListAdapter = PropertyListAdapter { property ->
+        val propertyListAdapter = PropertyListAdapter { property ->
             val detailFragment = DetailFragment.newInstance(property.id)
             val containerId = if (resources.getBoolean(R.bool.isTablet)) {
                 R.id.main_FrameLayout_container_detail
@@ -34,10 +33,10 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
                 R.id.main_FrameLayout_container_properties
             }
 
-            activity?.supportFragmentManager?.beginTransaction()
-                ?.replace(containerId, detailFragment)
-                ?.addToBackStack(null)
-                ?.commit()
+            requireActivity().supportFragmentManager.commit {
+                replace(containerId, detailFragment)
+                addToBackStack(null)
+            }
         }
 
         binding.propertiesRecyclerView.layoutManager = LinearLayoutManager(context)

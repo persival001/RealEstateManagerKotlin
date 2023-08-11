@@ -5,22 +5,16 @@ import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
-import androidx.room.Room
-import com.persival.realestatemanagerkotlin.data.local_database.AppDatabase
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
-import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
-import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
-import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.runBlocking
 
 class ContentDataProvider : ContentProvider() {
 
     private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH)
-    private lateinit var appDatabase: AppDatabase
-    private lateinit var photoDao: PhotoDao
-    private lateinit var pointOfInterestDao: PointOfInterestDao
 
     init {
         uriMatcher.addURI(AUTHORITY, "properties", PROPERTY)
@@ -41,105 +35,46 @@ class ContentDataProvider : ContentProvider() {
         private const val PROPERTY_ID = 4
     }
 
-    private var propertyDao: PropertyDao? = null
+    private lateinit var propertyDao: PropertyDao
 
     override fun onCreate(): Boolean {
-        context?.let {
-            appDatabase = Room.databaseBuilder(it, AppDatabase::class.java, "app_database").build()
-            propertyDao = appDatabase.propertyDao()
-            photoDao = appDatabase.photoDao()
-            pointOfInterestDao = appDatabase.pointOfInterestDao()
-        }
+        val appContext = context?.applicationContext ?: throw IllegalStateException()
+        val hiltEntryPoint = EntryPointAccessors.fromApplication(appContext, ContentProviderEntryPoint::class.java)
+        propertyDao = hiltEntryPoint.getPropertyDao()
         return true
     }
 
     override fun query(
         uri: Uri, projection: Array<String>?, selection: String?,
         selectionArgs: Array<String>?, sortOrder: String?
-    ): Cursor {
-        val cursor: Cursor = when (uriMatcher.match(uri)) {
-            PROPERTY -> {
-                appDatabase.propertyDao().getAllPropertiesAsCursor()
-            }
-
-            PHOTO -> {
-                appDatabase.photoDao().getAllPhotosAsCursor()
-            }
-
-            POI -> {
-                appDatabase.pointOfInterestDao().getAllPointsOfInterestAsCursor()
-            }
-
-            PROPERTY_ID -> {
-                val id = uri.lastPathSegment?.toLongOrNull()
-                    ?: throw IllegalArgumentException("ID must be provided for the property")
-                appDatabase.propertyDao().getPropertyByIdAsCursor(id)
-            }
-
-            else -> throw IllegalArgumentException("Unknown URI: $uri")
+    ): Cursor = when (uriMatcher.match(uri)) {
+        PROPERTY -> propertyDao.getAllPropertiesAsCursor()
+        PHOTO -> photoDao.getAllPhotosAsCursor()
+        POI -> {
+            appDatabase.pointOfInterestDao().getAllPointsOfInterestAsCursor()
         }
-        cursor.setNotificationUri(context?.contentResolver, uri)
-        return cursor
+
+        PROPERTY_ID -> propertyDao.getPropertyByIdAsCursor(
+            propertyId = uri.lastPathSegment?.toLongOrNull()
+                ?: throw IllegalArgumentException("ID must be provided for the property")
+        )
+
+        else -> throw IllegalArgumentException("Unknown URI: $uri")
+    }.apply {
+        setNotificationUri(context?.contentResolver, uri)
     }
 
-    override fun getType(uri: Uri): String {
-        return when (uriMatcher.match(uri)) {
-            PROPERTY -> "vnd.android.cursor.dir/$AUTHORITY.properties"
-            PHOTO -> "vnd.android.cursor.dir/$AUTHORITY.photos"
-            POI -> "vnd.android.cursor.dir/$AUTHORITY.points_of_interest"
-            PROPERTY_ID -> "vnd.android.cursor.item/$AUTHORITY.properties"
-            else -> throw IllegalArgumentException("Unknown URI: $uri")
-        }
+    override fun getType(uri: Uri): String? = null
+
+    override fun insert(uri: Uri, values: ContentValues?): Uri? = null
+
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int = 0
+
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?): Int = 0
+
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface ContentProviderEntryPoint {
+        fun getPropertyDao(): PropertyDao
     }
-
-    override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        val context = context ?: return null
-        val id: Long = when (uriMatcher.match(uri)) {
-            PROPERTY -> propertyDao?.insert(PropertyEntity.fromContentValues(values)) ?: 0
-            PHOTO -> photoDao.insert(PhotoEntity.fromContentValues(values))
-            POI -> pointOfInterestDao.insert(PointOfInterestEntity.fromContentValues(values))
-            else -> throw IllegalArgumentException("Unknown URI: $uri")
-        }
-        context.contentResolver.notifyChange(uri, null)
-        return Uri.parse("$uri/$id")
-    }
-
-    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
-        val propertyId = selectionArgs?.first()?.toLongOrNull()
-            ?: throw IllegalArgumentException("propertyId must be provided for delete operation")
-
-        val count: Int = when (uriMatcher.match(uri)) {
-            PROPERTY -> propertyDao?.deleteBySelection(propertyId) ?: 0
-            PHOTO -> photoDao.deleteBySelection(propertyId)
-            POI -> pointOfInterestDao.deleteBySelection(propertyId)
-            else -> throw IllegalArgumentException("Unknown URI: $uri")
-        }
-        context?.contentResolver?.notifyChange(uri, null)
-        return count
-    }
-
-    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?): Int {
-        val propertyId = selectionArgs?.first()?.toLongOrNull()
-            ?: throw IllegalArgumentException("propertyId must be provided for update operation")
-
-        var count = 0
-        runBlocking {
-            count = when (uriMatcher.match(uri)) {
-                PROPERTY -> {
-                    val property = propertyDao?.getById(propertyId)
-                    property?.apply {
-                        type = values?.getAsString("type") ?: type
-                        address = values?.getAsString("address") ?: address
-                    }
-                    property?.let { propertyDao?.updateAsCursor(it) } ?: 0
-                }
-
-                else -> throw IllegalArgumentException("Unknown URI: $uri")
-            }
-        }
-        context?.contentResolver?.notifyChange(uri, null)
-        return count
-    }
-
-
 }
