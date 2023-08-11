@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.ui.detail
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.persival.realestatemanagerkotlin.BuildConfig.MAPS_API_KEY
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentDetailBinding
+import com.persival.realestatemanagerkotlin.ui.add.PropertyIdListener
 import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,6 +19,16 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DetailFragment : Fragment(R.layout.fragment_detail) {
+    private var propertyIdListener: PropertyIdListener? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is PropertyIdListener) {
+            propertyIdListener = context
+        } else {
+            throw RuntimeException("$context Must implement PropertyIdListener")
+        }
+    }
 
     companion object {
         fun newInstance(propertyId: Long): DetailFragment {
@@ -55,6 +67,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         if (propertyId == null) {
             binding.root.visibility = View.GONE
         } else {
+            propertyIdListener?.onPropertyIdRequested(propertyId)
             binding.root.visibility = View.VISIBLE
             viewModel.setPropertyId(propertyId)
         }
@@ -112,6 +125,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 .commit()
         }
 
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        propertyIdListener = null
     }
 
 }

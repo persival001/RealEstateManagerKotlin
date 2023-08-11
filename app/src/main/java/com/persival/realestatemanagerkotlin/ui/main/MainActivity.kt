@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
+import com.persival.realestatemanagerkotlin.ui.add.PropertyIdListener
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
 import com.persival.realestatemanagerkotlin.ui.navigation.NavigationActivity
 import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
@@ -18,7 +19,13 @@ import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PropertyIdListener {
+
+    private var propertyId: Long? = null
+
+    override fun onPropertyIdRequested(propertyId: Long) {
+        this.propertyId = propertyId
+    }
 
     private val binding by viewBinding { ActivityMainBinding.inflate(it) }
     private val viewModel by viewModels<MainViewModel>()
@@ -49,6 +56,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
+
+        // If the device is a tablet, display the first property in the detail fragment
+        if (resources.getBoolean(R.bool.isTablet)) {
+            val firstPropertyId = 1L
+            propertyId = firstPropertyId
+
+            val containerDetailsId = binding.mainFrameLayoutContainerDetail?.id
+            if (containerDetailsId != null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(containerDetailsId, DetailFragment.newInstance(firstPropertyId))
+                    .commitNow()
+            }
+        }
 
         // Setup the toolbar
         setSupportActionBar(binding.toolbar)
@@ -111,6 +131,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_modify -> {
                 val intent = Intent(this, NavigationActivity::class.java)
                 intent.putExtra("selectedItem", "item_modify")
+                propertyId?.let { intent.putExtra("property_id", it) }
                 startActivity(intent)
                 return true
             }

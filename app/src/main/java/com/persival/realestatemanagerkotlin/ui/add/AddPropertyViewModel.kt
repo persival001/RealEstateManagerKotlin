@@ -53,7 +53,6 @@ class AddPropertyViewModel @Inject constructor(
 
             val propertyId: Long? = propertyEntity?.let { insertPropertyUseCase.invoke(it) }
 
-
             addViewState.photoUris.forEachIndexed { index, uri ->
                 val photoEntity = propertyId?.let {
                     PhotoEntity(
@@ -74,7 +73,6 @@ class AddPropertyViewModel @Inject constructor(
                 )
                 insertPointOfInterestUseCase.invoke(pointOfInterestEntity)
             }
-
         }
     }
 

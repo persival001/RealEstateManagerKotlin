@@ -33,7 +33,7 @@ class NavigationActivity : AppCompatActivity() {
             }
 
             "item_modify" -> {
-                val propertyId = 1L //intent.getLongExtra("propertyId", 0L)
+                val propertyId = intent.getLongExtra("property_id", -1L)
                 val addPropertyFragment = AddPropertyFragment.newInstance(propertyId)
 
                 supportFragmentManager.beginTransaction()
