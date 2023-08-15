@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 @Singleton
 class UpdatePropertyWithPhotoAndPOIUseCase @Inject constructor(
-    private val localRepository: LocalRepository
+    private val localRepository: LocalRepository,
 ) {
     suspend fun invoke(
         property: PropertyEntity,

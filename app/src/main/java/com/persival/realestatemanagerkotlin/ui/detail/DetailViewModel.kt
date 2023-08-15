@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val getPropertyWithPhotoAndPOIUseCase: GetPropertyWithPhotoAndPOIUseCase
+    private val getPropertyWithPhotoAndPOIUseCase: GetPropertyWithPhotoAndPOIUseCase,
 ) : ViewModel() {
     private val detailLiveData = MutableLiveData<DetailViewState>()
     val details: LiveData<DetailViewState> = detailLiveData
@@ -28,7 +28,7 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { details ->
                 val viewState = DetailViewState(
-                    propertyId = details.property.id!!,
+                    propertyId = details.property.id,
                     type = details.property.type,
                     price = details.property.price.toString(),
                     surface = details.property.area.toString(),

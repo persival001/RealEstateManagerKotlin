@@ -33,7 +33,7 @@ class PropertiesViewModel @Inject constructor(
                 val viewStateItems = properties
                     .map { propertyWithPhotosAndPOI ->
                         PropertyViewStateItem(
-                            id = propertyWithPhotosAndPOI.property.id!!,
+                            id = propertyWithPhotosAndPOI.property.id,
                             type = propertyWithPhotosAndPOI.property.type,
                             address = propertyWithPhotosAndPOI.property.address,
                             price = getFormattedPrice(propertyWithPhotosAndPOI.property.price),

@@ -6,7 +6,7 @@ import javax.inject.Singleton
 
 @Singleton
 class UpdatePropertyUseCase @Inject constructor(
-    private val localRepository: LocalRepository
+    private val localRepository: LocalRepository,
 ) {
     suspend fun invoke(propertyEntity: PropertyEntity) {
         localRepository.updateProperty(propertyEntity)

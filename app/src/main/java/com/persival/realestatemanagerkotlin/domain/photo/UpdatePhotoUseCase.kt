@@ -6,7 +6,7 @@ import javax.inject.Singleton
 
 @Singleton
 class UpdatePhotoUseCase @Inject constructor(
-    private val localRepository: LocalRepository
+    private val localRepository: LocalRepository,
 ) {
     suspend fun invoke(photoEntity: PhotoEntity) {
         localRepository.updatePhoto(photoEntity)

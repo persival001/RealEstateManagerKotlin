@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 class GetAllLatLngUseCase @Inject constructor(
-    private val localRepository: LocalRepository
+    private val localRepository: LocalRepository,
 ) {
     fun invoke(): Flow<List<String>> = localRepository.getAllPropertiesLatLng()
 }

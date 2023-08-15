@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -94,9 +95,10 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         super.onViewCreated(view, savedInstanceState)
 
         val propertyId = arguments?.getLong(ARG_PROPERTY_ID)
+        Log.d("AddPropertyFragment", "Retrieved Property ID: $propertyId")
         val items = resources.getStringArray(R.array.poi_items)
         val checkedItems = BooleanArray(items.size)
-        var multiChoiceItemsSelected = ""
+        var multiChoiceItemsSelected: String
 
         // Initialize the Places API
         if (!Places.isInitialized()) {
@@ -106,26 +108,27 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         // Google Places UI for address autocompletion
         val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
 
-        val autocompleteResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            when (result.resultCode) {
-                Activity.RESULT_OK -> {
-                    val place = Autocomplete.getPlaceFromIntent(result.data!!)
-                    binding.addressEditText.setText(place.address)
-                    place.latLng?.let { latLng ->
-                        latLongString = "${latLng.latitude},${latLng.longitude}"
+        val autocompleteResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                when (result.resultCode) {
+                    Activity.RESULT_OK -> {
+                        val place = Autocomplete.getPlaceFromIntent(result.data!!)
+                        binding.addressEditText.setText(place.address)
+                        place.latLng?.let { latLng ->
+                            latLongString = "${latLng.latitude},${latLng.longitude}"
+                        }
+                    }
+
+                    AutocompleteActivity.RESULT_ERROR -> {
+                        val status = Autocomplete.getStatusFromIntent(result.data!!)
+                        Toast.makeText(requireContext(), status.statusMessage, Toast.LENGTH_LONG).show()
+                    }
+
+                    Activity.RESULT_CANCELED -> {
+                        binding.addressEditText.setText("")
                     }
                 }
-
-                AutocompleteActivity.RESULT_ERROR -> {
-                    val status = Autocomplete.getStatusFromIntent(result.data!!)
-                    Toast.makeText(requireContext(), status.statusMessage, Toast.LENGTH_LONG).show()
-                }
-
-                Activity.RESULT_CANCELED -> {
-                    binding.addressEditText.setText("")
-                }
             }
-        }
 
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
             .setTypeFilter(TypeFilter.ADDRESS)

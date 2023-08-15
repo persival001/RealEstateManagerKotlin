@@ -27,11 +27,10 @@ class LocationDataRepository @Inject constructor(
     }
 
     private val _locationFlow = MutableStateFlow<LocationEntity?>(null)
-    private val locationFlow: StateFlow<LocationEntity?> get() = _locationFlow.asStateFlow()
-
+    private val currentLocationFlow: StateFlow<LocationEntity?> get() = _locationFlow.asStateFlow()
     private var callback: LocationCallback? = null
 
-    override fun getLocationFlow(): StateFlow<LocationEntity?> = locationFlow
+    override fun getLocationFlow(): StateFlow<LocationEntity?> = currentLocationFlow
 
     @RequiresPermission(
         anyOf = [

@@ -24,17 +24,21 @@ class LocalDatabaseRepository @Inject constructor(
     private val pointOfInterestDao: PointOfInterestDao,
 ) : LocalRepository {
 
-    override suspend fun insertProperty(propertyEntity: PropertyEntity): Long = withContext(coroutineDispatcherProvider.io) {
-        propertyDao.insert(propertyEntity)
-    }
+    override suspend fun insertProperty(propertyEntity: PropertyEntity): Long =
+        withContext(coroutineDispatcherProvider.io) {
+            propertyDao.insert(propertyEntity)
+        }
 
-    override suspend fun insertPhoto(photoEntity: PhotoEntity): Long {
-        return photoDao.insert(photoEntity)
-    }
+    override suspend fun insertPhoto(photoEntity: PhotoEntity): Long =
+        withContext(coroutineDispatcherProvider.io) {
+            photoDao.insert(photoEntity)
+        }
 
-    override suspend fun insertPointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Long {
-        return pointOfInterestDao.insert(pointOfInterestEntity)
-    }
+
+    override suspend fun insertPointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Long =
+        withContext(coroutineDispatcherProvider.io) {
+            pointOfInterestDao.insert(pointOfInterestEntity)
+        }
 
     @Transaction
     override suspend fun updatePropertyWithPhotosAndPOIs(

@@ -1,11 +1,11 @@
 package com.persival.realestatemanagerkotlin.ui.add
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.InsertPointOfInterestUseCase
@@ -24,7 +24,6 @@ import javax.inject.Inject
 @HiltViewModel
 class AddPropertyViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
     private val getRealEstateAgentUseCase: GetRealEstateAgentUseCase,
     private val insertPropertyUseCase: InsertPropertyUseCase,
     private val insertPhotoUseCase: InsertPhotoUseCase,
@@ -33,12 +32,19 @@ class AddPropertyViewModel @Inject constructor(
     private val updatePropertyWithPhotoAndPOIUseCase: UpdatePropertyWithPhotoAndPOIUseCase,
 ) : ViewModel() {
 
-    // TODO Persival use ViewState
     val viewStateLiveData: LiveData<AddViewState> = liveData {
+        Log.d("AddPropertyVM", "Inside viewStateLiveData")
+
         val propertyId = requireNotNull(savedStateHandle.get<Long>(ARG_PROPERTY_ID))
+        Log.d("AddPropertyVM", "Property ID: $propertyId")
 
         getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { propertyWithPhotosAndPOIEntity ->
-            emit(mapEntityToViewState(propertyWithPhotosAndPOIEntity))
+            Log.d("AddPropertyVM", "Received propertyWithPhotosAndPOIEntity: $propertyWithPhotosAndPOIEntity")
+
+            mapEntityToViewState(propertyWithPhotosAndPOIEntity)?.let {
+                Log.d("AddPropertyVM", "Mapped entity to view state: $it")
+                emit(it)
+            } ?: Log.d("AddPropertyVM", "Failed to map entity to view state or entity was null")
         }
     }
 
@@ -46,7 +52,7 @@ class AddPropertyViewModel @Inject constructor(
         viewModelScope.launch {
             val propertyEntity = getRealEstateAgentUseCase.invoke()?.let { propertyEntity ->
                 PropertyEntity(
-                    null,
+                    0,
                     addViewState.type,
                     addViewState.address,
                     addViewState.latLng,
@@ -128,7 +134,10 @@ class AddPropertyViewModel @Inject constructor(
 
     private fun isThePropertyForSale(saleDate: String?): Boolean = !(saleDate == null || saleDate == "")
 
-    fun mapEntityToViewState(entity: PropertyWithPhotosAndPOIEntity): AddViewState {
+    private fun mapEntityToViewState(entity: PropertyWithPhotosAndPOIEntity?): AddViewState? {
+        if (entity == null) {
+            return null
+        }
         return AddViewState(
             type = entity.property.type,
             address = entity.property.address,

@@ -6,7 +6,7 @@ import javax.inject.Singleton
 
 @Singleton
 class GetPropertyWithPhotoAndPOIUseCase @Inject constructor(
-    private val localRepository: LocalRepository
+    private val localRepository: LocalRepository,
 ) {
     fun invoke(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity> =
         localRepository.getPropertyById(propertyId)
