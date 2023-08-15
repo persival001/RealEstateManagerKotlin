@@ -5,12 +5,13 @@ import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
+import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
+import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.runBlocking
 
 class ContentDataProvider : ContentProvider() {
 
@@ -36,6 +37,8 @@ class ContentDataProvider : ContentProvider() {
     }
 
     private lateinit var propertyDao: PropertyDao
+    private lateinit var photoDao: PhotoDao
+    private lateinit var pointOfInterestDao: PointOfInterestDao
 
     override fun onCreate(): Boolean {
         val appContext = context?.applicationContext ?: throw IllegalStateException()
@@ -50,9 +53,7 @@ class ContentDataProvider : ContentProvider() {
     ): Cursor = when (uriMatcher.match(uri)) {
         PROPERTY -> propertyDao.getAllPropertiesAsCursor()
         PHOTO -> photoDao.getAllPhotosAsCursor()
-        POI -> {
-            appDatabase.pointOfInterestDao().getAllPointsOfInterestAsCursor()
-        }
+        POI -> pointOfInterestDao.getAllPointsOfInterestAsCursor()
 
         PROPERTY_ID -> propertyDao.getPropertyByIdAsCursor(
             propertyId = uri.lastPathSegment?.toLongOrNull()

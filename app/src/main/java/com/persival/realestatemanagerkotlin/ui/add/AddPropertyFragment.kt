@@ -208,39 +208,33 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
         // Set the property information in the form if the propertyId is not null
         if (propertyId != null) {
-            viewModel.viewStateLiveData.observe(viewLifecycleOwner) { property ->
+            viewModel.viewStateLiveData.observe(viewLifecycleOwner) { addViewState ->
+
                 // Set the property information
-                binding.typeEditText.setText(property.property.type)
-                binding.datePickerToSellText.setText(property.property.saleDate)
-                binding.datePickerEditText.setText(property.property.entryDate)
-                binding.priceEditText.setText(property.property.price.toString())
-                binding.areaEditText.setText(property.property.area.toString())
-                binding.roomsEditText.setText(property.property.rooms.toString())
-                binding.bedroomsEditText.setText(property.property.bedrooms.toString())
-                binding.bathroomsEditText.setText(property.property.bathrooms.toString())
-                binding.descriptionEditText.setText(property.property.description)
-                binding.addressEditText.setText(property.property.address)
+                binding.typeEditText.setText(addViewState.type)
+                binding.datePickerToSellText.setText(addViewState.soldAt)
+                binding.datePickerEditText.setText(addViewState.availableFrom)
+                binding.priceEditText.setText(addViewState.price.toString())
+                binding.areaEditText.setText(addViewState.area.toString())
+                binding.roomsEditText.setText(addViewState.rooms.toString())
+                binding.bedroomsEditText.setText(addViewState.bedrooms.toString())
+                binding.bathroomsEditText.setText(addViewState.bathrooms.toString())
+                binding.descriptionEditText.setText(addViewState.description)
+                binding.addressEditText.setText(addViewState.address)
 
                 // Set the card photos and descriptions
-                if (property.photos.isNotEmpty()) {
-                    binding.card1EditText.setText(property.photos[0].description)
-                }
-                if (property.photos.size > 1) {
-                    binding.card2EditText.setText(property.photos[1].description)
-                }
-                if (property.photos.size > 2) {
-                    binding.card3EditText.setText(property.photos[2].description)
-                }
-                if (property.photos.size > 3) {
-                    binding.card4EditText.setText(property.photos[3].description)
-                }
-                if (property.photos.size > 4) {
-                    binding.card5EditText.setText(property.photos[4].description)
-                }
-                if (property.photos.size > 5) {
-                    binding.card6EditText.setText(property.photos[5].description)
-                }
+                val cardEditTexts = listOf(
+                    binding.card1EditText,
+                    binding.card2EditText,
+                    binding.card3EditText,
+                    binding.card4EditText,
+                    binding.card5EditText,
+                    binding.card6EditText
+                )
 
+                cardEditTexts.forEachIndexed { index, editText ->
+                    addViewState.photoDescriptions.getOrNull(index)?.let { editText.setText(it) }
+                }
 
                 val imageViews = listOf(
                     binding.card1ImageView,
@@ -250,28 +244,21 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                     binding.card5ImageView,
                     binding.card6ImageView
                 )
-                property.photos.forEachIndexed { index, photo ->
-                    if (index < imageViews.size && index < property.photos.size) {
+
+                addViewState.photoUris.forEachIndexed { index, photoUrl ->
+                    if (index < imageViews.size) {
                         Glide.with(imageViews[index])
-                            .load(photo.photoUrl)
+                            .load(photoUrl)
                             .into(imageViews[index])
                     }
                 }
 
                 // Set the POI button text
-                if (property.pointsOfInterest.isNotEmpty()) {
-                    val poiStringBuilder = StringBuilder()
-                    property.pointsOfInterest.forEachIndexed { index, poi ->
-                        poiStringBuilder.append(poi.poi)
-                        if (index < property.pointsOfInterest.size - 1) {
-                            poiStringBuilder.append(", ")
-                        }
-                    }
-                    binding.poiButton.text = poiStringBuilder.toString()
+                if (addViewState.pointsOfInterest.isNotEmpty()) {
+                    binding.poiButton.text = addViewState.pointsOfInterest
                 } else {
                     binding.poiButton.text = getString(R.string.select_poi)
                 }
-
             }
         }
 

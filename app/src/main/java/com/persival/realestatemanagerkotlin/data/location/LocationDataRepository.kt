@@ -1,40 +1,75 @@
 package com.persival.realestatemanagerkotlin.data.location
 
-import android.Manifest
-import android.app.Application
-import android.content.Context
-import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.os.Looper
+import androidx.annotation.RequiresPermission
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.Priority
 import com.persival.realestatemanagerkotlin.domain.location.LocationRepository
+import com.persival.realestatemanagerkotlin.domain.location.model.LocationEntity
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
+import javax.inject.Singleton
 
+@Singleton
 class LocationDataRepository @Inject constructor(
-    application: Application,
+    private val fusedLocationProviderClient: FusedLocationProviderClient
 ) : LocationRepository {
 
-    private val userLocation = MutableLiveData<Location>()
+    companion object {
+        private const val SMALLEST_DISPLACEMENT_THRESHOLD_METER = 250
+        private const val INTERVAL = 10000L
+        private const val FASTEST_INTERVAL = INTERVAL / 2
+    }
 
-    override fun getCurrentLocation(): LiveData<Location> = userLocation
+    private val _locationFlow = MutableStateFlow<LocationEntity?>(null)
+    private val locationFlow: StateFlow<LocationEntity?> get() = _locationFlow.asStateFlow()
 
-    private val locationManager = application.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private var callback: LocationCallback? = null
 
-    private val locationListener: LocationListener = LocationListener { location -> userLocation.value = location }
+    override fun getLocationFlow(): StateFlow<LocationEntity?> = locationFlow
 
-    init {
-        if (ContextCompat.checkSelfPermission(application, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                10.seconds.inWholeMilliseconds,
-                250f,
-                locationListener
-            )
+    @RequiresPermission(
+        anyOf = [
+            "android.permission.ACCESS_COARSE_LOCATION",
+            "android.permission.ACCESS_FINE_LOCATION"
+        ]
+    )
+    override fun startLocationRequest() {
+        if (callback == null) {
+            callback = object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    val location = locationResult.lastLocation
+                    if (location != null) {
+                        val locationEntity = LocationEntity(
+                            location.latitude,
+                            location.longitude
+                        )
+                        _locationFlow.tryEmit(locationEntity)
+                    }
+                }
+            }
+        }
+
+        val locationRequest = LocationRequest.create().apply {
+            priority = Priority.PRIORITY_HIGH_ACCURACY
+            interval = INTERVAL
+            fastestInterval = FASTEST_INTERVAL
+            smallestDisplacement = SMALLEST_DISPLACEMENT_THRESHOLD_METER.toFloat()
+        }
+
+        val localCallback = callback
+        if (localCallback != null) {
+            fusedLocationProviderClient.removeLocationUpdates(localCallback)
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, localCallback, Looper.getMainLooper())
         }
     }
-}
 
+    override fun stopLocationRequest() {
+        callback?.let { fusedLocationProviderClient.removeLocationUpdates(it) }
+    }
+}

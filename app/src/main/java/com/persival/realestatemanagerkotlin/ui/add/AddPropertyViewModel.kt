@@ -3,7 +3,6 @@ package com.persival.realestatemanagerkotlin.ui.add
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
@@ -19,7 +18,6 @@ import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
 import com.persival.realestatemanagerkotlin.ui.add.AddPropertyFragment.Companion.ARG_PROPERTY_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,11 +34,11 @@ class AddPropertyViewModel @Inject constructor(
 ) : ViewModel() {
 
     // TODO Persival use ViewState
-    val viewStateLiveData : LiveData<PropertyWithPhotosAndPOIEntity> = liveData {
+    val viewStateLiveData: LiveData<AddViewState> = liveData {
         val propertyId = requireNotNull(savedStateHandle.get<Long>(ARG_PROPERTY_ID))
 
-        getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect {
-            emit(it)
+        getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { propertyWithPhotosAndPOIEntity ->
+            emit(mapEntityToViewState(propertyWithPhotosAndPOIEntity))
         }
     }
 
@@ -129,4 +127,24 @@ class AddPropertyViewModel @Inject constructor(
     }
 
     private fun isThePropertyForSale(saleDate: String?): Boolean = !(saleDate == null || saleDate == "")
+
+    fun mapEntityToViewState(entity: PropertyWithPhotosAndPOIEntity): AddViewState {
+        return AddViewState(
+            type = entity.property.type,
+            address = entity.property.address,
+            latLng = entity.property.latLng,
+            area = entity.property.area,
+            rooms = entity.property.rooms,
+            bathrooms = entity.property.bathrooms,
+            bedrooms = entity.property.bedrooms,
+            description = entity.property.description,
+            price = entity.property.price,
+            availableFrom = entity.property.entryDate,
+            soldAt = entity.property.saleDate ?: "",
+            photoUris = entity.photos.map { it.photoUrl },
+            photoDescriptions = entity.photos.map { it.description },
+            pointsOfInterest = entity.pointsOfInterest.joinToString(",") { it.poi }
+        )
+    }
+
 }

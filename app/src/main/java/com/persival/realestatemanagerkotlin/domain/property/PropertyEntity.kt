@@ -2,11 +2,10 @@ package com.persival.realestatemanagerkotlin.domain.property
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.math.BigDecimal
 
 @Entity(tableName = "property")
 data class PropertyEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long? = 0,
     val type: String,
     val address: String,
     val latLng: String,
@@ -15,7 +14,7 @@ data class PropertyEntity(
     val bathrooms: Int,
     val bedrooms: Int,
     val description: String,
-    val price: BigDecimal,
+    val price: Int,
     val isSold: Boolean,
     val entryDate: String,
     val saleDate: String?,

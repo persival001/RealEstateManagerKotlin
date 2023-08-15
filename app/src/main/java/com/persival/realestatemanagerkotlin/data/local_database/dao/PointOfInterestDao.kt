@@ -21,7 +21,7 @@ interface PointOfInterestDao {
     suspend fun insertAll(pois: List<PointOfInterestEntity>)
 
     @Update
-    suspend fun update(poi: PointOfInterestEntity)
+    suspend fun update(poi: PointOfInterestEntity): Int
 
     @Delete
     suspend fun delete(poi: PointOfInterestEntity)

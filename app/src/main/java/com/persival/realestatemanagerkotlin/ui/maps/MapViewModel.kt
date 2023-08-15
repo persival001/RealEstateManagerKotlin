@@ -1,6 +1,5 @@
 package com.persival.realestatemanagerkotlin.ui.maps
 
-import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,9 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
 import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
 import com.persival.realestatemanagerkotlin.domain.location.GetLocationUseCase
+import com.persival.realestatemanagerkotlin.domain.location.StartLocationUseCase
+import com.persival.realestatemanagerkotlin.domain.location.StopLocationUseCase
+import com.persival.realestatemanagerkotlin.domain.location.model.LocationEntity
 import com.persival.realestatemanagerkotlin.domain.property.GetAllLatLngUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -20,10 +23,12 @@ import javax.inject.Inject
 class MapViewModel @Inject constructor(
     private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
     private val getAllLatLngUseCase: GetAllLatLngUseCase,
-    getLocationUseCase: GetLocationUseCase,
+    private val getLocationUseCase: GetLocationUseCase,
+    private val startLocationUseCase: StartLocationUseCase,
+    private val stopLocationUseCase: StopLocationUseCase,
 ) : ViewModel() {
 
-    val currentLocation: LiveData<Location> = getLocationUseCase.invoke()
+    val currentLocation: StateFlow<LocationEntity?> = getLocationUseCase.invoke()
 
     private val _propertiesLatLng = MutableLiveData<List<MapViewState>>()
     val propertiesLatLng: LiveData<List<MapViewState>> = _propertiesLatLng
@@ -44,5 +49,18 @@ class MapViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun stopLocation() {
+        stopLocationUseCase.invoke()
+    }
+
+    fun onResume() {
+        /*val hasGpsPermission = Boolean.TRUE == isLocationPermissionUseCase.invoke().getValue()
+        if (hasGpsPermission) {
+            startLocationUseCase.invoke()
+        } else {
+            stopLocationUseCase.invoke()
+        }*/
     }
 }

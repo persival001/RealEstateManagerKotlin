@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -33,9 +34,10 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
-        viewModel.currentLocation.observe(viewLifecycleOwner) { location ->
-            if (location != null) {
-                val latLng = LatLng(location.latitude, location.longitude)
+        // Observe the current location from the ViewModel
+        viewModel.currentLocation.asLiveData().observe(viewLifecycleOwner) { location ->
+            location?.let {
+                val latLng = LatLng(it.latitude, it.longitude)
                 val userMarkerOptions = MarkerOptions()
                     .position(latLng)
                     .title(getString(R.string.your_position))
@@ -55,6 +57,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
             }
         }
 
+        // Observe the propertiesLatLng from the ViewModel
         viewModel.propertiesLatLng.observe(viewLifecycleOwner) { mapViewStateList ->
             mapViewStateList.forEach { mapViewState ->
                 val markerOptions = MarkerOptions()
@@ -64,7 +67,6 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
                 googleMap?.addMarker(markerOptions)
             }
         }
-
     }
 
     override fun onMapReady(map: GoogleMap) {

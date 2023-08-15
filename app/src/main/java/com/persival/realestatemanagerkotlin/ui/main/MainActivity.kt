@@ -58,17 +58,17 @@ class MainActivity : AppCompatActivity(), PropertyIdListener {
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
         // If the device is a tablet, display the first property in the detail fragment
-        if (resources.getBoolean(R.bool.isTablet)) {
-            val firstPropertyId = 1L
-            propertyId = firstPropertyId
+        /* if (resources.getBoolean(R.bool.isTablet)) {
+             val firstPropertyId = 1L
+             propertyId = firstPropertyId
 
-            val containerDetailsId = binding.mainFrameLayoutContainerDetail?.id
-            if (containerDetailsId != null) {
-                supportFragmentManager.beginTransaction()
-                    .replace(containerDetailsId, DetailFragment.newInstance(firstPropertyId))
-                    .commitNow()
-            }
-        }
+             val containerDetailsId = binding.mainFrameLayoutContainerDetail?.id
+             if (containerDetailsId != null) {
+                 supportFragmentManager.beginTransaction()
+                     .replace(containerDetailsId, DetailFragment.newInstance(firstPropertyId))
+                     .commitNow()
+             }
+         }*/
 
         // Setup the toolbar
         setSupportActionBar(binding.toolbar)

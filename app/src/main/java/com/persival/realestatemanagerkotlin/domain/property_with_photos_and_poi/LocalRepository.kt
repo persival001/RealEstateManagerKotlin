@@ -17,11 +17,11 @@ interface LocalRepository {
 
     suspend fun insertPhoto(photoEntity: PhotoEntity): Long
 
-    suspend fun updateProperty(propertyEntity: PropertyEntity)
+    suspend fun updateProperty(propertyEntity: PropertyEntity): Int
 
-    suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity)
+    suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Int
 
-    suspend fun updatePhoto(photoEntity: PhotoEntity)
+    suspend fun updatePhoto(photoEntity: PhotoEntity): Int
 
     suspend fun updatePropertyWithPhotosAndPOIs(
         property: PropertyEntity,

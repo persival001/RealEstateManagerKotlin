@@ -10,7 +10,6 @@ import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInte
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
@@ -25,7 +24,7 @@ class LocalDatabaseRepository @Inject constructor(
     private val pointOfInterestDao: PointOfInterestDao,
 ) : LocalRepository {
 
-    override suspend fun insertProperty(propertyEntity: PropertyEntity): Long = withContext(coroutineDispatcherProvider.io){
+    override suspend fun insertProperty(propertyEntity: PropertyEntity): Long = withContext(coroutineDispatcherProvider.io) {
         propertyDao.insert(propertyEntity)
     }
 
@@ -44,21 +43,21 @@ class LocalDatabaseRepository @Inject constructor(
         pois: List<PointOfInterestEntity>
     ) {
         propertyDao.update(property)
-        property.id?.let { photoDao.deletePhotosByPropertyId(it) }
+        property.id.let { photoDao.deletePhotosByPropertyId(it) }
         photoDao.insertAll(photos)
-        property.id?.let { pointOfInterestDao.deletePOIsByPropertyId(it) }
+        property.id.let { pointOfInterestDao.deletePOIsByPropertyId(it) }
         pointOfInterestDao.insertAll(pois)
     }
 
-    override suspend fun updateProperty(propertyEntity: PropertyEntity) {
+    override suspend fun updateProperty(propertyEntity: PropertyEntity): Int {
         return propertyDao.update(propertyEntity)
     }
 
-    override suspend fun updatePhoto(photoEntity: PhotoEntity) {
+    override suspend fun updatePhoto(photoEntity: PhotoEntity): Int {
         return photoDao.update(photoEntity)
     }
 
-    override suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity) {
+    override suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Int {
         return pointOfInterestDao.update(pointOfInterestEntity)
     }
 

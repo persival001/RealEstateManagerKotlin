@@ -1,7 +1,7 @@
 package com.persival.realestatemanagerkotlin.domain.location
 
-import android.location.Location
-import androidx.lifecycle.LiveData
+import com.persival.realestatemanagerkotlin.domain.location.model.LocationEntity
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -9,5 +9,5 @@ import javax.inject.Singleton
 class GetLocationUseCase @Inject constructor(
     private val locationRepository: LocationRepository
 ) {
-    fun invoke(): LiveData<Location> = locationRepository.getCurrentLocation()
+    fun invoke(): StateFlow<LocationEntity?> = locationRepository.getLocationFlow()
 }

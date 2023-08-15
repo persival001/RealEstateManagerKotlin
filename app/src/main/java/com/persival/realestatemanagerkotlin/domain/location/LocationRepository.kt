@@ -1,8 +1,13 @@
 package com.persival.realestatemanagerkotlin.domain.location
 
-import android.location.Location
-import androidx.lifecycle.LiveData
+import com.persival.realestatemanagerkotlin.domain.location.model.LocationEntity
+import kotlinx.coroutines.flow.StateFlow
 
 interface LocationRepository {
-    fun getCurrentLocation(): LiveData<Location>
+
+    fun getLocationFlow(): StateFlow<LocationEntity?>
+
+    fun startLocationRequest()
+
+    fun stopLocationRequest()
 }
