@@ -26,18 +26,31 @@ class NavigationActivity : AppCompatActivity() {
         }
 
         when (intent.getStringExtra("selectedItem")) {
-            "item_add", "item_search" -> {
+            "item_add" -> {
+                val fragment = AddPropertyFragment().apply {
+                    arguments = Bundle().apply {
+                        putString("ACTION_TYPE", "add")
+                    }
+                }
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_menu_container, AddPropertyFragment())
+                    .replace(R.id.fragment_menu_container, fragment)
                     .commit()
             }
 
             "item_modify" -> {
-                val propertyId = intent.getLongExtra("property_id", -1L)
-                val addPropertyFragment = AddPropertyFragment.newInstance(propertyId)
-
+                val fragment = AddPropertyFragment().apply {
+                    arguments = Bundle().apply {
+                        putString("ACTION_TYPE", "modify")
+                    }
+                }
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_menu_container, addPropertyFragment)
+                    .replace(R.id.fragment_menu_container, fragment)
+                    .commit()
+            }
+
+            "item_search" -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_menu_container, AddPropertyFragment())
                     .commit()
             }
 

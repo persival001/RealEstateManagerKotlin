@@ -1,8 +1,6 @@
 package com.persival.realestatemanagerkotlin.ui.add
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
@@ -10,41 +8,37 @@ import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.InsertPointOfInterestUseCase
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
+import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property.InsertPropertyUseCase
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.UpdatePropertyWithPhotoAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
-import com.persival.realestatemanagerkotlin.ui.add.AddPropertyFragment.Companion.ARG_PROPERTY_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddPropertyViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val getRealEstateAgentUseCase: GetRealEstateAgentUseCase,
     private val insertPropertyUseCase: InsertPropertyUseCase,
     private val insertPhotoUseCase: InsertPhotoUseCase,
     private val insertPointOfInterestUseCase: InsertPointOfInterestUseCase,
     private val getPropertyWithPhotoAndPOIUseCase: GetPropertyWithPhotoAndPOIUseCase,
     private val updatePropertyWithPhotoAndPOIUseCase: UpdatePropertyWithPhotoAndPOIUseCase,
+    private val getSelectedPropertyIdUseCase: GetSelectedPropertyIdUseCase,
 ) : ViewModel() {
 
     val viewStateLiveData: LiveData<AddViewState> = liveData {
-        Log.d("AddPropertyVM", "Inside viewStateLiveData")
-
-        val propertyId = requireNotNull(savedStateHandle.get<Long>(ARG_PROPERTY_ID))
-        Log.d("AddPropertyVM", "Property ID: $propertyId")
-
-        getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { propertyWithPhotosAndPOIEntity ->
-            Log.d("AddPropertyVM", "Received propertyWithPhotosAndPOIEntity: $propertyWithPhotosAndPOIEntity")
-
-            mapEntityToViewState(propertyWithPhotosAndPOIEntity)?.let {
-                Log.d("AddPropertyVM", "Mapped entity to view state: $it")
-                emit(it)
-            } ?: Log.d("AddPropertyVM", "Failed to map entity to view state or entity was null")
+        val propertyId = getSelectedPropertyIdUseCase()
+        if (propertyId != null && propertyId > 0) {
+            getPropertyWithPhotoAndPOIUseCase.invoke(propertyId)
+                .collect { propertyWithPhotosAndPOIEntity ->
+                    mapEntityToViewState(propertyWithPhotosAndPOIEntity)?.let {
+                        emit(it)
+                    }
+                }
         }
     }
 
@@ -94,7 +88,9 @@ class AddPropertyViewModel @Inject constructor(
         }
     }
 
-    fun updateProperty(propertyId: Long, addViewState: AddViewState) {
+    fun updateProperty(addViewState: AddViewState) {
+        val propertyId = getSelectedPropertyIdUseCase() ?: return
+
         viewModelScope.launch {
             val propertyEntity = PropertyEntity(
                 propertyId,

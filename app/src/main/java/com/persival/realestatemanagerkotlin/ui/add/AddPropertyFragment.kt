@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -36,11 +35,8 @@ import java.util.Locale
 class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     companion object {
-        const val ARG_PROPERTY_ID = "propertyId"
-        fun newInstance(propertyId: Long) = AddPropertyFragment().apply {
-            arguments = Bundle().apply {
-                putLong(ARG_PROPERTY_ID, propertyId)
-            }
+        fun newInstance(): AddPropertyFragment {
+            return AddPropertyFragment()
         }
 
         private const val REQUEST_CODE_IMAGE1 = 1
@@ -94,11 +90,10 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val propertyId = arguments?.getLong(ARG_PROPERTY_ID)
-        Log.d("AddPropertyFragment", "Retrieved Property ID: $propertyId")
         val items = resources.getStringArray(R.array.poi_items)
         val checkedItems = BooleanArray(items.size)
         var multiChoiceItemsSelected: String
+        val actionType = arguments?.getString("ACTION_TYPE")
 
         // Initialize the Places API
         if (!Places.isInitialized()) {
@@ -209,8 +204,8 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
         }
 
-        // Set the property information in the form if the propertyId is not null
-        if (propertyId != null) {
+        if (actionType == "modify") {
+            // Set the property information in the form if the propertyId is not null
             viewModel.viewStateLiveData.observe(viewLifecycleOwner) { addViewState ->
 
                 // Set the property information
@@ -262,6 +257,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 } else {
                     binding.poiButton.text = getString(R.string.select_poi)
                 }
+
             }
         }
 
@@ -275,20 +271,10 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             if (validateFields()) {
                 val addViewState = retrieveFormData()
 
-                if (propertyId != null && propertyId != -1L) {
-                    viewModel.updateProperty(propertyId, addViewState)
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.property_modified),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
+                if (actionType == "add") {
                     viewModel.addNewProperty(addViewState)
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.property_added),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                } else if (actionType == "modify") {
+                    viewModel.updateProperty(addViewState)
                 }
 
                 requireActivity().finish()

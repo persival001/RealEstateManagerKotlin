@@ -36,7 +36,6 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-
     private fun loadDetails(propertyId: Long) {
         viewModelScope.launch {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { details ->
