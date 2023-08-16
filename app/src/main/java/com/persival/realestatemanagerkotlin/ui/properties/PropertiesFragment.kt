@@ -26,7 +26,8 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
         super.onViewCreated(view, savedInstanceState)
 
         val propertyListAdapter = PropertyListAdapter { property ->
-            val detailFragment = DetailFragment.newInstance(property.id)
+            onPropertySelected(property.id)
+            val detailFragment = DetailFragment.newInstance()
             val containerId = if (resources.getBoolean(R.bool.isTablet)) {
                 R.id.main_FrameLayout_container_detail
             } else {
@@ -45,5 +46,9 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
         viewModel.properties.observe(viewLifecycleOwner) { properties ->
             propertyListAdapter.submitList(properties)
         }
+    }
+
+    private fun onPropertySelected(id: Long?) {
+        viewModel.updateSelectedPropertyId(id)
     }
 }

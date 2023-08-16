@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
+import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,16 +14,28 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val getPropertyWithPhotoAndPOIUseCase: GetPropertyWithPhotoAndPOIUseCase,
+    private val getSelectedPropertyIdUseCase: GetSelectedPropertyIdUseCase,
 ) : ViewModel() {
+    private val selectedIdLiveData = MutableLiveData<Long?>()
+    val selectedId: LiveData<Long?> get() = selectedIdLiveData
+
     private val detailLiveData = MutableLiveData<DetailViewState>()
     val details: LiveData<DetailViewState> = detailLiveData
+
     private val detailItemLiveData = MutableLiveData<DetailViewStateItem>()
     val detailItem: LiveData<DetailViewStateItem> = detailItemLiveData
 
-    fun setPropertyId(propertyId: Long) {
-        loadItemDetails(propertyId)
-        loadDetails(propertyId)
+
+    fun fetchAndLoadDetailsForSelectedProperty() {
+        val id = getSelectedPropertyIdUseCase()
+        selectedIdLiveData.value = id
+
+        id?.let {
+            loadItemDetails(it)
+            loadDetails(it)
+        }
     }
+
 
     private fun loadDetails(propertyId: Long) {
         viewModelScope.launch {
@@ -66,12 +79,7 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun convertPOIToString(pointsOfInterest: List<PointOfInterestEntity>): String {
-        return if (pointsOfInterest.isNotEmpty()) {
-            pointsOfInterest.joinToString(", ") { it.poi }
-        } else {
-            "No Points of Interest"
-        }
+        return pointsOfInterest.joinToString(", ") { it.poi }
     }
-
 
 }

@@ -5,7 +5,7 @@ import javax.inject.Inject
 class GetSelectedPropertyIdUseCase @Inject constructor(
     private val propertyRepository: PropertyRepository,
 ) {
-    fun invoke(): Long? {
+    operator fun invoke(): Long? {
         return propertyRepository.getSelectedId()
     }
 }

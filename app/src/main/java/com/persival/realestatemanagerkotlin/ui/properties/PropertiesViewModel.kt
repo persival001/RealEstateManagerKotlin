@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
+import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -16,19 +16,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PropertiesViewModel @Inject constructor(
-    private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
     private val getAllPropertiesWithPhotosAndPOIUseCase: GetAllPropertiesWithPhotosAndPOIUseCase,
+    private val setSelectedPropertyIdUseCase: SetSelectedPropertyIdUseCase,
 ) : ViewModel() {
 
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
     val properties: LiveData<List<PropertyViewStateItem>> = propertiesViewStateItem
+    private val _selectedId = MutableLiveData<Long?>()
+    val selectedId: LiveData<Long?> get() = _selectedId
 
     init {
         loadProperties()
     }
 
     private fun loadProperties() {
-        viewModelScope.launch(coroutineDispatcherProvider.io) {
+        viewModelScope.launch() {
             getAllPropertiesWithPhotosAndPOIUseCase.invoke().collect { properties ->
                 val viewStateItems = properties
                     .map { propertyWithPhotosAndPOI ->
@@ -55,6 +57,11 @@ class PropertiesViewModel @Inject constructor(
         val format = NumberFormat.getCurrencyInstance(Locale.getDefault())
         format.maximumFractionDigits = 0
         return format.format(price)
+    }
+
+    fun updateSelectedPropertyId(id: Long?) {
+        setSelectedPropertyIdUseCase(id)
+        _selectedId.value = id
     }
 
 }
