@@ -86,24 +86,4 @@ class DataModule {
     @Provides
     fun providePointOfInterestDao(database: AppDatabase): PointOfInterestDao = database.pointOfInterestDao()
 
-    @Singleton
-    @Provides
-    fun providePropertyDtoMapper(): PropertyDtoMapper = PropertyDtoMapper()
-
-    @Singleton
-    @Provides
-    fun providePhotoDtoMapper(): PhotoDtoMapper = PhotoDtoMapper()
-
-    @Singleton
-    @Provides
-    fun providePointOfInterestDtoMapper(): PointOfInterestDtoMapper = PointOfInterestDtoMapper()
-
-    @Singleton
-    @Provides
-    fun providePropertyWithPhotosAndPoisDtoMapper(
-        propertyMapper: PropertyDtoMapper,
-        photoMapper: PhotoDtoMapper,
-        poiMapper: PointOfInterestDtoMapper
-    ): PropertyWithPhotosAndPoisDtoMapper = PropertyWithPhotosAndPoisDtoMapper(propertyMapper, photoMapper, poiMapper)
-
 }

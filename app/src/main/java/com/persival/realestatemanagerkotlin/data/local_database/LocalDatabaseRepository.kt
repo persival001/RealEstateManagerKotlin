@@ -51,7 +51,6 @@ class LocalDatabaseRepository @Inject constructor(
             pointOfInterestDao.insert(poiDto)
         }
 
-    @Transaction
     override suspend fun updatePropertyWithPhotosAndPOIs(
         property: PropertyEntity,
         photos: List<PhotoEntity>,
@@ -63,17 +62,16 @@ class LocalDatabaseRepository @Inject constructor(
         val photosDto = photos.map { photoMapper.mapFromDomainModel(it) }
         val poisDto = pois.map { poiMapper.mapFromDomainModel(it) }
 
-        propertyDto.id.let { photoDao.deletePhotosByPropertyId(it) }
-        propertyDto.id.let { pointOfInterestDao.deletePOIsByPropertyId(it) }
+        photoDao.deletePhotosByPropertyId(propertyDto.id)
+        pointOfInterestDao.deletePOIsByPropertyId(propertyDto.id)
 
         photoDao.insertAll(photosDto)
         pointOfInterestDao.insertAll(poisDto)
     }
 
-    override suspend fun updateProperty(propertyEntity: PropertyEntity): Int {
-        val propertyDto = propertyMapper.mapFromDomainModel(propertyEntity)
-        return propertyDao.update(propertyDto)
-    }
+    override suspend fun updateProperty(propertyEntity: PropertyEntity): Int = propertyDao.update(
+        propertyMapper.mapFromDomainModel(propertyEntity)
+    )
 
     override suspend fun updatePhoto(photoEntity: PhotoEntity): Int {
         val photoDto = photoMapper.mapFromDomainModel(photoEntity)
@@ -88,15 +86,15 @@ class LocalDatabaseRepository @Inject constructor(
     override fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>> =
         propertyDao
             .getAllProperties()
-            .map { dtoList ->
-                dtoList.map { propertyWithPhotosAndPoisDtoMapper.mapToDomainModel(it) }
+            .map { list ->
+                list.map { propertyWithPhotosAndPoisDtoMapper.mapToEntity(it) }
             }
             .flowOn(coroutineDispatcherProvider.io)
 
     override fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity> =
         propertyDao
             .getPropertyById(propertyId)
-            .map { dto -> propertyWithPhotosAndPoisDtoMapper.mapToDomainModel(dto) }
+            .map { dto -> propertyWithPhotosAndPoisDtoMapper.mapToEntity(dto) }
             .flowOn(coroutineDispatcherProvider.io)
 
     override fun getAllPropertiesLatLng(): Flow<List<String>> =

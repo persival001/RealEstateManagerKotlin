@@ -21,13 +21,15 @@ interface PropertyDao {
     @Query("SELECT * FROM property WHERE id = :propertyId")
     fun getById(propertyId: Long): PropertyDto?
 
+    @Query("SELECT * FROM property WHERE id = :propertyId")
+    fun getProjectionById(propertyId: Long): PropertyNameAndLatLngDto?
+
     @Query("SELECT * FROM property")
     fun getAllPropertiesAsCursor(): Cursor
 
     @Query("SELECT * FROM property WHERE id = :propertyId")
     fun getPropertyByIdAsCursor(propertyId: Long): Cursor
 
-    @Transaction
     @Query("SELECT latLng FROM property")
     fun getAllLatLng(): Flow<List<String>>
 

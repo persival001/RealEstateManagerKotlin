@@ -6,7 +6,7 @@ import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInte
 
 class PointOfInterestDtoMapper : DomainMapper<PointOfInterestDto, PointOfInterestEntity> {
 
-    override fun mapToDomainModel(model: PointOfInterestDto): PointOfInterestEntity {
+    override fun mapToEntity(model: PointOfInterestDto): PointOfInterestEntity {
         return PointOfInterestEntity(
             id = model.id,
             propertyId = model.propertyId,
@@ -23,7 +23,7 @@ class PointOfInterestDtoMapper : DomainMapper<PointOfInterestDto, PointOfInteres
     }
 
     fun fromEntityList(initial: List<PointOfInterestDto>): List<PointOfInterestEntity> {
-        return initial.map { mapToDomainModel(it) }
+        return initial.map { mapToEntity(it) }
     }
 
     fun toEntityList(initial: List<PointOfInterestEntity>): List<PointOfInterestDto> {

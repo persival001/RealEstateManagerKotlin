@@ -1,12 +1,11 @@
 package com.persival.realestatemanagerkotlin.data.local_database.model
 
-import com.persival.realestatemanagerkotlin.data.local_database.util.DomainMapper
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
+import javax.inject.Inject
 
+class PhotoDtoMapper @Inject constructor() {
 
-class PhotoDtoMapper : DomainMapper<PhotoDto, PhotoEntity> {
-
-    override fun mapToDomainModel(model: PhotoDto): PhotoEntity {
+    fun mapToEntity(model: PhotoDto): PhotoEntity {
         return PhotoEntity(
             id = model.id,
             propertyId = model.propertyId,
@@ -15,7 +14,7 @@ class PhotoDtoMapper : DomainMapper<PhotoDto, PhotoEntity> {
         )
     }
 
-    override fun mapFromDomainModel(domainModel: PhotoEntity): PhotoDto {
+    fun mapFromDomainModel(domainModel: PhotoEntity): PhotoDto {
         return PhotoDto(
             id = domainModel.id ?: 0L,
             propertyId = domainModel.propertyId,
@@ -23,14 +22,4 @@ class PhotoDtoMapper : DomainMapper<PhotoDto, PhotoEntity> {
             photoUrl = domainModel.photoUrl,
         )
     }
-
-    fun fromEntityList(initial: List<PhotoDto>): List<PhotoEntity> {
-        return initial.map { mapToDomainModel(it) }
-    }
-
-    fun toEntityList(initial: List<PhotoEntity>): List<PhotoDto> {
-        return initial.map { mapFromDomainModel(it) }
-    }
-
-
 }
