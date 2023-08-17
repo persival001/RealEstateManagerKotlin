@@ -8,18 +8,18 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
-import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyDto
+import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyWithPhotosAndPoisDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PropertyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(propertyEntity: PropertyEntity): Long
+    fun insert(propertyDto: PropertyDto): Long
 
     @Query("SELECT * FROM property WHERE id = :propertyId")
-    fun getById(propertyId: Long): PropertyEntity?
+    fun getById(propertyId: Long): PropertyDto?
 
     @Query("SELECT * FROM property")
     fun getAllPropertiesAsCursor(): Cursor
@@ -33,20 +33,20 @@ interface PropertyDao {
 
     @Query("SELECT * FROM property")
     @Transaction
-    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>>
+    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPoisDto>>
 
     @Query("SELECT * FROM property WHERE id = :propertyId")
     @Transaction
-    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
+    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPoisDto>
 
     @Update
-    suspend fun update(propertyEntity: PropertyEntity): Int
+    suspend fun update(propertyDto: PropertyDto): Int
 
     @Update
-    fun updateBySelection(property: PropertyEntity): Int
+    fun updateBySelection(propertyDto: PropertyDto): Int
 
     @Delete
-    suspend fun delete(propertyEntity: PropertyEntity)
+    suspend fun delete(propertyDto: PropertyDto)
 
     @Query("DELETE FROM property WHERE id = :propertyId")
     fun deleteBySelection(propertyId: Long): Int

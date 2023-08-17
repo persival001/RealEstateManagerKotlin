@@ -1,7 +1,11 @@
-package com.persival.realestatemanagerkotlin.domain.property
+package com.persival.realestatemanagerkotlin.data.local_database.model
 
-data class PropertyEntity(
-    val id: Long? = null,
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "property")
+data class PropertyDto(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val type: String,
     val address: String,
     val latLng: String,

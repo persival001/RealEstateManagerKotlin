@@ -7,7 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
+import com.persival.realestatemanagerkotlin.data.local_database.model.PhotoDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,32 +15,32 @@ interface PhotoDao {
 
     // Local database
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(photoEntity: PhotoEntity): Long
+    fun insert(photoDto: PhotoDto): Long
 
     @Insert
-    suspend fun insertAll(photos: List<PhotoEntity>)
+    suspend fun insertAll(photos: List<PhotoDto>)
 
     @Update
-    suspend fun update(photoEntity: PhotoEntity): Int
+    suspend fun update(photoDto: PhotoDto): Int
 
     @Delete
-    suspend fun delete(photoEntity: PhotoEntity)
+    suspend fun delete(photoDto: PhotoDto)
 
     @Query("DELETE FROM photo WHERE propertyId = :propertyId")
     suspend fun deletePhotosByPropertyId(propertyId: Long)
 
     @Query("SELECT * FROM photo")
-    fun getAllPhotos(): Flow<List<PhotoEntity>>
+    fun getAllPhotos(): Flow<List<PhotoDto>>
 
     // Content provider
     @Query("DELETE FROM photo WHERE propertyId = :propertyId")
     fun deleteBySelection(propertyId: Long): Int
 
     @Update
-    fun updateBySelection(photo: PhotoEntity): Int
+    fun updateBySelection(photo: PhotoDto): Int
 
     @Query("SELECT * FROM photo WHERE propertyId = :propertyId")
-    fun getByPropertyId(propertyId: Long): List<PhotoEntity>
+    fun getByPropertyId(propertyId: Long): List<PhotoDto>
 
     @Query("SELECT * FROM photo WHERE propertyId = :propertyId")
     fun getPhotosByPropertyIdAsCursor(propertyId: Long): Cursor

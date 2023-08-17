@@ -49,8 +49,8 @@
         </activity>
 
         <provider
-            android:name=".data.local_database.content_provider.ContentDataProvider"
-            android:authorities="com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentDataProvider"
+            android:name=".data.local_database.content_provider.ContentProvider"
+            android:authorities="com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentProvider"
             android:exported="false" />
 
         <provider
@@ -62,7 +62,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
 
     </application>
 

@@ -13,7 +13,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 
-class ContentDataProvider : ContentProvider() {
+class ContentProvider : ContentProvider() {
 
     private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH)
 
@@ -25,7 +25,8 @@ class ContentDataProvider : ContentProvider() {
     }
 
     companion object {
-        const val AUTHORITY = "com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentDataProvider"
+        const val AUTHORITY =
+            "com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentDataProvider"
         val PROPERTY_TABLE: Uri = Uri.parse("content://$AUTHORITY/properties")
         val PHOTO_TABLE: Uri = Uri.parse("content://$AUTHORITY/photos")
         val POI_TABLE: Uri = Uri.parse("content://$AUTHORITY/points_of_interest")
@@ -71,7 +72,8 @@ class ContentDataProvider : ContentProvider() {
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int = 0
 
-    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?): Int = 0
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?): Int =
+        0
 
     @EntryPoint
     @InstallIn(SingletonComponent::class)

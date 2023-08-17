@@ -40,7 +40,7 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { details ->
                 val viewState = DetailViewState(
-                    propertyId = details.property.id,
+                    propertyId = details.property.id ?: 0,
                     type = details.property.type,
                     price = details.property.price.toString(),
                     surface = details.property.area.toString(),

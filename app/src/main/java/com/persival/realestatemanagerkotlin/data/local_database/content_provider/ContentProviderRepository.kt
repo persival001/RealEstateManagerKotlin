@@ -3,10 +3,10 @@ package com.persival.realestatemanagerkotlin.data.local_database.content_provide
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
-import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
-import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
-import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.data.local_database.model.PhotoDto
+import com.persival.realestatemanagerkotlin.data.local_database.model.PointOfInterestDto
+import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyDto
+import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyWithPhotosAndPoisDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -19,7 +19,7 @@ class ContentProviderRepository @Inject constructor(
 
     private fun queryAllProperties(): Cursor? {
         return context.contentResolver.query(
-            ContentDataProvider.PROPERTY_TABLE,
+            ContentProvider.PROPERTY_TABLE,
             null,
             null,
             null,
@@ -27,14 +27,14 @@ class ContentProviderRepository @Inject constructor(
         )
     }
 
-    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>> {
+    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPoisDto>> {
         return flow {
             val cursor = queryAllProperties()
-            val properties = mutableListOf<PropertyWithPhotosAndPOIEntity>()
+            val properties = mutableListOf<PropertyWithPhotosAndPoisDto>()
 
             cursor?.use {
                 while (it.moveToNext()) {
-                    convertCursorToPropertyWithPhotosAndPOIEntity(it).let { it1 -> properties.add(it1) }
+                    convertCursorToPropertyWithPhotosAndPoisDto(it).let { it1 -> properties.add(it1) }
                 }
             }
 
@@ -42,13 +42,13 @@ class ContentProviderRepository @Inject constructor(
         }
     }
 
-    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity?> {
+    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPoisDto?> {
         return flow {
-            val uri = ContentUris.withAppendedId(ContentDataProvider.PROPERTY_TABLE, propertyId)
+            val uri = ContentUris.withAppendedId(ContentProvider.PROPERTY_TABLE, propertyId)
             val cursor = context.contentResolver.query(uri, null, null, null, null)
-            val property: PropertyWithPhotosAndPOIEntity? = cursor?.use {
+            val property: PropertyWithPhotosAndPoisDto? = cursor?.use {
                 if (it.moveToFirst()) {
-                    convertCursorToPropertyWithPhotosAndPOIEntity(it)
+                    convertCursorToPropertyWithPhotosAndPoisDto(it)
                 } else {
                     null
                 }
@@ -58,49 +58,49 @@ class ContentProviderRepository @Inject constructor(
         }
     }
 
-    private fun getPhotosForProperty(propertyId: Long): List<PhotoEntity> {
-        val uri = ContentDataProvider.PHOTO_TABLE
+    private fun getPhotosForProperty(propertyId: Long): List<PhotoDto> {
+        val uri = ContentProvider.PHOTO_TABLE
         val selection = "propertyId = ?"
         val selectionArgs = arrayOf(propertyId.toString())
 
-        val photos = mutableListOf<PhotoEntity>()
+        val photos = mutableListOf<PhotoDto>()
 
         context.contentResolver.query(uri, null, selection, selectionArgs, null)?.use {
             while (it.moveToNext()) {
-                val photoEntity = PhotoEntity(
+                val photoDto = PhotoDto(
                     id = it.getLong(it.getColumnIndexOrThrow("id")),
                     propertyId = it.getLong(it.getColumnIndexOrThrow("propertyId")),
                     description = it.getString(it.getColumnIndexOrThrow("description")),
                     photoUrl = it.getString(it.getColumnIndexOrThrow("photoUrl"))
                 )
-                photos.add(photoEntity)
+                photos.add(photoDto)
             }
         }
         return photos
     }
 
-    private fun getPOIsForProperty(propertyId: Long): List<PointOfInterestEntity> {
-        val uri = ContentDataProvider.POI_TABLE
+    private fun getPOIsForProperty(propertyId: Long): List<PointOfInterestDto> {
+        val uri = ContentProvider.POI_TABLE
         val selection = "propertyId = ?"
         val selectionArgs = arrayOf(propertyId.toString())
 
-        val pois = mutableListOf<PointOfInterestEntity>()
+        val pois = mutableListOf<PointOfInterestDto>()
 
         context.contentResolver.query(uri, null, selection, selectionArgs, null)?.use {
             while (it.moveToNext()) {
-                val poiEntity = PointOfInterestEntity(
+                val poiDto = PointOfInterestDto(
                     id = it.getLong(it.getColumnIndexOrThrow("id")),
                     propertyId = it.getLong(it.getColumnIndexOrThrow("propertyId")),
                     poi = it.getString(it.getColumnIndexOrThrow("poi"))
                 )
-                pois.add(poiEntity)
+                pois.add(poiDto)
             }
         }
         return pois
     }
 
-    private fun convertCursorToPropertyWithPhotosAndPOIEntity(cursor: Cursor): PropertyWithPhotosAndPOIEntity {
-        val propertyEntity = PropertyEntity(
+    private fun convertCursorToPropertyWithPhotosAndPoisDto(cursor: Cursor): PropertyWithPhotosAndPoisDto {
+        val propertyDto = PropertyDto(
             id = cursor.getLong("id"),
             type = cursor.getString("type"),
             address = cursor.getString("address"),
@@ -118,10 +118,10 @@ class ContentProviderRepository @Inject constructor(
         )
 
         // Fetch associated photos and POIs for the property
-        val photos = getPhotosForProperty(propertyEntity.id)
-        val poi = getPOIsForProperty(propertyEntity.id)
+        val photos = getPhotosForProperty(propertyDto.id)
+        val poi = getPOIsForProperty(propertyDto.id)
 
-        return PropertyWithPhotosAndPOIEntity(propertyEntity, photos, poi)
+        return PropertyWithPhotosAndPoisDto(propertyDto, photos, poi)
     }
 
     private fun Cursor.getString(columnName: String): String {

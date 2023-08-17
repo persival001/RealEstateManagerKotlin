@@ -22,8 +22,7 @@ class PropertiesViewModel @Inject constructor(
 
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
     val properties: LiveData<List<PropertyViewStateItem>> = propertiesViewStateItem
-    private val _selectedId = MutableLiveData<Long?>()
-    val selectedId: LiveData<Long?> get() = _selectedId
+    private val propertyIdSelected = MutableLiveData<Long?>()
 
     init {
         loadProperties()
@@ -35,7 +34,7 @@ class PropertiesViewModel @Inject constructor(
                 val viewStateItems = properties
                     .map { propertyWithPhotosAndPOI ->
                         PropertyViewStateItem(
-                            id = propertyWithPhotosAndPOI.property.id,
+                            id = propertyWithPhotosAndPOI.property.id ?: 0,
                             type = propertyWithPhotosAndPOI.property.type,
                             address = propertyWithPhotosAndPOI.property.address,
                             price = getFormattedPrice(propertyWithPhotosAndPOI.property.price),
@@ -61,7 +60,7 @@ class PropertiesViewModel @Inject constructor(
 
     fun updateSelectedPropertyId(id: Long?) {
         setSelectedPropertyIdUseCase(id)
-        _selectedId.value = id
+        propertyIdSelected.value = id
     }
 
 }
