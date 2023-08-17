@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.LatLng
-import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
 import com.persival.realestatemanagerkotlin.domain.location.GetLocationUseCase
 import com.persival.realestatemanagerkotlin.domain.location.StartLocationUseCase
 import com.persival.realestatemanagerkotlin.domain.location.StopLocationUseCase
@@ -21,7 +20,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
-    private val coroutineDispatcherProvider: CoroutineDispatcherProvider,
     private val getAllLatLngUseCase: GetAllLatLngUseCase,
     private val getLocationUseCase: GetLocationUseCase,
     private val startLocationUseCase: StartLocationUseCase,
@@ -34,7 +32,7 @@ class MapViewModel @Inject constructor(
     val propertiesLatLng: LiveData<List<MapViewState>> = _propertiesLatLng
 
     fun getAllPropertiesLatLng() {
-        viewModelScope.launch(coroutineDispatcherProvider.io) {
+        viewModelScope.launch {
             getAllLatLngUseCase.invoke().collect { allLatLngStrings ->
                 val mapViewStateList = allLatLngStrings.map { latLngString ->
                     val parts = latLngString.split(",")

@@ -25,18 +25,18 @@ interface PropertyDao {
     fun getAllPropertiesAsCursor(): Cursor
 
     @Query("SELECT * FROM property WHERE id = :propertyId")
-    @Transaction
     fun getPropertyByIdAsCursor(propertyId: Long): Cursor
 
+    @Transaction
     @Query("SELECT latLng FROM property")
     fun getAllLatLng(): Flow<List<String>>
 
-    @Query("SELECT * FROM property")
     @Transaction
+    @Query("SELECT * FROM property")
     fun getAllProperties(): Flow<List<PropertyWithPhotosAndPoisDto>>
 
-    @Query("SELECT * FROM property WHERE id = :propertyId")
     @Transaction
+    @Query("SELECT * FROM property WHERE id = :propertyId")
     fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPoisDto>
 
     @Update
