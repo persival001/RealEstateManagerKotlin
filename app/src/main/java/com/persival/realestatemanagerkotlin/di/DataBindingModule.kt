@@ -3,7 +3,7 @@ package com.persival.realestatemanagerkotlin.di
 import com.persival.realestatemanagerkotlin.data.local_database.LocalDatabaseRepository
 import com.persival.realestatemanagerkotlin.data.location.LocationDataRepository
 import com.persival.realestatemanagerkotlin.data.permissions.PermissionDataRepository
-import com.persival.realestatemanagerkotlin.data.remote_database.FirebaseDataRepository
+import com.persival.realestatemanagerkotlin.data.remote_database.firebase.FirebaseDataRepository
 import com.persival.realestatemanagerkotlin.data.storage.PropertyDataRepository
 import com.persival.realestatemanagerkotlin.domain.location.LocationRepository
 import com.persival.realestatemanagerkotlin.domain.permissions.PermissionRepository

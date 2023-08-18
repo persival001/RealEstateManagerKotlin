@@ -29,7 +29,7 @@ class PropertiesViewModel @Inject constructor(
     }
 
     private fun loadProperties() {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             getAllPropertiesWithPhotosAndPOIUseCase.invoke().collect { properties ->
                 val viewStateItems = properties
                     .map { propertyWithPhotosAndPOI ->

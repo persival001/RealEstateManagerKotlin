@@ -1,6 +1,5 @@
 package com.persival.realestatemanagerkotlin.data.local_database
 
-import androidx.room.Transaction
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao

@@ -28,7 +28,6 @@ interface PhotoDao {
     @Query("SELECT * FROM photo")
     fun getAllPhotosAsCursor(): Cursor
 
-
     @Query("SELECT * FROM photo")
     fun getAllPhotos(): Flow<List<PhotoDto>>
 

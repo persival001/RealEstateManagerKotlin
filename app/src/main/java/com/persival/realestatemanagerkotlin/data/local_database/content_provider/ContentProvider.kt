@@ -27,9 +27,6 @@ class ContentProvider : ContentProvider() {
     companion object {
         const val AUTHORITY =
             "com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentDataProvider"
-        val PROPERTY_TABLE: Uri = Uri.parse("content://$AUTHORITY/properties")
-        val PHOTO_TABLE: Uri = Uri.parse("content://$AUTHORITY/photos")
-        val POI_TABLE: Uri = Uri.parse("content://$AUTHORITY/points_of_interest")
 
         private const val PROPERTY = 1
         private const val PHOTO = 2

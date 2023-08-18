@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.data.remote_database
+package com.persival.realestatemanagerkotlin.data.remote_database.firebase
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

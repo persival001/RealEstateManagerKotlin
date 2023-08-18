@@ -1,12 +1,12 @@
 package com.persival.realestatemanagerkotlin.data.local_database.model
 
-import com.persival.realestatemanagerkotlin.data.local_database.util.DomainMapper
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
+import javax.inject.Inject
 
 
-class PropertyDtoMapper : DomainMapper<PropertyDto, PropertyEntity> {
+class PropertyDtoMapper @Inject constructor() {
 
-    override fun mapToEntity(model: PropertyDto) = PropertyEntity(
+    fun mapToEntity(model: PropertyDto) = PropertyEntity(
         id = model.id,
         type = model.type,
         address = model.address,
@@ -23,7 +23,7 @@ class PropertyDtoMapper : DomainMapper<PropertyDto, PropertyEntity> {
         agentName = model.agentName
     )
 
-    override fun mapFromDomainModel(domainModel: PropertyEntity) = PropertyDto(
+    fun mapFromDomainModel(domainModel: PropertyEntity) = PropertyDto(
         id = domainModel.id ?: 0L,
         type = domainModel.type,
         address = domainModel.address,
