@@ -19,6 +19,9 @@ interface PointOfInterestDao {
     @Insert
     suspend fun insertAll(pois: List<PointOfInterestDto>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOrUpdatePointsOfInterest(poi: PointOfInterestDto)
+
     @Query("SELECT * FROM point_of_interest")
     fun getAllPointsOfInterest(): Flow<List<PointOfInterestDto>>
 
@@ -31,11 +34,17 @@ interface PointOfInterestDao {
     @Query("SELECT * FROM point_of_interest WHERE propertyId = :propertyId")
     fun getPointsOfInterestByPropertyIdAsCursor(propertyId: Long): Cursor
 
+    @Query("SELECT * FROM point_of_interest WHERE isSynced = 0")
+    fun getUnsyncedPointsOfInterest(): List<PointOfInterestDto>
+
     @Update
     suspend fun update(poi: PointOfInterestDto): Int
 
     @Update
     fun updateBySelection(poi: PointOfInterestDto): Int
+
+    @Query("UPDATE point_of_interest SET isSynced = 1 WHERE id = :poiId")
+    suspend fun markAsSynced(poiId: Long)
 
     @Delete
     suspend fun delete(poi: PointOfInterestDto)

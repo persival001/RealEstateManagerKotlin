@@ -16,6 +16,9 @@ interface PhotoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(photoDto: PhotoDto): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOrUpdatePhotos(photo: PhotoDto)
+
     @Insert
     suspend fun insertAll(photos: List<PhotoDto>)
 
@@ -31,11 +34,17 @@ interface PhotoDao {
     @Query("SELECT * FROM photo")
     fun getAllPhotos(): Flow<List<PhotoDto>>
 
+    @Query("SELECT * FROM photo WHERE isSynced = 0")
+    fun getUnsyncedPhotos(): List<PhotoDto>
+
     @Update
     suspend fun update(photoDto: PhotoDto): Int
 
     @Update
     fun updateBySelection(photo: PhotoDto): Int
+
+    @Query("UPDATE photo SET isSynced = 1 WHERE id = :photoId")
+    suspend fun markAsSynced(photoId: Long)
 
     @Delete
     suspend fun delete(photoDto: PhotoDto)

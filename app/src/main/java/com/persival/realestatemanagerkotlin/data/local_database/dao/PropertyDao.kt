@@ -18,6 +18,9 @@ interface PropertyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(propertyDto: PropertyDto): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOrUpdateProperty(property: PropertyDto)
+
     @Query("SELECT * FROM property WHERE id = :propertyId")
     fun getById(propertyId: Long): PropertyDto?
 
@@ -38,11 +41,17 @@ interface PropertyDao {
     @Query("SELECT * FROM property WHERE id = :propertyId")
     fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPoisDto>
 
+    @Query("SELECT * FROM property WHERE isSynced = 0")
+    fun getUnsyncedProperties(): List<PropertyDto>
+
     @Update
     suspend fun update(propertyDto: PropertyDto): Int
 
     @Update
     fun updateBySelection(propertyDto: PropertyDto): Int
+
+    @Query("UPDATE property SET isSynced = 1 WHERE id = :propertyId")
+    suspend fun markAsSynced(propertyId: Long)
 
     @Delete
     suspend fun delete(propertyDto: PropertyDto)

@@ -20,4 +20,6 @@ data class PointOfInterestDto(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "propertyId") val propertyId: Long,
     val poi: String,
+    val lastModified: Long = System.currentTimeMillis(),
+    val isSynced: Boolean = false
 )

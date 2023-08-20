@@ -5,10 +5,10 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
-import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
-import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
-import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.data.local_database.model.PhotoDto
+import com.persival.realestatemanagerkotlin.data.local_database.model.PointOfInterestDto
+import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyDto
+import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyWithPhotosAndPoisDto
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,7 +20,7 @@ class FirestoreDataRepository @Inject constructor(
 
     // -------------- Property Operations -------------- //
 
-    fun addProperty(property: PropertyEntity): Task<DocumentReference> {
+    fun addProperty(property: PropertyDto): Task<DocumentReference> {
         return firestore.collection("properties").add(property)
     }
 
@@ -28,7 +28,7 @@ class FirestoreDataRepository @Inject constructor(
         return firestore.collection("properties").document(propertyId).get()
     }
 
-    fun updateProperty(propertyId: String, property: PropertyEntity): Task<Void> {
+    fun updateProperty(propertyId: String, property: PropertyDto): Task<Void> {
         return firestore.collection("properties").document(propertyId).set(property)
     }
 
@@ -38,7 +38,7 @@ class FirestoreDataRepository @Inject constructor(
 
     // -------------- Photo Operations -------------- //
 
-    fun addPhoto(propertyId: String, photo: PhotoEntity): Task<DocumentReference> {
+    fun addPhoto(propertyId: String, photo: PhotoDto): Task<DocumentReference> {
         return firestore.collection("properties").document(propertyId).collection("photos").add(photo)
     }
 
@@ -46,11 +46,9 @@ class FirestoreDataRepository @Inject constructor(
         return firestore.collection("properties").document(propertyId).collection("photos").get()
     }
 
-    // It's likely you'll need more photo-related operations, such as updating or deleting.
-
     // -------------- Point Of Interest Operations -------------- //
 
-    fun addPOI(propertyId: String, poi: PointOfInterestEntity): Task<DocumentReference> {
+    fun addPOI(propertyId: String, poi: PointOfInterestDto): Task<DocumentReference> {
         return firestore.collection("properties").document(propertyId).collection("pointsOfInterest").add(poi)
     }
 
@@ -62,17 +60,17 @@ class FirestoreDataRepository @Inject constructor(
 
     // -------------- Combined Operations -------------- //
 
-    suspend fun getPropertyWithDetails(propertyId: String): PropertyWithPhotosAndPOIEntity? {
+    suspend fun getPropertyWithDetails(propertyId: String): PropertyWithPhotosAndPoisDto? {
         val propertySnapshot = getProperty(propertyId).await()
-        val property = propertySnapshot.toObject(PropertyEntity::class.java) ?: return null
+        val property = propertySnapshot.toObject(PropertyDto::class.java) ?: return null
 
         val photosSnapshot = getPhotos(propertyId).await()
-        val photos = photosSnapshot.documents.mapNotNull { it.toObject(PhotoEntity::class.java) }
+        val photos = photosSnapshot.documents.mapNotNull { it.toObject(PhotoDto::class.java) }
 
         val poisSnapshot = getPOIs(propertyId).await()
-        val pois = poisSnapshot.documents.mapNotNull { it.toObject(PointOfInterestEntity::class.java) }
+        val pois = poisSnapshot.documents.mapNotNull { it.toObject(PointOfInterestDto::class.java) }
 
-        return PropertyWithPhotosAndPOIEntity(property, photos, pois)
+        return PropertyWithPhotosAndPoisDto(property, photos, pois)
     }
 
 }

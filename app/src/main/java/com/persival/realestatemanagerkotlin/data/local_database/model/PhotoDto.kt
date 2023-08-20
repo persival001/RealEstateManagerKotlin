@@ -21,4 +21,6 @@ data class PhotoDto(
     @ColumnInfo(name = "propertyId") val propertyId: Long,
     val description: String,
     @ColumnInfo(name = "photo_url") val photoUrl: String,
+    val lastModified: Long = System.currentTimeMillis(),
+    val isSynced: Boolean = false
 )
