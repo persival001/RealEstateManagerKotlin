@@ -9,7 +9,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.persival.realestatemanagerkotlin.R
+import com.persival.realestatemanagerkotlin.data.synchronize_database.SynchronizeWorker
 import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
 import com.persival.realestatemanagerkotlin.ui.add.PropertyIdListener
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
@@ -17,6 +22,7 @@ import com.persival.realestatemanagerkotlin.ui.navigation.NavigationActivity
 import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), PropertyIdListener {
@@ -57,18 +63,18 @@ class MainActivity : AppCompatActivity(), PropertyIdListener {
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
-        // If the device is a tablet, display the first property in the detail fragment
-        /* if (resources.getBoolean(R.bool.isTablet)) {
-             val firstPropertyId = 1L
-             propertyId = firstPropertyId
 
-             val containerDetailsId = binding.mainFrameLayoutContainerDetail?.id
-             if (containerDetailsId != null) {
-                 supportFragmentManager.beginTransaction()
-                     .replace(containerDetailsId, DetailFragment.newInstance(firstPropertyId))
-                     .commitNow()
-             }
-         }*/
+        // TODO: see for clean this after test - Initialize Work-manager for synchronizing data
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val syncRequest = PeriodicWorkRequestBuilder<SynchronizeWorker>(1, TimeUnit.HOURS)
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(this).enqueue(syncRequest)
+
 
         // Setup the toolbar
         setSupportActionBar(binding.toolbar)

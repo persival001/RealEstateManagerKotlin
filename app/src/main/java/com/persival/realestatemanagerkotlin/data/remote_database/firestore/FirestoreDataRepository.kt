@@ -1,6 +1,7 @@
 package com.persival.realestatemanagerkotlin.data.remote_database.firestore
 
 import com.google.android.gms.tasks.Task
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,43 +25,42 @@ class FirestoreDataRepository @Inject constructor(
         return firestore.collection("properties").add(property)
     }
 
-    fun getProperty(propertyId: String): Task<DocumentSnapshot> {
-        return firestore.collection("properties").document(propertyId).get()
+    fun getProperty(propertyId: Long): Task<DocumentSnapshot> {
+        return firestore.collection("properties").document(propertyId.toString()).get()
     }
 
-    fun updateProperty(propertyId: String, property: PropertyDto): Task<Void> {
-        return firestore.collection("properties").document(propertyId).set(property)
+    fun updateProperty(propertyId: Long, property: PropertyDto): Task<Void> {
+        return firestore.collection("properties").document(propertyId.toString()).set(property)
     }
 
-    fun deleteProperty(propertyId: String): Task<Void> {
-        return firestore.collection("properties").document(propertyId).delete()
+    fun deleteProperty(propertyId: Long): Task<Void> {
+        return firestore.collection("properties").document(propertyId.toString()).delete()
     }
 
     // -------------- Photo Operations -------------- //
 
-    fun addPhoto(propertyId: String, photo: PhotoDto): Task<DocumentReference> {
-        return firestore.collection("properties").document(propertyId).collection("photos").add(photo)
+    fun addPhoto(propertyId: Long, photo: PhotoDto): Task<DocumentReference> {
+        return firestore.collection("properties").document(propertyId.toString()).collection("photos").add(photo)
     }
 
-    fun getPhotos(propertyId: String): Task<QuerySnapshot> {
-        return firestore.collection("properties").document(propertyId).collection("photos").get()
+    fun getPhotos(propertyId: Long): Task<QuerySnapshot> {
+        return firestore.collection("properties").document(propertyId.toString()).collection("photos").get()
     }
 
     // -------------- Point Of Interest Operations -------------- //
 
-    fun addPOI(propertyId: String, poi: PointOfInterestDto): Task<DocumentReference> {
-        return firestore.collection("properties").document(propertyId).collection("pointsOfInterest").add(poi)
+    fun addPOI(propertyId: Long, poi: PointOfInterestDto): Task<DocumentReference> {
+        return firestore.collection("properties").document(propertyId.toString()).collection("pointsOfInterest")
+            .add(poi)
     }
 
-    fun getPOIs(propertyId: String): Task<QuerySnapshot> {
-        return firestore.collection("properties").document(propertyId).collection("pointsOfInterest").get()
+    fun getPOIs(propertyId: Long): Task<QuerySnapshot> {
+        return firestore.collection("properties").document(propertyId.toString()).collection("pointsOfInterest").get()
     }
-
-    // Again, consider adding more operations for points of interest if needed.
 
     // -------------- Combined Operations -------------- //
 
-    suspend fun getPropertyWithDetails(propertyId: String): PropertyWithPhotosAndPoisDto? {
+    suspend fun getPropertyWithDetails(propertyId: Long): PropertyWithPhotosAndPoisDto? {
         val propertySnapshot = getProperty(propertyId).await()
         val property = propertySnapshot.toObject(PropertyDto::class.java) ?: return null
 
@@ -71,6 +71,32 @@ class FirestoreDataRepository @Inject constructor(
         val pois = poisSnapshot.documents.mapNotNull { it.toObject(PointOfInterestDto::class.java) }
 
         return PropertyWithPhotosAndPoisDto(property, photos, pois)
+    }
+
+    suspend fun getUpdatedPropertiesSince(lastSyncTime: Long): List<PropertyDto> {
+        val lastSyncTimestamp = Timestamp(lastSyncTime / 1000, ((lastSyncTime % 1000) * 1000000).toInt())
+        val snapshots = firestore.collection("properties")
+            .whereGreaterThan("lastUpdated", lastSyncTimestamp)
+            .get().await()
+        return snapshots.documents.mapNotNull { it.toObject(PropertyDto::class.java) }
+    }
+
+    suspend fun getUpdatedPhotosSince(propertyId: Long, lastSyncTime: Long): List<PhotoDto> {
+        val lastSyncTimestamp = Timestamp(lastSyncTime / 1000, ((lastSyncTime % 1000) * 1000000).toInt())
+        val snapshots = firestore.collection("properties").document(propertyId.toString())
+            .collection("photos")
+            .whereGreaterThan("lastUpdated", lastSyncTimestamp)
+            .get().await()
+        return snapshots.documents.mapNotNull { it.toObject(PhotoDto::class.java) }
+    }
+
+    suspend fun getUpdatedPointsOfInterestSince(propertyId: Long, lastSyncTime: Long): List<PointOfInterestDto> {
+        val lastSyncTimestamp = Timestamp(lastSyncTime / 1000, ((lastSyncTime % 1000) * 1000000).toInt())
+        val snapshots = firestore.collection("properties").document(propertyId.toString())
+            .collection("pointsOfInterest")
+            .whereGreaterThan("lastUpdated", lastSyncTimestamp)
+            .get().await()
+        return snapshots.documents.mapNotNull { it.toObject(PointOfInterestDto::class.java) }
     }
 
 }
