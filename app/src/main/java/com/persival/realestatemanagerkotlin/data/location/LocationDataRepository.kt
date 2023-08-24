@@ -26,8 +26,8 @@ class LocationDataRepository @Inject constructor(
         private const val FASTEST_INTERVAL = INTERVAL / 2
     }
 
-    private val _locationFlow = MutableStateFlow<LocationEntity?>(null)
-    private val currentLocationFlow: StateFlow<LocationEntity?> get() = _locationFlow.asStateFlow()
+    private val locationMutableStateFlow = MutableStateFlow<LocationEntity?>(null)
+    private val currentLocationFlow: StateFlow<LocationEntity?> get() = locationMutableStateFlow.asStateFlow()
     private var callback: LocationCallback? = null
 
     override fun getLocationFlow(): StateFlow<LocationEntity?> = currentLocationFlow
@@ -48,7 +48,7 @@ class LocationDataRepository @Inject constructor(
                             location.latitude,
                             location.longitude
                         )
-                        _locationFlow.tryEmit(locationEntity)
+                        locationMutableStateFlow.tryEmit(locationEntity)
                     }
                 }
             }

@@ -6,17 +6,19 @@ import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
 import com.persival.realestatemanagerkotlin.data.remote_database.firestore.FirestoreDataRepository
+import com.persival.realestatemanagerkotlin.domain.database.SyncRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class DataSyncRepository @Inject constructor(
-    context: Context,
+    @ApplicationContext private val context: Context,
     private val propertyDao: PropertyDao,
     private val photoDao: PhotoDao,
     private val pointOfInterestDao: PointOfInterestDao,
     private val firestoreDataRepository: FirestoreDataRepository,
-) {
+) : SyncRepository {
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
 
@@ -25,7 +27,7 @@ class DataSyncRepository @Inject constructor(
         private const val LAST_SYNC_TIME_KEY = "last_sync_time"
     }
 
-    suspend fun synchronizeData() {
+    override suspend fun synchronizeData() {
         synchronizeProperties()
         synchronizePhotos()
         synchronizePointsOfInterest()
@@ -43,7 +45,7 @@ class DataSyncRepository @Inject constructor(
         val lastSyncTime = getLastSyncTime()
         val updatedProperties = firestoreDataRepository.getUpdatedPropertiesSince(lastSyncTime)
         for (property in updatedProperties) {
-            propertyDao.insertOrUpdateProperty(property)
+            propertyDao.insert(property)
         }
 
         updateLastSyncTime(System.currentTimeMillis())
@@ -96,6 +98,5 @@ class DataSyncRepository @Inject constructor(
     private fun updateLastSyncTime(time: Long) {
         sharedPreferences.edit().putLong(LAST_SYNC_TIME_KEY, time).apply()
     }
-
 
 }

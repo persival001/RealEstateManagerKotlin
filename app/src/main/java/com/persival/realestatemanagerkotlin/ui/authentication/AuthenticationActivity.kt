@@ -60,6 +60,7 @@ class AuthenticationActivity : AppCompatActivity() {
         // Check if the user is already signed in
         val currentUser = viewModel.getCurrentUser()
         if (currentUser != null) {
+            viewModel.synchronizeDatabase()
             // User is already signed in, start MainActivity
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -105,14 +106,12 @@ class AuthenticationActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            viewModel.onLocationButtonClicked(this)
             viewModel.onStorageButtonClicked(this)
 
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         } else {
-            viewModel.onLocationButtonClicked(this)
             viewModel.onStorageButtonClicked(this)
             Toast.makeText(this, getString(R.string.authentication_failed), Toast.LENGTH_SHORT)
                 .show()

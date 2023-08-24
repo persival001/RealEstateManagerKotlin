@@ -5,7 +5,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PropertyDataRepository @Inject constructor() : PropertyRepository {
+class PropertyDataRepository @Inject constructor(
+
+) : PropertyRepository {
 
     private var selectedId: Long? = null
 

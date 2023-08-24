@@ -18,9 +18,6 @@ interface PropertyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(propertyDto: PropertyDto): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdateProperty(property: PropertyDto)
-
     @Query("SELECT * FROM property WHERE id = :propertyId")
     fun getById(propertyId: Long): PropertyDto?
 

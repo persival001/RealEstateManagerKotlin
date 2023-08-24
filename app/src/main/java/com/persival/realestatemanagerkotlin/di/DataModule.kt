@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.persival.realestatemanagerkotlin.data.local_database.AppDatabase
 import com.persival.realestatemanagerkotlin.data.local_database.LocalDatabaseRepository
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
@@ -73,6 +74,11 @@ class DataModule {
     @Singleton
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+    @Singleton
+    @Provides
+    fun provideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
+
 
     @Singleton
     @Provides

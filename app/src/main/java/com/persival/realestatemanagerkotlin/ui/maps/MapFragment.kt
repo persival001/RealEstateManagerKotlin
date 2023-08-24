@@ -1,8 +1,13 @@
 package com.persival.realestatemanagerkotlin.ui.maps
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -15,6 +20,7 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.persival.realestatemanagerkotlin.R
+import com.persival.realestatemanagerkotlin.ui.gps_dialog.GpsDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,6 +29,8 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
     private var googleMap: GoogleMap? = null
 
     private val viewModel by viewModels<MapViewModel>()
+
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     companion object {
         fun newInstance() = MapFragment()
@@ -34,10 +42,21 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
-        // Observe the current location from the ViewModel
-        viewModel.currentLocation.asLiveData().observe(viewLifecycleOwner) { location ->
+        // Check GPS activation
+        viewModel.isGpsActivatedLiveData().observe(viewLifecycleOwner) { gps ->
+            if (gps == false) {
+                GpsDialogFragment().show(
+                    requireActivity().supportFragmentManager,
+                    "GpsDialogFragment"
+                )
+            }
+        }
+
+        // Add marker for user position
+        viewModel.getLocationLiveData().asLiveData().observe(viewLifecycleOwner) { location ->
             location?.let {
                 val latLng = LatLng(it.latitude, it.longitude)
+
                 val userMarkerOptions = MarkerOptions()
                     .position(latLng)
                     .title(getString(R.string.your_position))
@@ -57,6 +76,14 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
             }
         }
 
+        // Initialize requestPermissionLauncher
+        requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (isGranted) {
+                    viewModel.onResume()
+                }
+            }
+
         // Observe the propertiesLatLng from the ViewModel
         viewModel.propertiesLatLng.observe(viewLifecycleOwner) { mapViewStateList ->
             mapViewStateList.forEach { mapViewState ->
@@ -69,8 +96,26 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
         }
     }
 
+    override fun onResume() {
+        // Refresh GPS activation and location permission
+        viewModel.refreshGpsActivation()
+        viewModel.onResume()
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+        super.onResume()
+    }
+
+
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         viewModel.getAllPropertiesLatLng()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.stopLocation()
     }
 }

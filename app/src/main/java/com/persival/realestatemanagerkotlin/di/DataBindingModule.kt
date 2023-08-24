@@ -5,6 +5,8 @@ import com.persival.realestatemanagerkotlin.data.location.LocationDataRepository
 import com.persival.realestatemanagerkotlin.data.permissions.PermissionDataRepository
 import com.persival.realestatemanagerkotlin.data.remote_database.firebase.FirebaseDataRepository
 import com.persival.realestatemanagerkotlin.data.storage.PropertyDataRepository
+import com.persival.realestatemanagerkotlin.data.synchronize_database.DataSyncRepository
+import com.persival.realestatemanagerkotlin.domain.database.SyncRepository
 import com.persival.realestatemanagerkotlin.domain.location.LocationRepository
 import com.persival.realestatemanagerkotlin.domain.permissions.PermissionRepository
 import com.persival.realestatemanagerkotlin.domain.property.PropertyRepository
@@ -39,5 +41,9 @@ abstract class DataBindingModule {
     @Singleton
     @Binds
     abstract fun bindPropertyRepository(propertyDataRepository: PropertyDataRepository): PropertyRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindSyncRepository(dataSyncRepository: DataSyncRepository): SyncRepository
 
 }

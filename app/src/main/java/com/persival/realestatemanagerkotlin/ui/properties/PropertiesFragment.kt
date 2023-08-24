@@ -25,6 +25,8 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.synchronizeDatabase()
+        
         val propertyListAdapter = PropertyListAdapter { property ->
             onPropertySelected(property.id)
             val detailFragment = DetailFragment.newInstance()

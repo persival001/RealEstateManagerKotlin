@@ -10,11 +10,14 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MainApplication : Application(), Application.ActivityLifecycleCallbacks,
-    Configuration.Provider {
+class MainApplication : Application(
+
+), Application.ActivityLifecycleCallbacks, Configuration.Provider {
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
+
+    @Inject
     lateinit var permissionRepository: PermissionRepository
 
     override fun getWorkManagerConfiguration() = Configuration.Builder()
@@ -30,6 +33,7 @@ class MainApplication : Application(), Application.ActivityLifecycleCallbacks,
     override fun onActivityStarted(activity: Activity) {}
 
     override fun onActivityResumed(activity: Activity) {
+        permissionRepository.refreshLocationPermission()
     }
 
     override fun onActivityPaused(activity: Activity) {}

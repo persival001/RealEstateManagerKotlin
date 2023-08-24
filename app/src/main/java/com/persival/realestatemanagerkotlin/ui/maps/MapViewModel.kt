@@ -10,6 +10,9 @@ import com.persival.realestatemanagerkotlin.domain.location.GetLocationUseCase
 import com.persival.realestatemanagerkotlin.domain.location.StartLocationUseCase
 import com.persival.realestatemanagerkotlin.domain.location.StopLocationUseCase
 import com.persival.realestatemanagerkotlin.domain.location.model.LocationEntity
+import com.persival.realestatemanagerkotlin.domain.permissions.IsGpsActivatedUseCase
+import com.persival.realestatemanagerkotlin.domain.permissions.IsLocationPermissionUseCase
+import com.persival.realestatemanagerkotlin.domain.permissions.RefreshGpsActivationUseCase
 import com.persival.realestatemanagerkotlin.domain.property.GetAllLatLngUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,17 +22,19 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MapViewModel @Inject constructor(
+class
+MapViewModel @Inject constructor(
     private val getAllLatLngUseCase: GetAllLatLngUseCase,
     private val getLocationUseCase: GetLocationUseCase,
     private val startLocationUseCase: StartLocationUseCase,
     private val stopLocationUseCase: StopLocationUseCase,
+    private val refreshGpsActivationUseCase: RefreshGpsActivationUseCase,
+    private val isLocationPermissionUseCase: IsLocationPermissionUseCase,
+    private val isGpsActivatedUseCase: IsGpsActivatedUseCase,
 ) : ViewModel() {
 
-    val currentLocation: StateFlow<LocationEntity?> = getLocationUseCase.invoke()
-
-    private val _propertiesLatLng = MutableLiveData<List<MapViewState>>()
-    val propertiesLatLng: LiveData<List<MapViewState>> = _propertiesLatLng
+    private val propertiesLatLngMutableLiveData = MutableLiveData<List<MapViewState>>()
+    val propertiesLatLng: LiveData<List<MapViewState>> = propertiesLatLngMutableLiveData
 
     fun getAllPropertiesLatLng() {
         viewModelScope.launch {
@@ -43,10 +48,18 @@ class MapViewModel @Inject constructor(
                 }
 
                 withContext(Dispatchers.Main) {
-                    _propertiesLatLng.value = mapViewStateList
+                    propertiesLatLngMutableLiveData.value = mapViewStateList
                 }
             }
         }
+    }
+
+    fun getLocationLiveData(): StateFlow<LocationEntity?> = getLocationUseCase.invoke()
+
+    fun isGpsActivatedLiveData(): LiveData<Boolean> = isGpsActivatedUseCase.invoke()
+
+    fun refreshGpsActivation() {
+        refreshGpsActivationUseCase.invoke();
     }
 
     fun stopLocation() {
@@ -54,11 +67,12 @@ class MapViewModel @Inject constructor(
     }
 
     fun onResume() {
-        /*val hasGpsPermission = Boolean.TRUE == isLocationPermissionUseCase.invoke().getValue()
+        val hasGpsPermission = true == isLocationPermissionUseCase.invoke().value
         if (hasGpsPermission) {
             startLocationUseCase.invoke()
         } else {
             stopLocationUseCase.invoke()
-        }*/
+        }
     }
+
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.persival.realestatemanagerkotlin.domain.database.SynchronizeDatabaseUseCase
 import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class PropertiesViewModel @Inject constructor(
     private val getAllPropertiesWithPhotosAndPOIUseCase: GetAllPropertiesWithPhotosAndPOIUseCase,
     private val setSelectedPropertyIdUseCase: SetSelectedPropertyIdUseCase,
+    private val synchronizeDatabaseUseCase: SynchronizeDatabaseUseCase,
 ) : ViewModel() {
 
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
@@ -61,6 +63,10 @@ class PropertiesViewModel @Inject constructor(
     fun updateSelectedPropertyId(id: Long?) {
         setSelectedPropertyIdUseCase(id)
         propertyIdSelected.value = id
+    }
+
+    fun synchronizeDatabase() {
+        synchronizeDatabaseUseCase.invoke()
     }
 
 }

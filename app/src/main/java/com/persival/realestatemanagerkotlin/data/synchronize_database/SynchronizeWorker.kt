@@ -3,10 +3,13 @@ package com.persival.realestatemanagerkotlin.data.synchronize_database
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class SynchronizeWorker(
-    context: Context,
+@Singleton
+class SynchronizeWorker @Inject constructor(
+    @ApplicationContext private val context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
