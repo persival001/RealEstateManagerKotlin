@@ -18,13 +18,13 @@ interface PropertyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(propertyDto: PropertyDto): Long
 
-    @Query("SELECT * FROM property WHERE id = :propertyId")
+    @Query("SELECT * FROM property WHERE id == :propertyId")
     fun getById(propertyId: Long): PropertyDto?
 
     @Query("SELECT * FROM property")
     fun getAllPropertiesAsCursor(): Cursor
 
-    @Query("SELECT * FROM property WHERE id = :propertyId")
+    @Query("SELECT * FROM property WHERE id == :propertyId")
     fun getPropertyByIdAsCursor(propertyId: Long): Cursor
 
     @Query("SELECT latLng FROM property")
@@ -35,10 +35,10 @@ interface PropertyDao {
     fun getAllProperties(): Flow<List<PropertyWithPhotosAndPoisDto>>
 
     @Transaction
-    @Query("SELECT * FROM property WHERE id = :propertyId")
+    @Query("SELECT * FROM property WHERE id == :propertyId")
     fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPoisDto>
 
-    @Query("SELECT * FROM property WHERE isSynced = 0")
+    @Query("SELECT * FROM property WHERE isSynced == 0")
     fun getUnsyncedProperties(): List<PropertyDto>
 
     @Update
@@ -47,12 +47,12 @@ interface PropertyDao {
     @Update
     fun updateBySelection(propertyDto: PropertyDto): Int
 
-    @Query("UPDATE property SET isSynced = 1 WHERE id = :propertyId")
+    @Query("UPDATE property SET isSynced = 1 WHERE id == :propertyId")
     suspend fun markAsSynced(propertyId: Long)
 
     @Delete
     suspend fun delete(propertyDto: PropertyDto)
 
-    @Query("DELETE FROM property WHERE id = :propertyId")
+    @Query("DELETE FROM property WHERE id == :propertyId")
     fun deleteBySelection(propertyId: Long): Int
 }

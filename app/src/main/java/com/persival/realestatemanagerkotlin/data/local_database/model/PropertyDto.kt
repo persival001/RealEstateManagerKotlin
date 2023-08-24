@@ -19,6 +19,6 @@ data class PropertyDto(
     val entryDate: String,
     val saleDate: String?,
     val agentName: String,
-    val lastModified: Long = System.currentTimeMillis(),
-    val isSynced: Boolean = false
+    val lastModified: Long,
+    val isSynced: Boolean,
 )

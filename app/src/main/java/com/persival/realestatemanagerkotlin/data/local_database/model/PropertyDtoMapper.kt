@@ -24,7 +24,7 @@ class PropertyDtoMapper @Inject constructor() {
     )
 
     fun mapFromDomainModel(domainModel: PropertyEntity) = PropertyDto(
-        id = domainModel.id ?: 0L,
+        id = domainModel.id,
         type = domainModel.type,
         address = domainModel.address,
         latLng = domainModel.latLng,

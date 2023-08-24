@@ -8,6 +8,8 @@ import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
 import com.persival.realestatemanagerkotlin.data.remote_database.firestore.FirestoreDataRepository
 import com.persival.realestatemanagerkotlin.domain.database.SyncRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -48,7 +50,7 @@ class DataSyncRepository @Inject constructor(
             propertyDao.insert(property)
         }
 
-        updateLastSyncTime(System.currentTimeMillis())
+        updateLastSyncTime(LocalDateTime.now())
     }
 
     private suspend fun synchronizePhotos() {
@@ -91,12 +93,13 @@ class DataSyncRepository @Inject constructor(
         updateLastSyncTime(System.currentTimeMillis())
     }
 
-    private fun getLastSyncTime(): Long {
-        return sharedPreferences.getLong(LAST_SYNC_TIME_KEY, 0L)
-    }
+    private fun getLastSyncTime(): LocalDateTime = LocalDateTime.ofEpochSecond(
+        sharedPreferences.getLong(LAST_SYNC_TIME_KEY, 0L),
+        0,
+        ZoneOffset.UTC
+    )
 
-    private fun updateLastSyncTime(time: Long) {
-        sharedPreferences.edit().putLong(LAST_SYNC_TIME_KEY, time).apply()
+    private fun updateLastSyncTime(dateTime: LocalDateTime) {
+        sharedPreferences.edit().putLong(LAST_SYNC_TIME_KEY, dateTime.toEpochSecond(ZoneOffset.UTC)).apply()
     }
-
 }

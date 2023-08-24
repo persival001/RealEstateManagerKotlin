@@ -1,7 +1,7 @@
 package com.persival.realestatemanagerkotlin.domain.property
 
 data class PropertyEntity(
-    val id: Long? = null,
+    val id: Long,
     val type: String,
     val address: String,
     val latLng: String,
