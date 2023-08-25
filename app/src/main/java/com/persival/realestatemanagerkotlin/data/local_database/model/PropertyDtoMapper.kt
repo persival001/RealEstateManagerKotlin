@@ -37,6 +37,8 @@ class PropertyDtoMapper @Inject constructor() {
         isSold = domainModel.isSold,
         entryDate = domainModel.entryDate,
         saleDate = domainModel.saleDate,
-        agentName = domainModel.agentName
+        agentName = domainModel.agentName,
+        lastModified = System.currentTimeMillis(),
+        isSynced = false
     )
 }

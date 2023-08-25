@@ -25,7 +25,7 @@ class FirestoreDataRepository @Inject constructor(
         private const val PROPERTIES = "properties"
         private const val PHOTOS = "photos"
         private const val POINTS_OF_INTEREST = "pointsOfInterest"
-        private const val LAST_UPDATED = "lastUpdated"
+        private const val LAST_MODIFIED = "lastModified"
     }
 
     // -------------- Property Operations -------------- //
@@ -34,14 +34,6 @@ class FirestoreDataRepository @Inject constructor(
 
     private fun getProperty(propertyId: Long): Task<DocumentSnapshot> =
         firestore.collection(PROPERTIES).document(propertyId.toString()).get()
-
-    fun updateProperty(propertyId: Long, property: PropertyDto): Task<Void> {
-        return firestore.collection(PROPERTIES).document(propertyId.toString()).set(property)
-    }
-
-    fun deleteProperty(propertyId: Long): Task<Void> {
-        return firestore.collection(PROPERTIES).document(propertyId.toString()).delete()
-    }
 
     // -------------- Photo Operations -------------- //
 
@@ -82,32 +74,32 @@ class FirestoreDataRepository @Inject constructor(
     suspend fun getUpdatedPropertiesSince(dateTime: LocalDateTime): List<PropertyDto> {
         val lastSyncTimestamp = Timestamp(dateTime.toEpochSecond(ZoneOffset.UTC), dateTime.nano)
         val snapshots = firestore.collection(PROPERTIES)
-            // TODO Persival achtung ! lastUpdated != lastModified
-            .whereGreaterThan(LAST_UPDATED, lastSyncTimestamp)
+            .whereGreaterThan(LAST_MODIFIED, lastSyncTimestamp)
             .get()
             .await()
         return snapshots.documents.mapNotNull { it.toObject(PropertyDto::class.java) }
     }
 
-    suspend fun getUpdatedPhotosSince(propertyId: Long, lastSyncTime: Long): List<PhotoDto> {
-        val lastSyncTimestamp = Timestamp(lastSyncTime / 1000, ((lastSyncTime % 1000) * 1000000).toInt())
+    suspend fun getUpdatedPhotosSince(propertyId: Long, dateTime: LocalDateTime): List<PhotoDto> {
+        val lastSyncTimestamp = Timestamp(dateTime.toEpochSecond(ZoneOffset.UTC), dateTime.nano)
         val snapshots = firestore.collection(PROPERTIES)
             .document(propertyId.toString())
             .collection(PHOTOS)
-            .whereGreaterThan(LAST_UPDATED, lastSyncTimestamp)
+            .whereGreaterThan(LAST_MODIFIED, lastSyncTimestamp)
             .get()
             .await()
         return snapshots.documents.mapNotNull { it.toObject(PhotoDto::class.java) }
     }
 
-    suspend fun getUpdatedPointsOfInterestSince(propertyId: Long, lastSyncTime: Long): List<PointOfInterestDto> {
-        val lastSyncTimestamp = Timestamp(lastSyncTime / 1000, ((lastSyncTime % 1000) * 1000000).toInt())
+    suspend fun getUpdatedPointsOfInterestSince(propertyId: Long, dateTime: LocalDateTime): List<PointOfInterestDto> {
+        val lastSyncTimestamp = Timestamp(dateTime.toEpochSecond(ZoneOffset.UTC), dateTime.nano)
         val snapshots = firestore.collection(PROPERTIES)
             .document(propertyId.toString())
             .collection(POINTS_OF_INTEREST)
-            .whereGreaterThan(LAST_UPDATED, lastSyncTimestamp)
+            .whereGreaterThan(LAST_MODIFIED, lastSyncTimestamp)
             .get()
             .await()
         return snapshots.documents.mapNotNull { it.toObject(PointOfInterestDto::class.java) }
     }
+
 }

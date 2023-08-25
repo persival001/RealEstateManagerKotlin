@@ -57,9 +57,8 @@ android {
 }
 
 dependencies {
+    // Desugaring
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
-
-    implementation 'com.google.android.gms:play-services-maps:18.1.0'
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -69,6 +68,9 @@ dependencies {
     // Material
     implementation 'com.google.android.material:material:1.9.0'
 
+    // Maps
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+
     // Places
     implementation 'com.google.android.libraries.places:places:3.2.0'
 
@@ -76,7 +78,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:22.1.1'
     implementation 'com.google.android.gms:play-services-auth:20.6.0'
     implementation 'com.google.firebase:firebase-firestore-ktx:24.7.0'
-    
+
     // Hilt and Hilt AndroidX
     implementation 'com.google.dagger:hilt-android:2.46'
     kapt 'com.google.dagger:hilt-android-compiler:2.46'

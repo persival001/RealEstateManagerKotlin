@@ -70,7 +70,7 @@ class DataSyncRepository @Inject constructor(
             }
         }
 
-        updateLastSyncTime(System.currentTimeMillis())
+        updateLastSyncTime(LocalDateTime.now())
     }
 
     private suspend fun synchronizePointsOfInterest() {
@@ -90,7 +90,7 @@ class DataSyncRepository @Inject constructor(
             }
         }
 
-        updateLastSyncTime(System.currentTimeMillis())
+        updateLastSyncTime(LocalDateTime.now())
     }
 
     private fun getLastSyncTime(): LocalDateTime = LocalDateTime.ofEpochSecond(

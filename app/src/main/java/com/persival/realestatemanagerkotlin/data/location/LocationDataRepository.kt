@@ -27,10 +27,18 @@ class LocationDataRepository @Inject constructor(
     }
 
     private val locationMutableStateFlow = MutableStateFlow<LocationEntity?>(null)
-    private val currentLocationFlow: StateFlow<LocationEntity?> get() = locationMutableStateFlow.asStateFlow()
-    private var callback: LocationCallback? = null
+    override fun getLocationFlow(): StateFlow<LocationEntity?> = locationMutableStateFlow.asStateFlow()
 
-    override fun getLocationFlow(): StateFlow<LocationEntity?> = currentLocationFlow
+    private val callback by lazy {
+        object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult.lastLocation?.let { location ->
+                    val locationEntity = LocationEntity(location.latitude, location.longitude)
+                    locationMutableStateFlow.tryEmit(locationEntity)
+                }
+            }
+        }
+    }
 
     @RequiresPermission(
         anyOf = [
@@ -39,36 +47,18 @@ class LocationDataRepository @Inject constructor(
         ]
     )
     override fun startLocationRequest() {
-        if (callback == null) {
-            callback = object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    val location = locationResult.lastLocation
-                    if (location != null) {
-                        val locationEntity = LocationEntity(
-                            location.latitude,
-                            location.longitude
-                        )
-                        locationMutableStateFlow.tryEmit(locationEntity)
-                    }
-                }
-            }
-        }
+        fusedLocationProviderClient.removeLocationUpdates(callback)
+        fusedLocationProviderClient.requestLocationUpdates(createLocationRequest(), callback, Looper.getMainLooper())
+    }
 
-        val locationRequest = LocationRequest.create().apply {
-            priority = Priority.PRIORITY_HIGH_ACCURACY
-            interval = INTERVAL
-            fastestInterval = FASTEST_INTERVAL
-            smallestDisplacement = SMALLEST_DISPLACEMENT_THRESHOLD_METER.toFloat()
-        }
-
-        val localCallback = callback
-        if (localCallback != null) {
-            fusedLocationProviderClient.removeLocationUpdates(localCallback)
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, localCallback, Looper.getMainLooper())
-        }
+    private fun createLocationRequest() = LocationRequest.create().apply {
+        priority = Priority.PRIORITY_HIGH_ACCURACY
+        interval = INTERVAL
+        fastestInterval = FASTEST_INTERVAL
+        smallestDisplacement = SMALLEST_DISPLACEMENT_THRESHOLD_METER.toFloat()
     }
 
     override fun stopLocationRequest() {
-        callback?.let { fusedLocationProviderClient.removeLocationUpdates(it) }
+        fusedLocationProviderClient.removeLocationUpdates(callback)
     }
 }

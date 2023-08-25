@@ -59,7 +59,7 @@ MapViewModel @Inject constructor(
     fun isGpsActivatedLiveData(): LiveData<Boolean> = isGpsActivatedUseCase.invoke()
 
     fun refreshGpsActivation() {
-        refreshGpsActivationUseCase.invoke();
+        refreshGpsActivationUseCase.invoke()
     }
 
     fun stopLocation() {
