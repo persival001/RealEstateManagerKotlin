@@ -4,8 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.persival.realestatemanagerkotlin.domain.conversion.SharedPreferencesRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -35,10 +33,8 @@ class SharedPrefsRepository @Inject constructor(
         Log.d("SharedPrefsRepo", "Set currency conversion to: $isActivated")
     }
 
-    override fun getDateConversion(): LiveData<Boolean> {
-        val liveData = MutableLiveData<Boolean>()
-        liveData.value = sharedPreferences.getBoolean(KEY_DATE, false)
-        return liveData
+    override fun getDateConversion(): Boolean {
+        return sharedPreferences.getBoolean(KEY_DATE, false)
     }
 
     override fun setDateConversion(isActivated: Boolean) {

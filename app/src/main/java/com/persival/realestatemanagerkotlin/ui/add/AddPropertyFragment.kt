@@ -352,7 +352,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         datePicker.addOnPositiveButtonClickListener { selection: Long? ->
             val selectedDate: String? =
                 selection?.let { Date(it) }
-                    ?.let { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it) }
+                    ?.let { SimpleDateFormat(viewModel.getFormattedDate(), Locale.getDefault()).format(it) }
             (view as TextInputEditText).setText(selectedDate)
         }
         datePicker.show(parentFragmentManager, "date_picker_tag")

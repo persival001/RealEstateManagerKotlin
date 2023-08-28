@@ -30,13 +30,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         }
 
         // Date button state
-        viewModel.dateButtonState.observe(viewLifecycleOwner) { date ->
-            binding.dateRadioButton.isChecked = date
-        }
-
+        binding.dateRadioButton.isChecked = viewModel.dateButtonState()
+        
         binding.dateRadioButton.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isDateConversionTriggered(isChecked)
         }
+
     }
 
 }

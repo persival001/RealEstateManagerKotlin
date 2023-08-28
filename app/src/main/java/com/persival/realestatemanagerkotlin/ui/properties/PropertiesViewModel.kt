@@ -59,17 +59,23 @@ class PropertiesViewModel @Inject constructor(
         val isConversionEnabled = getSavedStateForCurrencyConversionButton.invoke()
         return if (isConversionEnabled) {
             val euroPrice = Utils.convertDollarToEuro(price)
-            NumberFormat.getCurrencyInstance(Locale.FRANCE).format(euroPrice)
+            val euroFormat = NumberFormat.getCurrencyInstance(Locale.FRANCE)
+            euroFormat.maximumFractionDigits = 0
+            euroFormat.format(euroPrice)
         } else {
             val dollarPrice = Utils.convertEuroToDollar(price)
-            NumberFormat.getCurrencyInstance(Locale.US).format(dollarPrice)
+            val dollarFormat = NumberFormat.getCurrencyInstance(Locale.US)
+            dollarFormat.maximumFractionDigits = 0
+            dollarFormat.format(dollarPrice)
         }
     }
 
     fun updatePropertyPrices() {
         val currentProperties = propertiesViewStateItem.value ?: return
         val updatedProperties = currentProperties.map {
-            it.copy(price = getFormattedPrice(it.price.toInt()))
+            val cleanedPrice = it.price.replace("\\D".toRegex(), "")
+            val originalPrice = cleanedPrice.toInt()
+            it.copy(price = getFormattedPrice(originalPrice))
         }
 
         propertiesViewStateItem.value = updatedProperties

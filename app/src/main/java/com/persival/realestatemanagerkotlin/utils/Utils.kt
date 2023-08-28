@@ -35,6 +35,12 @@ object Utils {
         return dateFormat.format(Date())
     }
 
+    // This is the new function to get today date in french
+    fun getTodayDateInFrench(): String {
+        val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
+        return dateFormat.format(Date())
+    }
+
     /**
      * Vérification de la connexion réseau
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE

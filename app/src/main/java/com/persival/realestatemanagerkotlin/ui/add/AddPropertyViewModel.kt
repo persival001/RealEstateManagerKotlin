@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.InsertPointOfInterestUseCase
@@ -15,6 +16,7 @@ import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.UpdatePropertyWithPhotoAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
+import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,6 +30,7 @@ class AddPropertyViewModel @Inject constructor(
     private val getPropertyWithPhotoAndPOIUseCase: GetPropertyWithPhotoAndPOIUseCase,
     private val updatePropertyWithPhotoAndPOIUseCase: UpdatePropertyWithPhotoAndPOIUseCase,
     private val getSelectedPropertyIdUseCase: GetSelectedPropertyIdUseCase,
+    private val getSavedStateForDateConversionButtonUseCase: GetSavedStateForDateConversionButtonUseCase,
 ) : ViewModel() {
 
     val viewStateLiveData: LiveData<AddViewState> = liveData {
@@ -151,5 +154,15 @@ class AddPropertyViewModel @Inject constructor(
             pointsOfInterest = entity.pointsOfInterest.joinToString(",") { it.poi }
         )
     }
+
+    fun getFormattedDate(): String {
+        val isFrenchDateEnabled = getSavedStateForDateConversionButtonUseCase.invoke()
+        return if (isFrenchDateEnabled) {
+            Utils.getTodayDateInFrench()
+        } else {
+            Utils.getTodayDate()
+        }
+    }
+
 
 }

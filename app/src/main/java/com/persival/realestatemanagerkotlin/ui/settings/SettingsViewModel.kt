@@ -1,8 +1,6 @@
 package com.persival.realestatemanagerkotlin.ui.settings
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButton
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.IsCurrencyConversionButtonTriggeredUseCase
@@ -22,8 +20,8 @@ class SettingsViewModel @Inject constructor(
         getSavedStateForCurrencyConversionButton.invoke()
     }
 
-    val dateButtonState: LiveData<Boolean> = liveData {
-        emitSource(getSavedStateForDateConversionButtonUseCase.invoke())
+    val dateButtonState = {
+        getSavedStateForDateConversionButtonUseCase.invoke()
     }
 
     fun isCurrencyConversionTriggered(isTriggered: Boolean) {
