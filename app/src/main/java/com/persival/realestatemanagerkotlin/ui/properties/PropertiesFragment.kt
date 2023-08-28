@@ -1,5 +1,7 @@
 package com.persival.realestatemanagerkotlin.ui.properties
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -21,12 +23,17 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
 
     private val binding by viewBinding { FragmentPropertiesBinding.bind(it) }
     private val viewModel by viewModels<PropertiesViewModel>()
+    private lateinit var sharedPreferenceListener: SharedPreferences.OnSharedPreferenceChangeListener
+    private val sharedPreferences: SharedPreferences by lazy {
+        requireActivity().getSharedPreferences("SharedPrefs", Context.MODE_PRIVATE)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.synchronizeDatabase()
-        
+
         val propertyListAdapter = PropertyListAdapter { property ->
             onPropertySelected(property.id)
             val detailFragment = DetailFragment.newInstance()
@@ -48,9 +55,24 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
         viewModel.properties.observe(viewLifecycleOwner) { properties ->
             propertyListAdapter.submitList(properties)
         }
+
+        sharedPreferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == "KEY_CURRENCY") {
+                viewModel.updatePropertyPrices()
+            }
+        }
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceListener)
+
     }
 
     private fun onPropertySelected(id: Long?) {
         viewModel.updateSelectedPropertyId(id)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceListener)
+    }
+
 }

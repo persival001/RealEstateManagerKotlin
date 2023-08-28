@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.data.synchronize_database.SynchronizeWorker
@@ -63,6 +64,7 @@ class MainActivity : AppCompatActivity(), PropertyIdListener {
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
+        initializeWorkManager()
 
         // TODO: see for clean this after test - Initialize Work-manager for synchronizing data
         val constraints = Constraints.Builder()
@@ -109,6 +111,28 @@ class MainActivity : AppCompatActivity(), PropertyIdListener {
                 }
             }
         })
+    }
+
+    private fun initializeWorkManager() {
+        val workTag = "SYNCHRONIZE_WORK"
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val syncRequest = PeriodicWorkRequestBuilder<SynchronizeWorker>(1, TimeUnit.HOURS)
+            .setConstraints(constraints)
+            .addTag(workTag)
+            .build()
+
+        // Verify if the work is already scheduled
+        val workInfos = WorkManager.getInstance(this).getWorkInfosByTag(workTag).get()
+
+        if (workInfos == null || workInfos.isEmpty() || workInfos.any {
+                it.state == WorkInfo.State.CANCELLED || it.state == WorkInfo.State.FAILED
+            }) {
+            WorkManager.getInstance(this).enqueue(syncRequest)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

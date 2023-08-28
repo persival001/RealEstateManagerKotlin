@@ -95,8 +95,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
                     android:layout_marginBottom="@dimen/default_margin"
-                    android:text="@string/surface"
-                    android:textSize="@dimen/default_text_size" />
+                    android:textSize="@dimen/default_text_size"
+                    tools:text="@string/surface" />
 
                 <!-- Rooms -->
                 <TextView
@@ -114,8 +114,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
                     android:layout_marginBottom="@dimen/default_margin"
-                    android:text="@string/rooms"
-                    android:textSize="@dimen/default_text_size" />
+                    android:textSize="@dimen/default_text_size"
+                    tools:text="@string/rooms" />
 
                 <!-- Bathrooms -->
                 <TextView
@@ -133,8 +133,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
                     android:layout_marginBottom="@dimen/default_margin"
-                    android:text="@string/bathrooms"
-                    android:textSize="@dimen/default_text_size" />
+                    android:textSize="@dimen/default_text_size"
+                    tools:text="@string/bathrooms" />
 
                 <!-- Bedrooms -->
                 <TextView
@@ -152,8 +152,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
                     android:layout_marginBottom="@dimen/default_margin"
-                    android:text="@string/bedrooms"
-                    android:textSize="@dimen/default_text_size" />
+                    android:textSize="@dimen/default_text_size"
+                    tools:text="@string/bedrooms" />
 
                 <!-- Location -->
                 <TextView
@@ -171,8 +171,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="34dp"
                     android:layout_marginBottom="@dimen/default_margin"
-                    android:text="@string/location"
-                    android:textSize="@dimen/default_text_size" />
+                    android:textSize="@dimen/default_text_size"
+                    tools:text="@string/location" />
 
             </LinearLayout>
 

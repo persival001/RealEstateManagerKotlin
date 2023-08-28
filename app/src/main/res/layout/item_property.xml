@@ -28,6 +28,7 @@
             android:textColor="#000000"
             android:textSize="@dimen/default_text_middle_size"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/property_picture"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Penthouse" />
@@ -58,6 +59,7 @@
             android:textColor="@color/md_theme_light_tertiary"
             android:textSize="@dimen/default_text_big_size"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/property_picture"
             tools:text="$60,000,000" />
 

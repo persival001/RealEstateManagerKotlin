@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButton
 import com.persival.realestatemanagerkotlin.domain.database.SynchronizeDatabaseUseCase
 import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
+import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,6 +22,7 @@ class PropertiesViewModel @Inject constructor(
     private val getAllPropertiesWithPhotosAndPOIUseCase: GetAllPropertiesWithPhotosAndPOIUseCase,
     private val setSelectedPropertyIdUseCase: SetSelectedPropertyIdUseCase,
     private val synchronizeDatabaseUseCase: SynchronizeDatabaseUseCase,
+    private val getSavedStateForCurrencyConversionButton: GetSavedStateForCurrencyConversionButton,
 ) : ViewModel() {
 
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
@@ -32,20 +35,18 @@ class PropertiesViewModel @Inject constructor(
 
     private fun loadProperties() {
         viewModelScope.launch {
+
             getAllPropertiesWithPhotosAndPOIUseCase.invoke().collect { properties ->
-                val viewStateItems = properties
-                    .map { propertyWithPhotosAndPOI ->
-                        PropertyViewStateItem(
-                            id = propertyWithPhotosAndPOI.property.id ?: 0,
-                            type = propertyWithPhotosAndPOI.property.type,
-                            address = propertyWithPhotosAndPOI.property.address,
-                            price = getFormattedPrice(propertyWithPhotosAndPOI.property.price),
-                            pictureUri = propertyWithPhotosAndPOI.photos.firstOrNull()?.photoUrl
-                                ?: "",
-                            isSold = propertyWithPhotosAndPOI.property.isSold
-                        )
-                    }
-                    .sortedBy { it.isSold }
+                val viewStateItems = properties.map { propertyWithPhotosAndPOI ->
+                    PropertyViewStateItem(
+                        id = propertyWithPhotosAndPOI.property.id,
+                        type = propertyWithPhotosAndPOI.property.type,
+                        address = propertyWithPhotosAndPOI.property.address,
+                        price = getFormattedPrice(propertyWithPhotosAndPOI.property.price),
+                        pictureUri = propertyWithPhotosAndPOI.photos.firstOrNull()?.photoUrl ?: "",
+                        isSold = propertyWithPhotosAndPOI.property.isSold
+                    )
+                }.sortedBy { it.isSold }
 
                 withContext(Dispatchers.Main) {
                     propertiesViewStateItem.value = viewStateItems
@@ -55,9 +56,23 @@ class PropertiesViewModel @Inject constructor(
     }
 
     private fun getFormattedPrice(price: Int): String {
-        val format = NumberFormat.getCurrencyInstance(Locale.getDefault())
-        format.maximumFractionDigits = 0
-        return format.format(price)
+        val isConversionEnabled = getSavedStateForCurrencyConversionButton.invoke()
+        return if (isConversionEnabled) {
+            val euroPrice = Utils.convertDollarToEuro(price)
+            NumberFormat.getCurrencyInstance(Locale.FRANCE).format(euroPrice)
+        } else {
+            val dollarPrice = Utils.convertEuroToDollar(price)
+            NumberFormat.getCurrencyInstance(Locale.US).format(dollarPrice)
+        }
+    }
+
+    fun updatePropertyPrices() {
+        val currentProperties = propertiesViewStateItem.value ?: return
+        val updatedProperties = currentProperties.map {
+            it.copy(price = getFormattedPrice(it.price.toInt()))
+        }
+
+        propertiesViewStateItem.value = updatedProperties
     }
 
     fun updateSelectedPropertyId(id: Long?) {

@@ -17,7 +17,7 @@
     <string name="caption">Caption</string>
     <string name="add_property">Ajouter une propriété</string>
     <string name="modify_property">Modifier l\'annonce</string>
-    <string name="media">Media</string>
+    <string name="media">Photos</string>
     <string name="description_exemple">Cette luxueuse villa offre un sanctuaire de sérénité niché dans un emplacement privilégié avec une vue imprenable sur l\'océan. Dotée de 5 chambres en suite, cette demeure d\'exception offre un design contemporain, des finitions haut de gamme et des équipements de pointe.</string>
     <string name="conversion_title">Conversion de devises</string>
     <string name="conversion_description">Convertir les dollars en euros</string>
@@ -73,10 +73,10 @@
     <string name="information_on_sale">Le bien immobilier a été mis en vente par %s le %s</string>
     <string name="select_poi">Selectionner les point d\'interet à proximité</string>
     <string name="ok">OK</string>
-    <string name="point_of_interest">Point of interest</string>
+    <string name="point_of_interest">A proximité</string>
     <string name="description_poi">School, Hospital, Restaurant</string>
     <string name="contact_exemple">Sell the 12/02/2023</string>
-    <string name="property_added">The property has been added</string>
-    <string name="property_modified">The property has been modified</string>
+    <string name="property_added">La propriété a bien été ajoutée</string>
+    <string name="property_modified">La propriété a bien été modifiée</string>
 
 </resources>

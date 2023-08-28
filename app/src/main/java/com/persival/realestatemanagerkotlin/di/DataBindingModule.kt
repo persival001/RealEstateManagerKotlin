@@ -4,8 +4,10 @@ import com.persival.realestatemanagerkotlin.data.local_database.LocalDatabaseRep
 import com.persival.realestatemanagerkotlin.data.location.LocationDataRepository
 import com.persival.realestatemanagerkotlin.data.permissions.PermissionDataRepository
 import com.persival.realestatemanagerkotlin.data.remote_database.firebase.FirebaseDataRepository
+import com.persival.realestatemanagerkotlin.data.shared_prefs.SharedPrefsRepository
 import com.persival.realestatemanagerkotlin.data.storage.PropertyDataRepository
 import com.persival.realestatemanagerkotlin.data.synchronize_database.DataSyncRepository
+import com.persival.realestatemanagerkotlin.domain.conversion.SharedPreferencesRepository
 import com.persival.realestatemanagerkotlin.domain.database.SyncRepository
 import com.persival.realestatemanagerkotlin.domain.location.LocationRepository
 import com.persival.realestatemanagerkotlin.domain.permissions.PermissionRepository
@@ -45,5 +47,9 @@ abstract class DataBindingModule {
     @Singleton
     @Binds
     abstract fun bindSyncRepository(dataSyncRepository: DataSyncRepository): SyncRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindSharedPreferencesRepository(sharedPrefsRepository: SharedPrefsRepository): SharedPreferencesRepository
 
 }

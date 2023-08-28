@@ -5,10 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.persival.realestatemanagerkotlin.R
-import com.persival.realestatemanagerkotlin.databinding.FragmentPropertiesBinding
 import com.persival.realestatemanagerkotlin.databinding.FragmentSettingsBinding
-import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
-import com.persival.realestatemanagerkotlin.ui.properties.PropertiesViewModel
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,6 +21,22 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Conversion button state
+        binding.conversionRadioButton.isChecked = viewModel.conversionButtonState()
+
+        binding.conversionRadioButton.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.isCurrencyConversionTriggered(isChecked)
+        }
+
+        // Date button state
+        viewModel.dateButtonState.observe(viewLifecycleOwner) { date ->
+            binding.dateRadioButton.isChecked = date
+        }
+
+        binding.dateRadioButton.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.isDateConversionTriggered(isChecked)
+        }
     }
 
 }
