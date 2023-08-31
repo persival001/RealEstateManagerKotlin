@@ -66,18 +66,6 @@ class MainActivity : AppCompatActivity(), PropertyIdListener {
 
         initializeWorkManager()
 
-        // TODO: see for clean this after test - Initialize Work-manager for synchronizing data
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val syncRequest = PeriodicWorkRequestBuilder<SynchronizeWorker>(1, TimeUnit.HOURS)
-            .setConstraints(constraints)
-            .build()
-
-        WorkManager.getInstance(this).enqueue(syncRequest)
-
-
         // Setup the toolbar
         setSupportActionBar(binding.toolbar)
 

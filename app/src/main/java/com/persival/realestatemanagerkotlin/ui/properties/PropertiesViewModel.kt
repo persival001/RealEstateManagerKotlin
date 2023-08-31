@@ -57,17 +57,25 @@ class PropertiesViewModel @Inject constructor(
 
     private fun getFormattedPrice(price: Int): String {
         val isConversionEnabled = getSavedStateForCurrencyConversionButton.invoke()
+
         return if (isConversionEnabled) {
-            val euroPrice = Utils.convertDollarToEuro(price)
-            val euroFormat = NumberFormat.getCurrencyInstance(Locale.FRANCE)
-            euroFormat.maximumFractionDigits = 0
-            euroFormat.format(euroPrice)
+            val euroValue = Utils.convertDollarToEuro(price)
+            formatPriceAsEuro(euroValue)
         } else {
-            val dollarPrice = Utils.convertEuroToDollar(price)
-            val dollarFormat = NumberFormat.getCurrencyInstance(Locale.US)
-            dollarFormat.maximumFractionDigits = 0
-            dollarFormat.format(dollarPrice)
+            formatPriceAsDollar(price)
         }
+    }
+
+    private fun formatPriceAsEuro(price: Int): String {
+        val euroFormat = NumberFormat.getCurrencyInstance(Locale.FRANCE)
+        euroFormat.maximumFractionDigits = 0
+        return euroFormat.format(price)
+    }
+
+    private fun formatPriceAsDollar(price: Int): String {
+        val dollarFormat = NumberFormat.getCurrencyInstance(Locale.US)
+        dollarFormat.maximumFractionDigits = 0
+        return dollarFormat.format(price)
     }
 
     fun updatePropertyPrices() {
@@ -75,7 +83,13 @@ class PropertiesViewModel @Inject constructor(
         val updatedProperties = currentProperties.map {
             val cleanedPrice = it.price.replace("\\D".toRegex(), "")
             val originalPrice = cleanedPrice.toInt()
-            it.copy(price = getFormattedPrice(originalPrice))
+            if (it.price.contains("$")) {
+                val euroValue = Utils.convertDollarToEuro(originalPrice)
+                it.copy(price = formatPriceAsEuro(euroValue))
+            } else {
+                val dollarValue = Utils.convertEuroToDollar(originalPrice)
+                it.copy(price = formatPriceAsDollar(dollarValue))
+            }
         }
 
         propertiesViewStateItem.value = updatedProperties

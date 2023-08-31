@@ -78,5 +78,6 @@
     <string name="contact_exemple">Sell the 12/02/2023</string>
     <string name="property_added">La propriété a bien été ajoutée</string>
     <string name="property_modified">La propriété a bien été modifiée</string>
+    <string name="invalid_address_message">Please, use a valid adress</string>
 
 </resources>

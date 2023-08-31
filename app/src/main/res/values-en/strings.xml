@@ -77,5 +77,6 @@
     <string name="contact_exemple">Sell the 12/02/2023</string>
     <string name="property_added">The property has been added</string>
     <string name="property_modified">The property has been modified</string>
+    <string name="invalid_address_message">Please, use a valid adress</string>
 
 </resources>

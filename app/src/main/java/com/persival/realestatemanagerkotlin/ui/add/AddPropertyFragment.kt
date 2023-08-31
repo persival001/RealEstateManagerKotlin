@@ -344,6 +344,11 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
         }
 
+        if (latLongString == null || latLongString == "") {
+            Toast.makeText(requireContext(), R.string.invalid_address_message, Toast.LENGTH_LONG).show()
+            return false
+        }
+
         return allFieldsFilled
     }
 
