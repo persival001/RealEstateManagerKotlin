@@ -89,5 +89,11 @@
     <string name="pois_hint">Services à proximité</string>
     <string name="date_old_title">Old first</string>
     <string name="date_recent_title">Recent first</string>
+    <string name="poi_school">School</string>
+    <string name="poi_public_transports">Public transport</string>
+    <string name="poi_hospital">Hospital</string>
+    <string name="poi_shop">Store</string>
+    <string name="poi_green_spaces">Green spaces</string>
+    <string name="poi_restaurant">Restaurant</string>
 
 </resources>

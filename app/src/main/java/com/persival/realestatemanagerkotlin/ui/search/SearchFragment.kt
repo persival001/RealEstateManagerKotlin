@@ -73,6 +73,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         binding.areaSlider.addOnChangeListener { rangeSlider, value, fromUser ->
             // Responds to when slider's value is changed
         }
+
+        // POI choice alert dialog box
+
     }
 
 }
