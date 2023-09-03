@@ -21,7 +21,7 @@
     <string name="description_exemple">This luxurious villa offers a sanctuary of serenity nestled in a prime location with breathtaking ocean views. With 5 en-suite bedrooms, this exceptional residence offers contemporary design, high-end finishes and state-of-the-art equipment.</string>
     <string name="conversion_title">Currency conversion</string>
     <string name="conversion_description">Dollar to euro conversion</string>
-    <string name="date_title">Format date</string>
+    <string name="date_title">Sort by date</string>
     <string name="date_description">Format the date in french version</string>
     <string name="properties">List of properties for sale</string>
     <string name="surface">Surface</string>
@@ -77,6 +77,16 @@
     <string name="contact_exemple">Sell the 12/02/2023</string>
     <string name="property_added">The property has been added</string>
     <string name="property_modified">The property has been modified</string>
-    <string name="invalid_address_message">Please, use a valid adress</string>
+    <string name="invalid_address_message">Please, use a valid address</string>
+    <string name="search_type">Type of property sought</string>
+    <string name="type_description">House, penthouse, flat…</string>
+    <string name="price_title">Price</string>
+    <string name="adjustement_of_price">Price adjustment</string>
+    <string name="devise">Price set on :</string>
+    <string name="area_title">Area</string>
+    <string name="type_of_property_hint">Type of property sought</string>
+    <string name="pois_hint">Point of interest sought</string>
+    <string name="date_old_title">Old first</string>
+    <string name="date_recent_title">Recent first</string>
 
 </resources>

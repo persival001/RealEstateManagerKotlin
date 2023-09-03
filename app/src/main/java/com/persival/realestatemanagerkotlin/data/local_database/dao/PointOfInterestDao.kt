@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PointOfInterestDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insert(poi: PointOfInterestDto): Long
 
     @Insert
@@ -39,6 +39,17 @@ interface PointOfInterestDao {
 
     @Update
     suspend fun update(poi: PointOfInterestDto): Int
+
+    @Query(
+        """
+    UPDATE point_of_interest 
+    SET poi = :poi, 
+        lastModified = :lastModified, 
+        isSynced = 0
+    WHERE propertyId = :propertyId
+"""
+    )
+    suspend fun updatePOIByPropertyId(propertyId: Long, poi: String, lastModified: Long)
 
     @Update
     fun updateBySelection(poi: PointOfInterestDto): Int

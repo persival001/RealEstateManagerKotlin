@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PhotoDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insert(photoDto: PhotoDto): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -39,6 +39,23 @@ interface PhotoDao {
 
     @Update
     suspend fun update(photoDto: PhotoDto): Int
+
+    @Query(
+        """
+    UPDATE photo 
+    SET description = :description, 
+        photo_url = :photoUrl, 
+        lastModified = :lastModified, 
+        isSynced = 0
+    WHERE propertyId = :propertyId
+"""
+    )
+    suspend fun updatePhotoAndDescriptionByPropertyId(
+        propertyId: Long,
+        description: String,
+        photoUrl: String,
+        lastModified: Long
+    )
 
     @Update
     fun updateBySelection(photo: PhotoDto): Int

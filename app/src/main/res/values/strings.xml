@@ -21,7 +21,7 @@
     <string name="description_exemple">Cette luxueuse villa offre un sanctuaire de sérénité niché dans un emplacement privilégié avec une vue imprenable sur l\'océan. Dotée de 5 chambres en suite, cette demeure d\'exception offre un design contemporain, des finitions haut de gamme et des équipements de pointe.</string>
     <string name="conversion_title">Conversion de devises</string>
     <string name="conversion_description">Convertir les dollars en euros</string>
-    <string name="date_title">Modifier la date</string>
+    <string name="date_title">Tri par date</string>
     <string name="date_description">Afficher la date en version française</string>
     <string name="properties">Propriétés à vendre</string>
     <string name="surface">Surface</string>
@@ -74,10 +74,20 @@
     <string name="select_poi">Selectionner les point d\'interet à proximité</string>
     <string name="ok">OK</string>
     <string name="point_of_interest">A proximité</string>
-    <string name="description_poi">School, Hospital, Restaurant</string>
-    <string name="contact_exemple">Sell the 12/02/2023</string>
+    <string name="description_poi">Ecole, hopital, restaurant...</string>
+    <string name="contact_exemple">Vendu 12/02/2023</string>
     <string name="property_added">La propriété a bien été ajoutée</string>
     <string name="property_modified">La propriété a bien été modifiée</string>
-    <string name="invalid_address_message">Please, use a valid adress</string>
+    <string name="invalid_address_message">Utilisez une addresse valide svp</string>
+    <string name="search_type">Type de propriété recherché</string>
+    <string name="type_description">Villa, Manoir, Loft...</string>
+    <string name="price_title">Prix</string>
+    <string name="adjustement_of_price">Ajustement du prix</string>
+    <string name="devise">Price selectionné :</string>
+    <string name="area_title">Surface</string>
+    <string name="type_of_property_hint">Type de propriété recherché</string>
+    <string name="pois_hint">Services à proximité</string>
+    <string name="date_old_title">Old first</string>
+    <string name="date_recent_title">Recent first</string>
 
 </resources>

@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.ui.add.AddPropertyFragment
 import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
+import com.persival.realestatemanagerkotlin.ui.search.SearchFragment
 import com.persival.realestatemanagerkotlin.ui.settings.SettingsFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,7 +51,7 @@ class NavigationActivity : AppCompatActivity() {
 
             "item_search" -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_menu_container, AddPropertyFragment())
+                    .replace(R.id.fragment_menu_container, SearchFragment())
                     .commit()
             }
 

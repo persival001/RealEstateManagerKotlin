@@ -3,7 +3,9 @@ package com.persival.realestatemanagerkotlin.data.local_database
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
+import com.persival.realestatemanagerkotlin.data.local_database.model.PhotoDto
 import com.persival.realestatemanagerkotlin.data.local_database.model.PhotoDtoMapper
+import com.persival.realestatemanagerkotlin.data.local_database.model.PointOfInterestDto
 import com.persival.realestatemanagerkotlin.data.local_database.model.PointOfInterestDtoMapper
 import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyDtoMapper
 import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyWithPhotosAndPoisDtoMapper
@@ -56,17 +58,53 @@ class LocalDatabaseRepository @Inject constructor(
         pois: List<PointOfInterestEntity>
     ) {
         val propertyDto = propertyMapper.mapFromDomainModel(property)
-        propertyDao.update(propertyDto)
 
-        val photosDto = photos.map { photoMapper.mapFromDomainModel(it) }
-        val poisDto = pois.map { poiMapper.mapFromDomainModel(it) }
+        withContext(coroutineDispatcherProvider.io) {
+            propertyDao.update(propertyDto)
 
-        photoDao.deletePhotosByPropertyId(propertyDto.id)
-        pointOfInterestDao.deletePOIsByPropertyId(propertyDto.id)
+            val photosDto = photos.map { photoMapper.mapFromDomainModel(it) }
+            val poisDto = pois.map { poiMapper.mapFromDomainModel(it) }
 
-        photoDao.insertAll(photosDto)
-        pointOfInterestDao.insertAll(poisDto)
+            // Retrieve current photos from the database
+            val currentPhotos = photoDao.getByPropertyId(propertyDto.id)
+            // Update photos that changed
+            for (photoDto in photosDto) {
+                val currentPhoto = currentPhotos.find { it.id == photoDto.id }
+                if (currentPhoto == null || photoHasChanged(currentPhoto, photoDto)) {
+                    photoDao.updatePhotoAndDescriptionByPropertyId(
+                        propertyId = propertyDto.id,
+                        description = photoDto.description,
+                        photoUrl = photoDto.photoUrl,
+                        lastModified = photoDto.lastModified
+                    )
+                }
+            }
+
+            // Retrieve current POIs from the database
+            val currentPOIs = pointOfInterestDao.getByPropertyId(propertyDto.id)
+            // Update POIs that changed
+            for (poiDto in poisDto) {
+                val currentPOI = currentPOIs.find { it.id == poiDto.id }
+                if (currentPOI == null || poiHasChanged(currentPOI, poiDto)) {
+                    pointOfInterestDao.updatePOIByPropertyId(
+                        propertyId = propertyDto.id,
+                        poi = poiDto.poi,
+                        lastModified = poiDto.lastModified
+                    )
+                }
+            }
+        }
     }
+
+
+    private fun photoHasChanged(oldPhoto: PhotoDto, newPhoto: PhotoDto): Boolean {
+        return oldPhoto.description != newPhoto.description || oldPhoto.photoUrl != newPhoto.photoUrl
+    }
+
+    private fun poiHasChanged(oldPOI: PointOfInterestDto, newPOI: PointOfInterestDto): Boolean {
+        return oldPOI.poi != newPOI.poi
+    }
+
 
     override suspend fun updateProperty(propertyEntity: PropertyEntity): Int = propertyDao.update(
         propertyMapper.mapFromDomainModel(propertyEntity)

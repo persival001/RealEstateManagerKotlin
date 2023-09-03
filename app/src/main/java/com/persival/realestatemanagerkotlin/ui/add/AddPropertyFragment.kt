@@ -203,7 +203,8 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 removeImageAndName(requestCodes[index])
             }
         }
-
+        
+        // MODIFY PROPERTY
         if (actionType == "modify") {
             // Set the property information in the form if the propertyId is not null
             viewModel.viewStateLiveData.observe(viewLifecycleOwner) { addViewState ->
@@ -219,6 +220,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 binding.bathroomsEditText.setText(addViewState.bathrooms.toString())
                 binding.descriptionEditText.setText(addViewState.description)
                 binding.addressEditText.setText(addViewState.address)
+                latLongString = addViewState.latLng
 
                 // Set the card photos and descriptions
                 val cardEditTexts = listOf(
