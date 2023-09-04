@@ -13,16 +13,16 @@ class SyncFirestoreToRoomUseCase @Inject constructor(
     private val photoDao: PhotoDao,
     private val pointOfInterestDao: PointOfInterestDao,
 ) {
-    /*suspend operator fun invoke() {
+    suspend operator fun invoke() {
         val propertiesFromFirestore = firestoreRepository.getAllProperties()
         propertyDao.insertAll(propertiesFromFirestore)
 
         propertiesFromFirestore.forEach { property ->
-            val photosFromFirestore = firestoreRepository.getAllPhotosForProperty(property.id)
+            val photosFromFirestore = firestoreRepository.getPhotos(property.id)
             photoDao.insertAll(photosFromFirestore)
 
-            val poisFromFirestore = firestoreRepository.getAllPOIsForProperty(property.id)
+            val poisFromFirestore = firestoreRepository.getPOIs(property.id)
             pointOfInterestDao.insertAll(poisFromFirestore)
         }
-    }*/
+    }
 }

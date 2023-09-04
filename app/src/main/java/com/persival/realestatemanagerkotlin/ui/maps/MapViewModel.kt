@@ -67,6 +67,7 @@ MapViewModel @Inject constructor(
     }
 
     fun onResume() {
+        Log.d("MapViewModel", "onResume called in ViewModel")
         val hasGpsPermission = true == isLocationPermissionUseCase.invoke().value
         if (hasGpsPermission) {
             startLocationUseCase.invoke()

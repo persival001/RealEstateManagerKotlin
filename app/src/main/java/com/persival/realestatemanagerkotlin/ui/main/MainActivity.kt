@@ -4,11 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
@@ -17,25 +19,22 @@ import androidx.work.WorkManager
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.data.synchronize_database.SynchronizeWorker
 import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
-import com.persival.realestatemanagerkotlin.ui.add.PropertyIdListener
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
 import com.persival.realestatemanagerkotlin.ui.navigation.NavigationActivity
 import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), PropertyIdListener {
-
-    private var propertyId: Long? = null
-
-    override fun onPropertyIdRequested(propertyId: Long) {
-        this.propertyId = propertyId
-    }
+class MainActivity : AppCompatActivity() {
 
     private val binding by viewBinding { ActivityMainBinding.inflate(it) }
     private val viewModel by viewModels<MainViewModel>()
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
 
     private val fragmentLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
@@ -64,7 +63,15 @@ class MainActivity : AppCompatActivity(), PropertyIdListener {
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
-        initializeWorkManager()
+        // Initialize WorkManager
+        /*WorkManager.initialize(
+            this,
+            Configuration.Builder()
+                .setWorkerFactory(workerFactory)
+                .build()
+        )*/
+
+        //initializeWorkManager()
 
         // Setup the toolbar
         setSupportActionBar(binding.toolbar)
@@ -149,7 +156,12 @@ class MainActivity : AppCompatActivity(), PropertyIdListener {
             R.id.action_modify -> {
                 val intent = Intent(this, NavigationActivity::class.java)
                 intent.putExtra("selectedItem", "item_modify")
-                startActivity(intent)
+                if (viewModel.getPropertyId() != null) {
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, R.string.no_property_selected, Toast.LENGTH_LONG).show()
+                }
+
                 return true
             }
 

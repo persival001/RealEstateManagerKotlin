@@ -41,7 +41,7 @@ class FirestoreDataRepository @Inject constructor(
         return firestore.collection(PROPERTIES).document(propertyId.toString()).collection(PHOTOS).add(photo)
     }
 
-    private fun getPhotos(propertyId: Long): Task<QuerySnapshot> {
+    fun getPhotos(propertyId: Long): Task<QuerySnapshot> {
         return firestore.collection(PROPERTIES).document(propertyId.toString()).collection(PHOTOS).get()
     }
 
@@ -52,7 +52,7 @@ class FirestoreDataRepository @Inject constructor(
             .add(poi)
     }
 
-    private fun getPOIs(propertyId: Long): Task<QuerySnapshot> {
+    fun getPOIs(propertyId: Long): Task<QuerySnapshot> {
         return firestore.collection(PROPERTIES).document(propertyId.toString()).collection(POINTS_OF_INTEREST).get()
     }
 

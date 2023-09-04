@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -54,6 +55,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
         // Add marker for user position
         viewModel.getLocationLiveData().asLiveData().observe(viewLifecycleOwner) { location ->
+            Log.d("MapFragment", "Received location update: $location")
             location?.let {
                 val latLng = LatLng(it.latitude, it.longitude)
 
@@ -98,6 +100,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
     override fun onResume() {
         // Refresh GPS activation and location permission
+        Log.d("MapFragment", "onResume called")
         viewModel.refreshGpsActivation()
         viewModel.onResume()
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -110,6 +113,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
 
     override fun onMapReady(map: GoogleMap) {
+        Log.d("MapFragment", "Map is ready")
         googleMap = map
         viewModel.getAllPropertiesLatLng()
     }

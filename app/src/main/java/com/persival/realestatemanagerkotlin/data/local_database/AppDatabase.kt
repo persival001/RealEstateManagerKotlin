@@ -16,6 +16,7 @@ import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyDt
         PhotoDto::class,
     ],
     version = 1,
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 

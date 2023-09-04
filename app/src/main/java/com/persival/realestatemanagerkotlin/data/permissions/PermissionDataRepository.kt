@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
@@ -30,9 +31,11 @@ class PermissionDataRepository @Inject constructor(
     override fun isLocationPermission(): LiveData<Boolean> = locationPermissionLiveData
 
     override fun refreshLocationPermission() {
+        Log.d("PermissionRepository", "refreshLocationPermission called")
         val hasPermission = ContextCompat.checkSelfPermission(
             context, Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
+        Log.d("PermissionRepository", "Location permission is: $hasPermission")
         locationPermissionLiveData.value = hasPermission
     }
 
@@ -40,8 +43,10 @@ class PermissionDataRepository @Inject constructor(
     override fun isGpsActivated(): LiveData<Boolean> = isGpsActivatedLiveData
 
     override fun refreshGpsActivation() {
+        Log.d("PermissionRepository", "refreshGpsActivation called")
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
         val isGPSEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) ?: false
+        Log.d("PermissionRepository", "GPS activation status is: $isGPSEnabled")
         isGpsActivatedLiveData.value = isGPSEnabled
     }
 

@@ -34,9 +34,9 @@ class ContentProvider : ContentProvider() {
         private const val PROPERTY_ID = 4
     }
 
-    private lateinit var propertyDao: PropertyDao
-    private lateinit var photoDao: PhotoDao
-    private lateinit var pointOfInterestDao: PointOfInterestDao
+    lateinit var propertyDao: PropertyDao
+    lateinit var photoDao: PhotoDao
+    lateinit var pointOfInterestDao: PointOfInterestDao
 
     override fun onCreate(): Boolean {
         val appContext = context?.applicationContext ?: throw IllegalStateException()

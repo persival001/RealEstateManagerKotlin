@@ -19,7 +19,7 @@ interface PhotoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdatePhotos(photo: PhotoDto)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(photos: List<PhotoDto>)
 
     @Query("SELECT * FROM photo WHERE propertyId = :propertyId")

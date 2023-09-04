@@ -122,21 +122,20 @@ class AuthenticationActivity : AppCompatActivity() {
         when (requestCode) {
             LOCATION_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permission de localisation accordée", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "Permission de localisation refusée", Toast.LENGTH_SHORT).show()
-                    finish() // Ferme l'application
+                    Toast.makeText(this, getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             }
 
-            STORAGE_REQUEST_CODE -> {
+            // Storage permission necessary or not ?
+            /*STORAGE_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permission de stockage accordée", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "Permission de stockage refusée", Toast.LENGTH_SHORT).show()
-                    finish() // Ferme l'application
+                    Toast.makeText(this, getString(R.string.storage_permission_denied), Toast.LENGTH_SHORT).show()
+                    finish()
                 }
-            }
+            }*/
 
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }

@@ -1,6 +1,7 @@
 package com.persival.realestatemanagerkotlin.data.location
 
 import android.os.Looper
+import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -33,9 +34,13 @@ class LocationDataRepository @Inject constructor(
         object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.lastLocation?.let { location ->
+                    Log.d(
+                        "LocationDataRepository",
+                        "Received location update: Latitude=${location.latitude}, Longitude=${location.longitude}"
+                    )
                     val locationEntity = LocationEntity(location.latitude, location.longitude)
                     locationMutableStateFlow.tryEmit(locationEntity)
-                }
+                } ?: Log.w("LocationDataRepository", "Received location update is null.")
             }
         }
     }
@@ -47,8 +52,12 @@ class LocationDataRepository @Inject constructor(
         ]
     )
     override fun startLocationRequest() {
+        Log.d("LocationDataRepository", "Starting location updates.")
         fusedLocationProviderClient.removeLocationUpdates(callback)
         fusedLocationProviderClient.requestLocationUpdates(createLocationRequest(), callback, Looper.getMainLooper())
+            .addOnFailureListener { e ->
+                Log.e("LocationDataRepository", "Failed to request location updates.", e)
+            }
     }
 
     private fun createLocationRequest() = LocationRequest.create().apply {
@@ -59,6 +68,7 @@ class LocationDataRepository @Inject constructor(
     }
 
     override fun stopLocationRequest() {
+        Log.d("LocationDataRepository", "Stopping location updates.")
         fusedLocationProviderClient.removeLocationUpdates(callback)
     }
 }

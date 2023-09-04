@@ -76,23 +76,23 @@
         <!-- Type of property -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/type_textField"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:hint="@string/type_of_property"
-            app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/separator_view"
-            app:startIconDrawable="@drawable/baseline_home_24">
+            app:startIconDrawable="@drawable/baseline_house_24">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/type_editText"
+            <AutoCompleteTextView
+                android:id="@+id/type_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
-
+                android:hint="@string/type_of_property_hint"
+                android:inputType="none"
+                android:padding="@dimen/default_large_margin"
+                app:simpleItems="@array/property_items" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Surface -->
@@ -248,19 +248,86 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Point of interest at proximity -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/poiButton"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="0dp"
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/areaDivider"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:padding="@dimen/default_margin"
-            android:text="@string/poi_hint"
-            android:textSize="@dimen/default_text_middle_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/description_textField" />
+
+        <!-- Poi search -->
+        <TextView
+            android:id="@+id/poi_text_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:text="@string/poi"
+            android:textSize="@dimen/default_text_middle_size"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/areaDivider" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            app:layout_constraintTop_toBottomOf="@+id/poi_text_textView">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/schoolChip"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/poi_school" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/publicTransportChip"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/poi_public_transports" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/hospitalChip"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/poi_hospital" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/shopChip"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/poi_shop" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/greenSpacesChip"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/poi_green_spaces" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/restaurantChip"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/poi_restaurant" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/poiDivider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
 
         <!-- Add photos card-views -->
         <com.google.android.material.card.MaterialCardView
@@ -270,7 +337,7 @@
             android:layout_margin="@dimen/default_margin"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poiButton">
+            app:layout_constraintTop_toBottomOf="@+id/poiDivider">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -334,7 +401,7 @@
             android:layout_margin="@dimen/default_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/poiButton">
+            app:layout_constraintTop_toBottomOf="@+id/poiDivider">
 
             <LinearLayout
                 android:layout_width="match_parent"

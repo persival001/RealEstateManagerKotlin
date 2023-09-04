@@ -94,5 +94,9 @@
     <string name="poi_shop">Store</string>
     <string name="poi_green_spaces">Green spaces</string>
     <string name="poi_restaurant">Restaurant</string>
+    <string name="type_empty">Please enter a type</string>
+    <string name="no_property_selected">Please select a property</string>
+    <string name="location_permission_denied">Location permission denied</string>
+    <string name="storage_permission_denied">Storage permission denied</string>
 
 </resources>

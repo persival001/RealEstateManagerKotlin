@@ -4,6 +4,7 @@ import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -16,6 +17,9 @@ interface PropertyDao {
 
     @Insert
     fun insert(propertyDto: PropertyDto): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(propertyDto: List<PropertyDto>)
 
     @Query("SELECT * FROM property WHERE id == :propertyId")
     fun getById(propertyId: Long): PropertyDto?

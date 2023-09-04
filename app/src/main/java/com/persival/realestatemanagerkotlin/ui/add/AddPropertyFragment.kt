@@ -5,12 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
@@ -90,10 +90,12 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val items = resources.getStringArray(R.array.poi_items)
-        val checkedItems = BooleanArray(items.size)
-        var multiChoiceItemsSelected: String
         val actionType = arguments?.getString("ACTION_TYPE")
+
+        // Initialize the type of property array
+        val items = resources.getStringArray(R.array.property_items)
+        val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, items)
+        binding.typeTextView.setAdapter(adapter)
 
         // Initialize the Places API
         if (!Places.isInitialized()) {
@@ -131,23 +133,6 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             .build(requireContext())
         binding.addressEditText.setOnClickListener {
             autocompleteResultLauncher.launch(intent)
-        }
-
-        // Initialize the POI button
-        binding.poiButton.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.select_poi))
-                .setMultiChoiceItems(items, checkedItems) { _, which, isChecked ->
-                    checkedItems[which] = isChecked
-                }
-                .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                    multiChoiceItemsSelected = items.withIndex()
-                        .filter { (index, _) -> checkedItems[index] }
-                        .joinToString(", ") { (_, item) -> item }
-                    binding.poiButton.text = multiChoiceItemsSelected
-                }
-                .setNegativeButton(getString(R.string.cancel), null)
-                .show()
         }
 
         // Initialize the date picker "for sale"
@@ -203,14 +188,13 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 removeImageAndName(requestCodes[index])
             }
         }
-        
-        // MODIFY PROPERTY
+
+        // MODIFY PROPERTY - Complete form with property selected
         if (actionType == "modify") {
-            // Set the property information in the form if the propertyId is not null
             viewModel.viewStateLiveData.observe(viewLifecycleOwner) { addViewState ->
 
                 // Set the property information
-                binding.typeEditText.setText(addViewState.type)
+                binding.typeTextView.setText(addViewState.type)
                 binding.datePickerToSellText.setText(addViewState.soldAt)
                 binding.datePickerEditText.setText(addViewState.availableFrom)
                 binding.priceEditText.setText(addViewState.price.toString())
@@ -253,13 +237,6 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                     }
                 }
 
-                // Set the POI button text
-                if (addViewState.pointsOfInterest.isNotEmpty()) {
-                    binding.poiButton.text = addViewState.pointsOfInterest
-                } else {
-                    binding.poiButton.text = getString(R.string.select_poi)
-                }
-
             }
         }
 
@@ -268,7 +245,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             requireActivity().finish()
         }
 
-        // Get the property added by the user
+        // Get the property added or modified by the user
         binding.okButton.setOnClickListener {
             if (validateFields()) {
                 val addViewState = retrieveFormData()
@@ -301,11 +278,23 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
     }
 
     private fun retrieveFormData(): AddViewState {
+
+        // Retrieve photos and description
         val imageUrisList = imageUris.mapNotNull { uri -> uri?.toString() }
         val photoDescriptionsList = editTexts.mapNotNull { it.text?.toString() }
 
+        // Retrieve poi selected
+        val selectedChips = listOf(
+            binding.schoolChip,
+            binding.publicTransportChip,
+            binding.hospitalChip,
+            binding.shopChip,
+            binding.greenSpacesChip,
+            binding.restaurantChip
+        ).filter { it.isChecked }.map { it.text.toString() }
+
         return AddViewState(
-            binding.typeEditText.text.toString(),
+            binding.typeTextView.text.toString(),
             binding.addressEditText.text.toString(),
             latLongString ?: "",
             binding.areaEditText.text.toString().toInt(),
@@ -318,13 +307,13 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             binding.datePickerToSellText.text.toString(),
             imageUrisList,
             photoDescriptionsList,
-            binding.poiButton.text.toString()
+            selectedChips.joinToString()
         )
     }
 
     private fun validateFields(): Boolean {
         val editTextList = listOf(
-            binding.typeEditText,
+            binding.typeTextView,
             binding.addressEditText,
             binding.areaEditText,
             binding.roomsEditText,

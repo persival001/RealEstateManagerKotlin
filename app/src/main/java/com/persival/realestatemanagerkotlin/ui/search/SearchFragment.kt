@@ -3,9 +3,9 @@ package com.persival.realestatemanagerkotlin.ui.search
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.android.material.slider.RangeSlider
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentSearchBinding
 import com.persival.realestatemanagerkotlin.utils.viewBinding
@@ -39,44 +39,77 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             format.format(value.toDouble())
         }
 
-        binding.priceSlider.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
-            override fun onStartTrackingTouch(slider: RangeSlider) {
-                // Responds to when slider's touch event is being started
-            }
-
-            override fun onStopTrackingTouch(slider: RangeSlider) {
-                // Responds to when slider's touch event is being stopped
-            }
-        })
-
-        binding.priceSlider.addOnChangeListener { rangeSlider, value, fromUser ->
-            // Responds to when slider's value is changed
-        }
-
-        // Set the area with seekbar
+        // Set the area with slider
         binding.areaSlider.setLabelFormatter { value: Float ->
             val format = NumberFormat.getInstance()
             format.maximumFractionDigits = 0
             format.format(value.toDouble())
         }
 
-        binding.areaSlider.addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
-            override fun onStartTrackingTouch(slider: RangeSlider) {
-                // Responds to when slider's touch event is being started
-            }
+        // Initialize the toggle button
+        binding.dateToggleButton.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            when (checkedId) {
+                R.id.button1 -> {
+                    if (isChecked) {
+                        Toast.makeText(requireContext(), "Old first", Toast.LENGTH_SHORT).show()
+                    }
+                }
 
-            override fun onStopTrackingTouch(slider: RangeSlider) {
-                // Responds to when slider's touch event is being stopped
+                R.id.button2 -> {
+                    if (isChecked) {
+                        Toast.makeText(requireContext(), "Recent first", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
-        })
-
-        binding.areaSlider.addOnChangeListener { rangeSlider, value, fromUser ->
-            // Responds to when slider's value is changed
         }
 
-        // POI choice alert dialog box
+        // Initialize the cancel button
+        binding.cancelButton.setOnClickListener {
+            requireActivity().finish()
+        }
 
+        // Get the property added or modified by the user
+        binding.okButton.setOnClickListener {
+
+            // Get type value
+            binding.typeTextView.text.toString()
+
+            if (binding.typeTextView.text.toString().isEmpty()) {
+                Toast.makeText(requireContext(), getString(R.string.type_empty), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Get price values
+            val priceValues = binding.priceSlider.values
+            val minPriceValue = priceValues[0]
+            val maxPriceValue = priceValues[1]
+
+            // Get area values
+            val areaValues = binding.areaSlider.values
+            val minAreaValue = areaValues[0]
+            val maxAreaValue = areaValues[1]
+
+            // Get poi selected
+            val selectedChips = listOf(
+                binding.schoolChip,
+                binding.publicTransportChip,
+                binding.hospitalChip,
+                binding.shopChip,
+                binding.greenSpacesChip,
+                binding.restaurantChip
+            ).filter { it.isChecked }.map { it.text.toString() }
+            val selectedChipsString = selectedChips.joinToString()
+
+            // Get date filter (older first or newer first)
+            val selectedButtonId = binding.dateToggleButton.checkedButtonId
+
+            val isButton1Checked = (selectedButtonId == R.id.button1)
+            val isButton2Checked = (selectedButtonId == R.id.button2)
+
+            //requireActivity().finish()
+        }
     }
 
 }
+
 

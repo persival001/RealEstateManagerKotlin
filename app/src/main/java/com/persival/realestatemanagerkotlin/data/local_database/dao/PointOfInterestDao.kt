@@ -16,7 +16,7 @@ interface PointOfInterestDao {
     @Insert
     fun insert(poi: PointOfInterestDto): Long
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(pois: List<PointOfInterestDto>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
