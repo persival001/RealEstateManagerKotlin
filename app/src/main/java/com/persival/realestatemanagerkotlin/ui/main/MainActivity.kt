@@ -1,6 +1,11 @@
 package com.persival.realestatemanagerkotlin.ui.main
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,20 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.hilt.work.HiltWorkerFactory
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import com.persival.realestatemanagerkotlin.R
-import com.persival.realestatemanagerkotlin.data.synchronize_database.SynchronizeWorker
 import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
 import com.persival.realestatemanagerkotlin.ui.navigation.NavigationActivity
 import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,6 +30,10 @@ class MainActivity : AppCompatActivity() {
 
     private val binding by viewBinding { ActivityMainBinding.inflate(it) }
     private val viewModel by viewModels<MainViewModel>()
+
+    private val connectivityManager by lazy {
+        getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
@@ -63,15 +65,17 @@ class MainActivity : AppCompatActivity() {
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
-        // Initialize WorkManager
-        /*WorkManager.initialize(
-            this,
-            Configuration.Builder()
-                .setWorkerFactory(workerFactory)
-                .build()
-        )*/
+        // Initialize ConnectivityReceiver
+        val networkRequest = NetworkRequest.Builder()
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+            .build()
 
-        //initializeWorkManager()
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+
+        // Initialize WorkManager
+        viewModel.initializeWorkManager()
 
         // Setup the toolbar
         setSupportActionBar(binding.toolbar)
@@ -108,25 +112,20 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun initializeWorkManager() {
-        val workTag = "SYNCHRONIZE_WORK"
+    // Initialize the network callback
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            runOnUiThread {
+                Toast.makeText(this@MainActivity, getString(R.string.internet_connection), Toast.LENGTH_SHORT).show()
+            }
+        }
 
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val syncRequest = PeriodicWorkRequestBuilder<SynchronizeWorker>(1, TimeUnit.HOURS)
-            .setConstraints(constraints)
-            .addTag(workTag)
-            .build()
-
-        // Verify if the work is already scheduled
-        val workInfos = WorkManager.getInstance(this).getWorkInfosByTag(workTag).get()
-
-        if (workInfos == null || workInfos.isEmpty() || workInfos.any {
-                it.state == WorkInfo.State.CANCELLED || it.state == WorkInfo.State.FAILED
-            }) {
-            WorkManager.getInstance(this).enqueue(syncRequest)
+        override fun onLost(network: Network) {
+            super.onLost(network)
+            runOnUiThread {
+                Toast.makeText(this@MainActivity, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -201,6 +200,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        connectivityManager.unregisterNetworkCallback(networkCallback)
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
     }
 

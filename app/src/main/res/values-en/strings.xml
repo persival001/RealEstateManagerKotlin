@@ -98,5 +98,7 @@
     <string name="no_property_selected">Please select a property</string>
     <string name="location_permission_denied">Location permission denied</string>
     <string name="storage_permission_denied">Storage permission denied</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="internet_connection">Internet connection is ok</string>
 
 </resources>

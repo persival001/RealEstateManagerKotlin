@@ -3,6 +3,7 @@ package com.persival.realestatemanagerkotlin.utils
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.wifi.WifiManager
 import android.os.Build
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -46,15 +47,15 @@ object Utils {
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
      */
 
-    // The old function check only if wifi is enabled or disabled
-    /*fun isInternetAvailable(context: Context): Boolean {
+    // This function check only if wifi is enabled or disabled
+    fun isInternetAvailable(context: Context): Boolean {
         val wifi = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
         return wifi.isWifiEnabled
-    }*/
+    }
 
 
-    // This new function check if internet connexion is available for wifi, ethernet or cellular
-    fun isInternetAvailable(context: Context): Boolean {
+    // A broadcast receiver like this is more efficient for this purpose
+    fun isConnexionAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
