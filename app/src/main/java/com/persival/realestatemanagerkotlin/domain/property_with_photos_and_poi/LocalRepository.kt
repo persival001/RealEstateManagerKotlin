@@ -11,7 +11,7 @@ interface LocalRepository {
 
     fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
 
-    suspend fun insertProperty(propertyEntity: PropertyEntity): Long
+    suspend fun insertProperty(propertyEntity: PropertyEntity): Long?
 
     suspend fun insertPointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Long
 

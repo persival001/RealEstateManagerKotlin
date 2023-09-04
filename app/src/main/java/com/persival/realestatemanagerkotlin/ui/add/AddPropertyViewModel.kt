@@ -36,57 +36,58 @@ class AddPropertyViewModel @Inject constructor(
     val viewStateLiveData: LiveData<AddViewState> = liveData {
         val propertyId = getSelectedPropertyIdUseCase()
         if (propertyId != null && propertyId > 0) {
-            getPropertyWithPhotoAndPOIUseCase.invoke(propertyId)
-                .collect { propertyWithPhotosAndPOIEntity ->
-                    mapEntityToViewState(propertyWithPhotosAndPOIEntity)?.let {
-                        emit(it)
-                    }
+            getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { propertyWithPhotosAndPOIEntity ->
+                mapEntityToViewState(propertyWithPhotosAndPOIEntity)?.let {
+                    emit(it)
                 }
+            }
         }
     }
 
     fun addNewProperty(addViewState: AddViewState) {
         viewModelScope.launch {
-            val propertyEntity = getRealEstateAgentUseCase.invoke()?.let { propertyEntity ->
-                PropertyEntity(
-                    0,
-                    addViewState.type,
-                    addViewState.address,
-                    addViewState.latLng,
-                    addViewState.area,
-                    addViewState.rooms,
-                    addViewState.bathrooms,
-                    addViewState.bedrooms,
-                    addViewState.description,
-                    addViewState.price,
-                    isThePropertyForSale(addViewState.soldAt),
-                    addViewState.availableFrom,
-                    addViewState.soldAt,
-                    propertyEntity.name
-                )
-            }
+            val agentEntity = getRealEstateAgentUseCase.invoke()
 
-            val propertyId: Long? = propertyEntity?.let { insertPropertyUseCase.invoke(it) }
-
-            addViewState.photoUris.forEachIndexed { index, uri ->
-                val photoEntity = propertyId?.let {
-                    PhotoEntity(
-                        propertyId = it,
-                        description = addViewState.photoDescriptions.getOrNull(index) ?: "",
-                        photoUrl = uri
+            if (agentEntity != null) {
+                val propertyId = insertPropertyUseCase.invoke(
+                    PropertyEntity(
+                        id = 0,
+                        type = addViewState.type,
+                        address = addViewState.address,
+                        latLng = addViewState.latLng,
+                        area = addViewState.area,
+                        rooms = addViewState.rooms,
+                        bathrooms = addViewState.bathrooms,
+                        bedrooms = addViewState.bedrooms,
+                        description = addViewState.description,
+                        price = addViewState.price,
+                        isSold = isThePropertyForSale(addViewState.soldAt),
+                        entryDate = addViewState.availableFrom,
+                        saleDate = addViewState.soldAt,
+                        agentName = agentEntity.name
                     )
-                }
-                if (photoEntity != null) {
-                    insertPhotoUseCase.invoke(photoEntity)
-                }
-            }
-
-            addViewState.pointsOfInterest.split(",").forEach {
-                val pointOfInterestEntity = PointOfInterestEntity(
-                    propertyId = propertyId ?: 0,
-                    poi = it.trim()
                 )
-                insertPointOfInterestUseCase.invoke(pointOfInterestEntity)
+
+                if (propertyId != null) {
+                    addViewState.photoUris.forEachIndexed { index, uri ->
+                        insertPhotoUseCase.invoke(
+                            PhotoEntity(
+                                propertyId = propertyId,
+                                description = addViewState.photoDescriptions.getOrNull(index) ?: "",
+                                photoUrl = uri
+                            )
+                        )
+                    }
+
+                    addViewState.pointsOfInterest.split(",").forEach {
+                        insertPointOfInterestUseCase.invoke(
+                            PointOfInterestEntity(
+                                propertyId = propertyId,
+                                poi = it.trim()
+                            )
+                        )
+                    }
+                }
             }
         }
     }
@@ -109,7 +110,7 @@ class AddPropertyViewModel @Inject constructor(
                 isThePropertyForSale(addViewState.soldAt),
                 addViewState.availableFrom,
                 addViewState.soldAt,
-                getRealEstateAgentUseCase.invoke()?.name ?: ""
+                getRealEstateAgentUseCase.invoke()?.name // TODO NO MAGICAL STUFF
             )
 
             val photoEntities = addViewState.photoUris.mapIndexed { index, uri ->
@@ -134,11 +135,8 @@ class AddPropertyViewModel @Inject constructor(
     private fun isThePropertyForSale(saleDate: String?): Boolean = !(saleDate == null || saleDate == "")
 
     private fun mapEntityToViewState(entity: PropertyWithPhotosAndPOIEntity?): AddViewState? {
-        if (entity == null) {
-            return null
-        }
         return AddViewState(
-            type = entity.property.type,
+            type = entity?.property?.type ?: return null,
             address = entity.property.address,
             latLng = entity.property.latLng,
             area = entity.property.area,
@@ -151,7 +149,7 @@ class AddPropertyViewModel @Inject constructor(
             soldAt = entity.property.saleDate ?: "",
             photoUris = entity.photos.map { it.photoUrl },
             photoDescriptions = entity.photos.map { it.description },
-            pointsOfInterest = entity.pointsOfInterest.joinToString(",") { it.poi }
+            pointsOfInterest = entity.pointsOfInterest.joinToString(",") { it.poi },
         )
     }
 

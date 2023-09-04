@@ -2,8 +2,11 @@ package com.persival.realestatemanagerkotlin
 
 import android.content.ContentProvider
 import android.content.Context
+import android.content.pm.ProviderInfo
 import android.database.Cursor
 import android.net.Uri
+import androidx.test.core.app.ApplicationProvider
+import com.persival.realestatemanagerkotlin.data.local_database.content_provider.PropertyProvider
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
@@ -14,47 +17,38 @@ import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowContentResolver
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
-class ContentProviderTest {
+class PropertyProviderTest {
 
-    private lateinit var contentProvider: ContentProvider
-
-    private val mockPropertyDao = mockk<PropertyDao>()
-    private val mockPhotoDao = mockk<PhotoDao>()
-    private val mockPointOfInterestDao = mockk<PointOfInterestDao>()
+    private lateinit var shadowContentResolver: ShadowContentResolver
+    private lateinit var provider: PropertyProvider
 
     @Before
     fun setUp() {
-        contentProvider = com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentProvider()
+        val contentResolver = ApplicationProvider.getApplicationContext<Context>().contentResolver
 
-        (contentProvider as com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentProvider).propertyDao =
-            mockPropertyDao
-        (contentProvider as com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentProvider).photoDao =
-            mockPhotoDao
-        (contentProvider as com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentProvider).pointOfInterestDao =
-            mockPointOfInterestDao
+        shadowContentResolver = shadowOf(contentResolver)
 
-        val mockContext = mockk<Context>(relaxed = true) {
-            every { applicationContext } returns this
-        }
-        contentProvider.attachInfo(mockContext, null)
+        provider = Robolectric.buildContentProvider(PropertyProvider::class.java).create(
+            ProviderInfo().apply {
+                grantUriPermissions = true
+            }
+        ).get()
     }
 
     @Test
     fun testQueryForAllProperties() {
-        val mockCursor = mockk<Cursor>(relaxed = true)
-        every { mockPropertyDao.getAllPropertiesAsCursor() } returns mockCursor
 
-        val result = contentProvider.query(
-            Uri.parse(
-                "content://${
-                    com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentProvider.Companion.AUTHORITY
-                }/properties"
-            ),
+
+        val result = shadowContentResolver.query(
+            Uri.parse("content://${PropertyProvider.Companion.AUTHORITY}/properties"),
             null, null, null, null
         )
 
@@ -70,7 +64,7 @@ class ContentProviderTest {
         val result = contentProvider.query(
             Uri.parse(
                 "content://${
-                    com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentProvider.Companion.AUTHORITY
+                    com.persival.realestatemanagerkotlin.data.local_database.content_provider.PropertyProvider.Companion.AUTHORITY
                 }/photos"
             ),
             null, null, null, null
@@ -88,7 +82,7 @@ class ContentProviderTest {
         val result = contentProvider.query(
             Uri.parse(
                 "content://${
-                    com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentProvider.Companion.AUTHORITY
+                    com.persival.realestatemanagerkotlin.data.local_database.content_provider.PropertyProvider.Companion.AUTHORITY
                 }/points_of_interest"
             ),
             null, null, null, null

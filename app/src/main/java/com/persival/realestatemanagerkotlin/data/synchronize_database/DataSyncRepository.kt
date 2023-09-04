@@ -21,8 +21,7 @@ class DataSyncRepository @Inject constructor(
     private val pointOfInterestDao: PointOfInterestDao,
     private val firestoreDataRepository: FirestoreDataRepository,
 ) : SyncRepository {
-    private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
 
     companion object {
         private const val PREFERENCES_NAME = "sync_preferences"

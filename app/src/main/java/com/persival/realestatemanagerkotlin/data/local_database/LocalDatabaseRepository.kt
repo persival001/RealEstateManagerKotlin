@@ -34,7 +34,8 @@ class LocalDatabaseRepository @Inject constructor(
     private val propertyWithPhotosAndPoisDtoMapper: PropertyWithPhotosAndPoisDtoMapper,
 ) : LocalRepository {
 
-    override suspend fun insertProperty(propertyEntity: PropertyEntity): Long =
+    // TODO Return null if could not insert
+    override suspend fun insertProperty(propertyEntity: PropertyEntity): Long? =
         withContext(coroutineDispatcherProvider.io) {
             val propertyDto = propertyMapper.mapFromDomainModel(propertyEntity)
             propertyDao.insert(propertyDto)

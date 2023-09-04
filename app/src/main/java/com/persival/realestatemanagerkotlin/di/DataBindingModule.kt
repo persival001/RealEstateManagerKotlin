@@ -5,7 +5,7 @@ import com.persival.realestatemanagerkotlin.data.location.LocationDataRepository
 import com.persival.realestatemanagerkotlin.data.permissions.PermissionDataRepository
 import com.persival.realestatemanagerkotlin.data.remote_database.firebase.FirebaseDataRepository
 import com.persival.realestatemanagerkotlin.data.shared_prefs.SharedPrefsRepository
-import com.persival.realestatemanagerkotlin.data.storage.PropertyDataRepository
+import com.persival.realestatemanagerkotlin.data.property.PropertyDataRepository
 import com.persival.realestatemanagerkotlin.data.synchronize_database.DataSyncRepository
 import com.persival.realestatemanagerkotlin.domain.conversion.SharedPreferencesRepository
 import com.persival.realestatemanagerkotlin.domain.database.SyncRepository

@@ -13,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.text.NumberFormat
 import java.util.Currency
 
+// TODO BottomSheetFragment instead ! Sexier
 @AndroidEntryPoint
 class SearchFragment : Fragment(R.layout.fragment_search) {
 

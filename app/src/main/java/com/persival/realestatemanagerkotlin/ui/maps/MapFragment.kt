@@ -54,7 +54,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
         }
 
         // Add marker for user position
-        viewModel.getLocationLiveData().asLiveData().observe(viewLifecycleOwner) { location ->
+        viewModel.getLocationLiveData().observe(viewLifecycleOwner) { location ->
             Log.d("MapFragment", "Received location update: $location")
             location?.let {
                 val latLng = LatLng(it.latitude, it.longitude)

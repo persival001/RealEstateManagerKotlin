@@ -28,36 +28,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class DataModule {
 
-    companion object {
-        private const val GOOGLE_PLACES_API_BASE_URL = "https://maps.googleapis.com/"
-    }
-
-    @Provides
-    fun providePermissionDataRepository(
-        @ApplicationContext app: Context
-    ): PermissionDataRepository = PermissionDataRepository(app)
-
-    @Provides
-    fun provideLocalDatabaseRepository(
-        coroutineDispatcherProvider: CoroutineDispatcherProvider,
-        propertyDao: PropertyDao,
-        photoDao: PhotoDao,
-        pointOfInterestDao: PointOfInterestDao,
-        propertyMapper: PropertyDtoMapper,
-        photoMapper: PhotoDtoMapper,
-        poiMapper: PointOfInterestDtoMapper,
-        propertyWithPhotosAndPoisDtoMapper: PropertyWithPhotosAndPoisDtoMapper,
-    ): LocalDatabaseRepository = LocalDatabaseRepository(
-        coroutineDispatcherProvider,
-        propertyDao,
-        photoDao,
-        pointOfInterestDao,
-        propertyMapper,
-        photoMapper,
-        poiMapper,
-        propertyWithPhotosAndPoisDtoMapper,
-    )
-
     @Singleton
     @Provides
     fun provideFusedLocationProviderClient(

@@ -3,6 +3,7 @@ package com.persival.realestatemanagerkotlin.ui.detail
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,9 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     companion object {
-        fun newInstance(): DetailFragment {
-            return DetailFragment()
-        }
+        fun newInstance() = DetailFragment()
     }
 
     private val binding by viewBinding { FragmentDetailBinding.bind(it) }
@@ -48,14 +47,12 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         recyclerView.layoutManager = layoutManager
         // observe the detailItem livedata
         viewModel.detailItem.observe(viewLifecycleOwner) { detailViewStateItem ->
-            context?.let { safeContext ->
-                val detailImageAdapter = DetailImageAdapter(
-                    safeContext,
-                    detailViewStateItem.url,
-                    detailViewStateItem.caption
-                )
-                recyclerView.adapter = detailImageAdapter
-            }
+            val detailImageAdapter = DetailImageAdapter(
+                requireContext(),
+                detailViewStateItem.url,
+                detailViewStateItem.caption
+            )
+            recyclerView.adapter = detailImageAdapter
         }
 
         // Show the property details
@@ -88,11 +85,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             val markerLabel = "Property is here !"
 
             val url = "https://maps.googleapis.com/maps/api/staticmap?" +
-                    "center=$address&" +
-                    "zoom=$zoomLevel&" +
-                    "size=$imageSize&" +
-                    "markers=color:$markerColor%7Clabel:$markerLabel%7C$address&" +
-                    "key=$MAPS_API_KEY"
+                "center=$address&" +
+                "zoom=$zoomLevel&" +
+                "size=$imageSize&" +
+                "markers=color:$markerColor%7Clabel:$markerLabel%7C$address&" +
+                "key=$MAPS_API_KEY"
 
             Glide.with(this)
                 .load(url)
@@ -102,15 +99,14 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         // Open the map fragment if clicked
         binding.mapImageView.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(
-                    this.id,
+            parentFragmentManager.commit {
+                replace(
+                    this@DetailFragment.id,
                     MapFragment.newInstance()
                 )
-                .addToBackStack(null)
-                .commit()
+                addToBackStack(null)
+            }
         }
-
     }
-    
+
 }

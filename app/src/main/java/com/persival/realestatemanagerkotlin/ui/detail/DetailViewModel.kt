@@ -77,8 +77,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun convertPOIToString(pointsOfInterest: List<PointOfInterestEntity>): String {
-        return pointsOfInterest.joinToString(", ") { it.poi }
-    }
+    private fun convertPOIToString(pointsOfInterest: List<PointOfInterestEntity>): String =
+        pointsOfInterest.joinToString(", ") { it.poi }
 
 }

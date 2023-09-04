@@ -1,17 +1,18 @@
 package com.persival.realestatemanagerkotlin.data.synchronize_database
 
 import android.app.Application
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 
-class SynchronizeWorker @Inject constructor(
-    application: Application,
-    workerParams: WorkerParameters
+@HiltWorker
+class SynchronizeWorker @AssistedInject constructor(
+    @Assisted application: Application,
+    @Assisted workerParams: WorkerParameters,
+    private val dataSyncRepository: DataSyncRepository,
 ) : CoroutineWorker(application, workerParams) {
-
-    @Inject
-    lateinit var dataSyncRepository: DataSyncRepository
 
     override suspend fun doWork(): Result = try {
         dataSyncRepository.synchronizeData()

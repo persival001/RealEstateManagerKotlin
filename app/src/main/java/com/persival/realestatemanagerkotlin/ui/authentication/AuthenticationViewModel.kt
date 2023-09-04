@@ -16,9 +16,7 @@ class AuthenticationViewModel @Inject constructor(
     private val synchronizeDatabaseUseCase: SynchronizeDatabaseUseCase,
 ) : ViewModel() {
 
-    fun getCurrentUser(): FirebaseUser? {
-        return getCurrentUserUseCase.invoke()
-    }
+    fun getCurrentUser(): FirebaseUser? = getCurrentUserUseCase.invoke()
 
     fun onStorageButtonClicked(activity: Activity) {
         requestStoragePermission(activity)

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.persival.realestatemanagerkotlin.R
 
+// TODO ListAdapter instead!
 class DetailImageAdapter(
     private val context: Context,
     private val urls: List<String>,

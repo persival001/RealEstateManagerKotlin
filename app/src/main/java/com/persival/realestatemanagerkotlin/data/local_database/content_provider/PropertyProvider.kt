@@ -13,7 +13,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 
-class ContentProvider : ContentProvider() {
+class PropertyProvider : ContentProvider() {
 
     private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH)
 
@@ -26,7 +26,7 @@ class ContentProvider : ContentProvider() {
 
     companion object {
         const val AUTHORITY =
-            "com.persival.realestatemanagerkotlin.data.local_database.content_provider.ContentDataProvider"
+            "com.persival.realestatemanagerkotlin.data.local_database.content_provider.PropertyProvider"
 
         private const val PROPERTY = 1
         private const val PHOTO = 2
@@ -34,9 +34,9 @@ class ContentProvider : ContentProvider() {
         private const val PROPERTY_ID = 4
     }
 
-    internal lateinit var propertyDao: PropertyDao
-    internal lateinit var photoDao: PhotoDao
-    internal lateinit var pointOfInterestDao: PointOfInterestDao
+    private lateinit var propertyDao: PropertyDao
+    private lateinit var photoDao: PhotoDao
+    private lateinit var pointOfInterestDao: PointOfInterestDao
 
     override fun onCreate(): Boolean {
         val appContext = context?.applicationContext ?: throw IllegalStateException()

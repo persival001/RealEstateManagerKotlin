@@ -10,9 +10,7 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MainApplication : Application(
-
-), Application.ActivityLifecycleCallbacks, Configuration.Provider {
+class MainApplication : Application(), Application.ActivityLifecycleCallbacks, Configuration.Provider {
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
@@ -20,15 +18,17 @@ class MainApplication : Application(
     @Inject
     lateinit var permissionRepository: PermissionRepository
 
+    override fun onCreate() {
+        super.onCreate()
+
+        registerComponentCallbacks(this)
+    }
+
     override fun getWorkManagerConfiguration() = Configuration.Builder()
         .setWorkerFactory(workerFactory)
         .build()
 
-    override fun onActivityCreated(
-        activity: Activity,
-        savedInstanceState: Bundle?
-    ) {
-    }
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
 
     override fun onActivityStarted(activity: Activity) {}
 
@@ -40,14 +40,7 @@ class MainApplication : Application(
 
     override fun onActivityStopped(activity: Activity) {}
 
-    override fun onActivitySaveInstanceState(
-        activity: Activity,
-        outState: Bundle
-    ) {
-    }
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
 
-    override fun onActivityDestroyed(activity: Activity) {
-
-    }
-
+    override fun onActivityDestroyed(activity: Activity) {}
 }

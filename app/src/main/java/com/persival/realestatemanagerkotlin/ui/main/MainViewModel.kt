@@ -19,29 +19,32 @@ class MainViewModel @Inject constructor(
     private val getSelectedPropertyIdUseCase: GetSelectedPropertyIdUseCase,
 ) : ViewModel() {
 
+    companion object {
+        private const val WORK_TAG = "SYNCHRONIZE_WORK"
+    }
+
     private var isTablet: Boolean = false
 
     fun getPropertyId() = getSelectedPropertyIdUseCase()
 
     fun initializeWorkManager() {
-        val workTag = "SYNCHRONIZE_WORK"
-
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val syncRequest = PeriodicWorkRequestBuilder<SynchronizeWorker>(1, TimeUnit.HOURS)
-            .setConstraints(constraints)
-            .addTag(workTag)
-            .build()
-
         // Verify if the work is already running
-        val workInfos = WorkManager.getInstance(application).getWorkInfosByTag(workTag).get()
+        val workInfos = WorkManager.getInstance(application).getWorkInfosByTag(WORK_TAG).get() ?: return
+        val shouldEnqueue = workInfos.none {
+            it.state == WorkInfo.State.CANCELLED || it.state == WorkInfo.State.FAILED
+        }
 
-        if (workInfos == null || workInfos.isEmpty() || workInfos.any {
-                it.state == WorkInfo.State.CANCELLED || it.state == WorkInfo.State.FAILED
-            }) {
-            WorkManager.getInstance(application).enqueue(syncRequest)
+        if (shouldEnqueue) {
+            WorkManager.getInstance(application).enqueue(
+                PeriodicWorkRequestBuilder<SynchronizeWorker>(1, TimeUnit.HOURS)
+                    .setConstraints(
+                        Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build()
+                    )
+                    .addTag(WORK_TAG)
+                    .build()
+            )
         }
     }
 
