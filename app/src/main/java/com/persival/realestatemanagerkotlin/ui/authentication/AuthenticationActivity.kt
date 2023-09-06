@@ -34,7 +34,6 @@ class AuthenticationActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "ActivityAuthentication"
         const val LOCATION_REQUEST_CODE = 1
-        const val STORAGE_REQUEST_CODE = 2
     }
 
     private val signInLauncher =
@@ -106,13 +105,10 @@ class AuthenticationActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            viewModel.onStorageButtonClicked(this)
-
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         } else {
-            viewModel.onStorageButtonClicked(this)
             Toast.makeText(this, getString(R.string.authentication_failed), Toast.LENGTH_SHORT)
                 .show()
         }
@@ -128,18 +124,8 @@ class AuthenticationActivity : AppCompatActivity() {
                 }
             }
 
-            // Storage permission necessary or not ?
-            /*STORAGE_REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                    Toast.makeText(this, getString(R.string.storage_permission_denied), Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-            }*/
-
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
-
 
 }

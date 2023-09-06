@@ -1,7 +1,7 @@
 package com.persival.realestatemanagerkotlin.domain.permissions
 
-import android.app.Activity
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 interface PermissionRepository {
 
@@ -9,9 +9,7 @@ interface PermissionRepository {
 
     fun refreshGpsActivation()
 
-    fun isLocationPermission(): LiveData<Boolean>
+    fun isLocationPermission(): Flow<Boolean>
 
     fun isGpsActivated(): LiveData<Boolean>
-
-    fun requestStoragePermission(activity: Activity)
 }

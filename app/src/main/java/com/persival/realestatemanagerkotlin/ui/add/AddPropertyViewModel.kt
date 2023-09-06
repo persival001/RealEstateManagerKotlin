@@ -37,9 +37,7 @@ class AddPropertyViewModel @Inject constructor(
         val propertyId = getSelectedPropertyIdUseCase()
         if (propertyId != null && propertyId > 0) {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { propertyWithPhotosAndPOIEntity ->
-                mapEntityToViewState(propertyWithPhotosAndPOIEntity)?.let {
-                    emit(it)
-                }
+                emit(mapEntityToViewState(propertyWithPhotosAndPOIEntity))
             }
         }
     }
@@ -93,50 +91,53 @@ class AddPropertyViewModel @Inject constructor(
     }
 
     fun updateProperty(addViewState: AddViewState) {
-        val propertyId = getSelectedPropertyIdUseCase() ?: return
+        val propertyId = getSelectedPropertyIdUseCase()
+        val agentName = getRealEstateAgentUseCase.invoke()?.name
 
-        viewModelScope.launch {
-            val propertyEntity = PropertyEntity(
-                propertyId,
-                addViewState.type,
-                addViewState.address,
-                addViewState.latLng,
-                addViewState.area,
-                addViewState.rooms,
-                addViewState.bathrooms,
-                addViewState.bedrooms,
-                addViewState.description,
-                addViewState.price,
-                isThePropertyForSale(addViewState.soldAt),
-                addViewState.availableFrom,
-                addViewState.soldAt,
-                getRealEstateAgentUseCase.invoke()?.name // TODO NO MAGICAL STUFF
-            )
-
-            val photoEntities = addViewState.photoUris.mapIndexed { index, uri ->
-                PhotoEntity(
-                    propertyId = propertyId,
-                    description = addViewState.photoDescriptions.getOrNull(index) ?: "",
-                    photoUrl = uri
+        if (agentName != null && propertyId != null) {
+            viewModelScope.launch {
+                val propertyEntity = PropertyEntity(
+                    propertyId,
+                    addViewState.type,
+                    addViewState.address,
+                    addViewState.latLng,
+                    addViewState.area,
+                    addViewState.rooms,
+                    addViewState.bathrooms,
+                    addViewState.bedrooms,
+                    addViewState.description,
+                    addViewState.price,
+                    isThePropertyForSale(addViewState.soldAt),
+                    addViewState.availableFrom,
+                    addViewState.soldAt,
+                    agentName
                 )
-            }
 
-            val pointOfInterestEntities = addViewState.pointsOfInterest.split(",").map { poi ->
-                PointOfInterestEntity(
-                    propertyId = propertyId,
-                    poi = poi.trim()
-                )
-            }
+                val photoEntities = addViewState.photoUris.mapIndexed { index, uri ->
+                    PhotoEntity(
+                        propertyId = propertyId,
+                        description = addViewState.photoDescriptions.getOrNull(index) ?: "",
+                        photoUrl = uri
+                    )
+                }
 
-            updatePropertyWithPhotoAndPOIUseCase.invoke(propertyEntity, photoEntities, pointOfInterestEntities)
+                val pointOfInterestEntities = addViewState.pointsOfInterest.split(",").map { poi ->
+                    PointOfInterestEntity(
+                        propertyId = propertyId,
+                        poi = poi.trim()
+                    )
+                }
+
+                updatePropertyWithPhotoAndPOIUseCase.invoke(propertyEntity, photoEntities, pointOfInterestEntities)
+            }
         }
     }
 
     private fun isThePropertyForSale(saleDate: String?): Boolean = !(saleDate == null || saleDate == "")
 
-    private fun mapEntityToViewState(entity: PropertyWithPhotosAndPOIEntity?): AddViewState? {
+    private fun mapEntityToViewState(entity: PropertyWithPhotosAndPOIEntity): AddViewState {
         return AddViewState(
-            type = entity?.property?.type ?: return null,
+            type = entity.property.type,
             address = entity.property.address,
             latLng = entity.property.latLng,
             area = entity.property.area,
@@ -161,6 +162,5 @@ class AddPropertyViewModel @Inject constructor(
             Utils.getTodayDate()
         }
     }
-
 
 }

@@ -33,7 +33,7 @@ class MainApplication : Application(), Application.ActivityLifecycleCallbacks, C
     override fun onActivityStarted(activity: Activity) {}
 
     override fun onActivityResumed(activity: Activity) {
-        permissionRepository.refreshLocationPermission()
+        //permissionRepository.refreshLocationPermission()
     }
 
     override fun onActivityPaused(activity: Activity) {}

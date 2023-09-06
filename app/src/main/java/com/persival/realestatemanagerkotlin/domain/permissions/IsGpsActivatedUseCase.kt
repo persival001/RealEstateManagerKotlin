@@ -8,7 +8,6 @@ import javax.inject.Singleton
 class IsGpsActivatedUseCase @Inject constructor(
     private val permissionRepository: PermissionRepository
 ) {
-
     fun invoke(): LiveData<Boolean> = permissionRepository.isGpsActivated()
 }
 

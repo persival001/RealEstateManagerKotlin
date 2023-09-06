@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.data.local_database
 
+import android.util.Log
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
@@ -34,23 +35,37 @@ class LocalDatabaseRepository @Inject constructor(
     private val propertyWithPhotosAndPoisDtoMapper: PropertyWithPhotosAndPoisDtoMapper,
 ) : LocalRepository {
 
-    // TODO Return null if could not insert
     override suspend fun insertProperty(propertyEntity: PropertyEntity): Long? =
         withContext(coroutineDispatcherProvider.io) {
-            val propertyDto = propertyMapper.mapFromDomainModel(propertyEntity)
-            propertyDao.insert(propertyDto)
+            return@withContext try {
+                val propertyDto = propertyMapper.mapFromDomainModel(propertyEntity)
+                propertyDao.insert(propertyDto)
+            } catch (e: Exception) {
+                Log.d("LocalDbRepository", e.toString())
+                null
+            }
         }
 
-    override suspend fun insertPhoto(photoEntity: PhotoEntity): Long =
+    override suspend fun insertPhoto(photoEntity: PhotoEntity): Long? =
         withContext(coroutineDispatcherProvider.io) {
-            val photoDto = photoMapper.mapFromDomainModel(photoEntity)
-            photoDao.insert(photoDto)
+            return@withContext try {
+                val photoDto = photoMapper.mapFromDomainModel(photoEntity)
+                photoDao.insert(photoDto)
+            } catch (e: Exception) {
+                Log.d("LocalDbRepository", e.toString())
+                null
+            }
         }
 
-    override suspend fun insertPointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Long =
+    override suspend fun insertPointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Long? =
         withContext(coroutineDispatcherProvider.io) {
-            val poiDto = poiMapper.mapFromDomainModel(pointOfInterestEntity)
-            pointOfInterestDao.insert(poiDto)
+            return@withContext try {
+                val poiDto = poiMapper.mapFromDomainModel(pointOfInterestEntity)
+                pointOfInterestDao.insert(poiDto)
+            } catch (e: Exception) {
+                Log.d("LocalDbRepository", e.toString())
+                null
+            }
         }
 
     override suspend fun updatePropertyWithPhotosAndPOIs(

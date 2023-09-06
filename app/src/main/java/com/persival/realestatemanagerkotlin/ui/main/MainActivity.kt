@@ -7,6 +7,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -15,18 +16,29 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import androidx.hilt.work.HiltWorkerFactory
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
 import com.persival.realestatemanagerkotlin.ui.navigation.NavigationActivity
+import com.persival.realestatemanagerkotlin.ui.navigation.NavigationHandler
 import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationHandler {
+
+    companion object {
+        private const val SELECTED_ITEM = "selectedItem"
+        private const val ADD_ITEM = "item_add"
+        private const val MODIFY_ITEM = "item_modify"
+        private const val SEARCH_ITEM = "item_search"
+        private const val MAP_ITEM = "item_map"
+        private const val SETTINGS_ITEM = "item_settings"
+    }
 
     private val binding by viewBinding { ActivityMainBinding.inflate(it) }
     private val viewModel by viewModels<MainViewModel>()
@@ -75,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
 
         // Initialize WorkManager
-        viewModel.initializeWorkManager()
+        //viewModel.initializeWorkManager()
 
         // Setup the toolbar
         setSupportActionBar(binding.toolbar)
@@ -147,14 +159,14 @@ class MainActivity : AppCompatActivity() {
             // Handle the toolbar menu items
             R.id.action_add -> {
                 val intent = Intent(this, NavigationActivity::class.java)
-                intent.putExtra("selectedItem", "item_add")
+                intent.putExtra(SELECTED_ITEM, ADD_ITEM)
                 startActivity(intent)
                 return true
             }
 
             R.id.action_modify -> {
                 val intent = Intent(this, NavigationActivity::class.java)
-                intent.putExtra("selectedItem", "item_modify")
+                intent.putExtra(SELECTED_ITEM, MODIFY_ITEM)
                 if (viewModel.getPropertyId() != null) {
                     startActivity(intent)
                 } else {
@@ -166,26 +178,40 @@ class MainActivity : AppCompatActivity() {
 
             R.id.action_search -> {
                 val intent = Intent(this, NavigationActivity::class.java)
-                intent.putExtra("selectedItem", "item_search")
+                intent.putExtra(SELECTED_ITEM, SEARCH_ITEM)
                 startActivity(intent)
                 return true
             }
 
             R.id.action_map -> {
                 val intent = Intent(this, NavigationActivity::class.java)
-                intent.putExtra("selectedItem", "item_map")
+                intent.putExtra(SELECTED_ITEM, MAP_ITEM)
                 startActivity(intent)
                 return true
             }
 
             R.id.action_settings -> {
                 val intent = Intent(this, NavigationActivity::class.java)
-                intent.putExtra("selectedItem", "item_settings")
+                intent.putExtra(SELECTED_ITEM, SETTINGS_ITEM)
                 startActivity(intent)
                 return true
             }
 
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun navigateToDetail() {
+        Log.d("MainActivity", "navigateToDetail called!")
+        val containerId = if (resources.getBoolean(R.bool.isTablet)) {
+            binding.mainFrameLayoutContainerDetail?.id ?: throw IllegalArgumentException("Detail container not found!")
+        } else {
+            binding.mainFrameLayoutContainerProperties.id
+        }
+        val detailFragment = DetailFragment.newInstance()
+        supportFragmentManager.commit {
+            replace(containerId, detailFragment)
+            addToBackStack(null)
         }
     }
 

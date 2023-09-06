@@ -25,7 +25,6 @@ class DetailViewModel @Inject constructor(
     private val detailItemLiveData = MutableLiveData<DetailViewStateItem>()
     val detailItem: LiveData<DetailViewStateItem> = detailItemLiveData
 
-
     fun fetchAndLoadDetailsForSelectedProperty() {
         val id = getSelectedPropertyIdUseCase()
         selectedIdLiveData.value = id
@@ -40,7 +39,7 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { details ->
                 val viewState = DetailViewState(
-                    propertyId = details.property.id ?: 0,
+                    propertyId = details.property.id,
                     type = details.property.type,
                     price = details.property.price.toString(),
                     surface = details.property.area.toString(),
@@ -79,5 +78,11 @@ class DetailViewModel @Inject constructor(
 
     private fun convertPOIToString(pointsOfInterest: List<PointOfInterestEntity>): String =
         pointsOfInterest.joinToString(", ") { it.poi }
+
+    fun setSelectedPropertyId(id: Long) {
+        selectedIdLiveData.value = id
+        fetchAndLoadDetailsForSelectedProperty()
+    }
+
 
 }

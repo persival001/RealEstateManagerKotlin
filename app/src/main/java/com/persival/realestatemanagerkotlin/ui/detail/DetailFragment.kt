@@ -85,11 +85,11 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             val markerLabel = "Property is here !"
 
             val url = "https://maps.googleapis.com/maps/api/staticmap?" +
-                "center=$address&" +
-                "zoom=$zoomLevel&" +
-                "size=$imageSize&" +
-                "markers=color:$markerColor%7Clabel:$markerLabel%7C$address&" +
-                "key=$MAPS_API_KEY"
+                    "center=$address&" +
+                    "zoom=$zoomLevel&" +
+                    "size=$imageSize&" +
+                    "markers=color:$markerColor%7Clabel:$markerLabel%7C$address&" +
+                    "key=$MAPS_API_KEY"
 
             Glide.with(this)
                 .load(url)
@@ -107,6 +107,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 addToBackStack(null)
             }
         }
+
     }
 
 }

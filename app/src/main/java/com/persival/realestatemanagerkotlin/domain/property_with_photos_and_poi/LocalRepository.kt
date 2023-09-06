@@ -13,9 +13,9 @@ interface LocalRepository {
 
     suspend fun insertProperty(propertyEntity: PropertyEntity): Long?
 
-    suspend fun insertPointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Long
+    suspend fun insertPointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Long?
 
-    suspend fun insertPhoto(photoEntity: PhotoEntity): Long
+    suspend fun insertPhoto(photoEntity: PhotoEntity): Long?
 
     suspend fun updateProperty(propertyEntity: PropertyEntity): Int
 

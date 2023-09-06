@@ -7,7 +7,7 @@ import javax.inject.Singleton
 class InsertPhotoUseCase @javax.inject.Inject constructor(
     private val localRepository: LocalRepository,
 ) {
-    suspend fun invoke(photoEntity: PhotoEntity): Long {
+    suspend fun invoke(photoEntity: PhotoEntity): Long? {
         return localRepository.insertPhoto(photoEntity)
     }
 }

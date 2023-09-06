@@ -8,7 +8,7 @@ import javax.inject.Singleton
 class InsertPointOfInterestUseCase @Inject constructor(
     private val localRepository: LocalRepository,
 ) {
-    suspend fun invoke(pointOfInterestEntity: PointOfInterestEntity): Long {
+    suspend fun invoke(pointOfInterestEntity: PointOfInterestEntity): Long? {
         return localRepository.insertPointOfInterest(pointOfInterestEntity)
     }
 }
