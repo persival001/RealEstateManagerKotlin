@@ -2,12 +2,10 @@ package com.persival.realestatemanagerkotlin.domain.permissions
 
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class IsGpsActivatedUseCase @Inject constructor(
+class HasCameraPermissionUseCase @Inject constructor(
     private val permissionRepository: PermissionRepository
 ) {
-    fun invoke(): Flow<Boolean> = permissionRepository.isGpsActivated()
-}
 
+    fun invoke(): Flow<Boolean> = permissionRepository.isCameraPermission()
+}

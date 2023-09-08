@@ -9,6 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.camera.view.PreviewView
+            android:id="@+id/cameraPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <!-- Guideline -->
         <androidx.constraintlayout.widget.Guideline
@@ -346,7 +350,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="150dp">
+                    android:layout_height="250dp">
 
                     <!-- Media -->
                     <ImageView
@@ -356,6 +360,18 @@
                         android:contentDescription="@string/description_image"
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/property_picture" />
+
+                    <ImageButton
+                        android:id="@+id/card1_photoButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:background="@android:color/white"
+                        android:contentDescription="@string/take_photo_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_photo_camera_24">
+
+                    </ImageButton>
 
                     <!-- Delete button -->
                     <ImageButton
@@ -410,7 +426,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="150dp">
+                    android:layout_height="250dp">
 
                     <!-- Media -->
                     <ImageView
@@ -420,6 +436,18 @@
                         android:contentDescription="@string/description_image"
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/property_picture" />
+
+                    <ImageButton
+                        android:id="@+id/card2_photoButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:background="@android:color/white"
+                        android:contentDescription="@string/take_photo_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_photo_camera_24">
+
+                    </ImageButton>
 
                     <!-- Delete button -->
                     <ImageButton
@@ -474,7 +502,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="150dp">
+                    android:layout_height="250dp">
 
                     <!-- Media -->
                     <ImageView
@@ -484,6 +512,18 @@
                         android:contentDescription="@string/description_image"
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/property_picture" />
+
+                    <ImageButton
+                        android:id="@+id/card3_photoButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:background="@android:color/white"
+                        android:contentDescription="@string/take_photo_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_photo_camera_24">
+
+                    </ImageButton>
 
                     <!-- Delete button -->
                     <ImageButton
@@ -538,7 +578,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="150dp">
+                    android:layout_height="250dp">
 
                     <!-- Media -->
                     <ImageView
@@ -548,6 +588,18 @@
                         android:contentDescription="@string/description_image"
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/property_picture" />
+
+                    <ImageButton
+                        android:id="@+id/card4_photoButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:background="@android:color/white"
+                        android:contentDescription="@string/take_photo_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_photo_camera_24">
+
+                    </ImageButton>
 
                     <!-- Delete button -->
                     <ImageButton
@@ -602,7 +654,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="150dp">
+                    android:layout_height="250dp">
 
                     <!-- Media -->
                     <ImageView
@@ -612,6 +664,18 @@
                         android:contentDescription="@string/description_image"
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/property_picture" />
+
+                    <ImageButton
+                        android:id="@+id/card5_photoButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:background="@android:color/white"
+                        android:contentDescription="@string/take_photo_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_photo_camera_24">
+
+                    </ImageButton>
 
                     <!-- Delete button -->
                     <ImageButton
@@ -666,7 +730,7 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="150dp">
+                    android:layout_height="250dp">
 
                     <!-- Media -->
                     <ImageView
@@ -676,6 +740,18 @@
                         android:contentDescription="@string/description_image"
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/property_picture" />
+
+                    <ImageButton
+                        android:id="@+id/card6_photoButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|top"
+                        android:background="@android:color/white"
+                        android:contentDescription="@string/take_photo_image"
+                        android:padding="12dp"
+                        android:src="@drawable/baseline_photo_camera_24">
+
+                    </ImageButton>
 
                     <!-- Delete button -->
                     <ImageButton
@@ -723,22 +799,20 @@
             android:padding="@dimen/default_margin"
             android:text="@string/cancel_button"
             android:textSize="@dimen/default_text_middle_size"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/card5" />
 
         <!-- Ok button -->
         <Button
             android:id="@+id/ok_button"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            style="@style/Widget.Material3.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:padding="@dimen/default_margin"
             android:text="@string/ok_button"
             android:textSize="@dimen/default_text_middle_size"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/guideline"
+            app:layout_constraintStart_toEndOf="@+id/cancel_button"
             app:layout_constraintTop_toBottomOf="@+id/card6" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

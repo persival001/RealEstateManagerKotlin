@@ -5,6 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
+import com.persival.realestatemanagerkotlin.domain.permissions.HasCameraPermissionUseCase
+import com.persival.realestatemanagerkotlin.domain.permissions.HasStoragePermissionUseCase
+import com.persival.realestatemanagerkotlin.domain.permissions.RefreshCameraPermissionUseCase
+import com.persival.realestatemanagerkotlin.domain.permissions.RefreshStoragePermissionUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.InsertPointOfInterestUseCase
@@ -18,6 +22,7 @@ import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
 import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,10 +36,14 @@ class AddPropertyViewModel @Inject constructor(
     private val updatePropertyWithPhotoAndPOIUseCase: UpdatePropertyWithPhotoAndPOIUseCase,
     private val getSelectedPropertyIdUseCase: GetSelectedPropertyIdUseCase,
     private val getSavedStateForDateConversionButtonUseCase: GetSavedStateForDateConversionButtonUseCase,
+    private val refreshStoragePermissionUseCase: RefreshStoragePermissionUseCase,
+    private val refreshCameraPermissionUseCase: RefreshCameraPermissionUseCase,
+    private val hasCameraPermissionUseCase: HasCameraPermissionUseCase,
+    private val hasStoragePermissionUseCase: HasStoragePermissionUseCase,
 ) : ViewModel() {
 
     val viewStateLiveData: LiveData<AddViewState> = liveData {
-        val propertyId = getSelectedPropertyIdUseCase()
+        val propertyId = getSelectedPropertyIdUseCase().value
         if (propertyId != null && propertyId > 0) {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { propertyWithPhotosAndPOIEntity ->
                 emit(mapEntityToViewState(propertyWithPhotosAndPOIEntity))
@@ -91,7 +100,7 @@ class AddPropertyViewModel @Inject constructor(
     }
 
     fun updateProperty(addViewState: AddViewState) {
-        val propertyId = getSelectedPropertyIdUseCase()
+        val propertyId = getSelectedPropertyIdUseCase().value
         val agentName = getRealEstateAgentUseCase.invoke()?.name
 
         if (agentName != null && propertyId != null) {
@@ -161,6 +170,22 @@ class AddPropertyViewModel @Inject constructor(
         } else {
             Utils.getTodayDate()
         }
+    }
+
+    fun refreshStoragePermission() {
+        refreshStoragePermissionUseCase.invoke()
+    }
+
+    fun refreshCameraPermission() {
+        refreshCameraPermissionUseCase.invoke()
+    }
+
+    fun hasCameraPermission(): Flow<Boolean> {
+        return hasCameraPermissionUseCase.invoke()
+    }
+
+    fun hasStoragePermission(): Flow<Boolean> {
+        return hasStoragePermissionUseCase.invoke()
     }
 
 }

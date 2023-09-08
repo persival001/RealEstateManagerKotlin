@@ -49,7 +49,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
         mapFragment?.getMapAsync(this)
 
         // Check GPS activation
-        viewModel.isGpsActivatedLiveData().observe(viewLifecycleOwner) { gps ->
+        viewModel.isGpsActivated().asLiveData().observe(viewLifecycleOwner) { gps ->
             if (gps == false) {
                 GpsDialogFragment().show(
                     requireActivity().supportFragmentManager,

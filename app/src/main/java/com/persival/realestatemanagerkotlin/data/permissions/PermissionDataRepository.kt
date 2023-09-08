@@ -1,12 +1,15 @@
 package com.persival.realestatemanagerkotlin.data.permissions
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.persival.realestatemanagerkotlin.domain.permissions.PermissionRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +24,10 @@ class PermissionDataRepository @Inject constructor(
 ) : PermissionRepository {
 
     private val locationPermissionFlow = MutableStateFlow(false)
-    private val isGpsActivatedLiveData = MutableLiveData<Boolean>()
+    private val isGpsActivatedLiveData = MutableStateFlow(false)
+    private val cameraPermissionFlow = MutableStateFlow(false)
+    private val storageReadImagesPermissionFlow = MutableStateFlow(false)
+    private val storageReadVideoPermissionFlow = MutableStateFlow(false)
 
     // Location permission
     override fun isLocationPermission(): Flow<Boolean> = locationPermissionFlow.asStateFlow()
@@ -34,7 +40,7 @@ class PermissionDataRepository @Inject constructor(
     }
 
     // Is GPS activated or not
-    override fun isGpsActivated(): LiveData<Boolean> = isGpsActivatedLiveData
+    override fun isGpsActivated(): Flow<Boolean> = isGpsActivatedLiveData
 
     override fun refreshGpsActivation() {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
@@ -42,4 +48,36 @@ class PermissionDataRepository @Inject constructor(
         isGpsActivatedLiveData.value = isGPSEnabled
     }
 
+    // Camera permission
+    override fun isCameraPermission(): Flow<Boolean> = cameraPermissionFlow.asStateFlow()
+
+    override fun refreshCameraPermission() {
+        val hasPermission = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+        cameraPermissionFlow.value = hasPermission
+    }
+
+    // Storage Read Images permission
+    override fun isStorageReadImagesPermission(): Flow<Boolean> = storageReadImagesPermissionFlow.asStateFlow()
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun refreshStorageReadImagesPermission() {
+        val hasPermission = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.READ_MEDIA_IMAGES
+        ) == PackageManager.PERMISSION_GRANTED
+        storageReadImagesPermissionFlow.value = hasPermission
+    }
+
+    // Storage Read Video permission
+    override fun isStorageReadVideoPermission(): Flow<Boolean> = storageReadVideoPermissionFlow.asStateFlow()
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun refreshStorageReadVideoPermission() {
+        val hasPermission = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.READ_MEDIA_VIDEO
+        ) == PackageManager.PERMISSION_GRANTED
+        storageReadVideoPermissionFlow.value = hasPermission
+    }
+    
 }

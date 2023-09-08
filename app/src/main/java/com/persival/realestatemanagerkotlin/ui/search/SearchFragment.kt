@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.android.material.slider.RangeSlider
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentSearchBinding
 import com.persival.realestatemanagerkotlin.utils.viewBinding
@@ -68,45 +69,59 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             requireActivity().finish()
         }
 
-        // Get the property added or modified by the user
+        // Initialize the ok button for get filter
         binding.okButton.setOnClickListener {
 
-            // Get type value
-            binding.typeTextView.text.toString()
+            val typeValue = binding.typeTextView.text.toString()
 
-            if (binding.typeTextView.text.toString().isEmpty()) {
+            if (typeValue.isEmpty()) {
                 Toast.makeText(requireContext(), getString(R.string.type_empty), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Get price values
-            val priceValues = binding.priceSlider.values
-            val minPriceValue = priceValues[0]
-            val maxPriceValue = priceValues[1]
+            val (minPrice, maxPrice) = getSliderValues(binding.priceSlider)
+            val (minArea, maxArea) = getSliderValues(binding.areaSlider)
 
-            // Get area values
-            val areaValues = binding.areaSlider.values
-            val minAreaValue = areaValues[0]
-            val maxAreaValue = areaValues[1]
+            val pois = getSelectedChips()
+            val dateValue = getDateValue()
 
-            // Get poi selected
-            val selectedChips = listOf(
-                binding.schoolChip,
-                binding.publicTransportChip,
-                binding.hospitalChip,
-                binding.shopChip,
-                binding.greenSpacesChip,
-                binding.restaurantChip
-            ).filter { it.isChecked }.map { it.text.toString() }
-            val selectedChipsString = selectedChips.joinToString()
+            val viewState = SearchViewState(
+                type = typeValue,
+                minPrice = minPrice.toInt(),
+                maxPrice = maxPrice.toInt(),
+                minArea = minArea.toInt(),
+                maxArea = maxArea.toInt(),
+                pois = pois,
+                date = dateValue
+            )
 
-            // Get date filter (older first or newer first)
-            val selectedButtonId = binding.dateToggleButton.checkedButtonId
+            viewModel.setSearchedProperties(viewState)
 
-            val isButton1Checked = (selectedButtonId == R.id.button1)
-            val isButton2Checked = (selectedButtonId == R.id.button2)
+            requireActivity().finish()
+        }
+    }
 
-            //requireActivity().finish()
+    private fun getSliderValues(slider: RangeSlider): Pair<Float, Float> {
+        return Pair(slider.values[0], slider.values[1])
+    }
+
+    private fun getSelectedChips(): String {
+        val selectedChips = listOf(
+            binding.schoolChip,
+            binding.publicTransportChip,
+            binding.hospitalChip,
+            binding.shopChip,
+            binding.greenSpacesChip,
+            binding.restaurantChip
+        ).filter { it.isChecked }.map { it.text.toString() }
+        return selectedChips.joinToString()
+    }
+
+    private fun getDateValue(): String {
+        return when (binding.dateToggleButton.checkedButtonId) {
+            R.id.button1 -> "Old first"
+            R.id.button2 -> "Recent first"
+            else -> ""
         }
     }
 

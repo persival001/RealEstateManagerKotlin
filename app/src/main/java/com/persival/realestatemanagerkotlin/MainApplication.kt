@@ -18,12 +18,6 @@ class MainApplication : Application(), Application.ActivityLifecycleCallbacks, C
     @Inject
     lateinit var permissionRepository: PermissionRepository
 
-    override fun onCreate() {
-        super.onCreate()
-
-        registerComponentCallbacks(this)
-    }
-
     override fun getWorkManagerConfiguration() = Configuration.Builder()
         .setWorkerFactory(workerFactory)
         .build()
@@ -33,7 +27,7 @@ class MainApplication : Application(), Application.ActivityLifecycleCallbacks, C
     override fun onActivityStarted(activity: Activity) {}
 
     override fun onActivityResumed(activity: Activity) {
-        //permissionRepository.refreshLocationPermission()
+        permissionRepository.refreshLocationPermission()
     }
 
     override fun onActivityPaused(activity: Activity) {}

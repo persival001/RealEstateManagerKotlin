@@ -46,7 +46,7 @@ MapViewModel @Inject constructor(
         }
     }
 
-    fun isGpsActivatedLiveData(): LiveData<Boolean> = isGpsActivatedUseCase.invoke()
+    fun isGpsActivated(): Flow<Boolean> = isGpsActivatedUseCase.invoke()
 
     fun refreshGpsActivation() {
         refreshGpsActivationUseCase.invoke()

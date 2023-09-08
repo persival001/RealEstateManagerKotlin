@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
-import androidx.hilt.work.HiltWorkerFactory
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.ActivityMainBinding
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
@@ -26,7 +25,6 @@ import com.persival.realestatemanagerkotlin.ui.navigation.NavigationHandler
 import com.persival.realestatemanagerkotlin.ui.properties.PropertiesFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationHandler {
@@ -47,8 +45,8 @@ class MainActivity : AppCompatActivity(), NavigationHandler {
         getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
-    @Inject
-    lateinit var workerFactory: HiltWorkerFactory
+    //@Inject
+    //lateinit var workerFactory: HiltWorkerFactory
 
     private val fragmentLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
         override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
@@ -167,7 +165,7 @@ class MainActivity : AppCompatActivity(), NavigationHandler {
             R.id.action_modify -> {
                 val intent = Intent(this, NavigationActivity::class.java)
                 intent.putExtra(SELECTED_ITEM, MODIFY_ITEM)
-                if (viewModel.getPropertyId() != null) {
+                if (viewModel.getPropertyId().value != null) {
                     startActivity(intent)
                 } else {
                     Toast.makeText(this, R.string.no_property_selected, Toast.LENGTH_LONG).show()

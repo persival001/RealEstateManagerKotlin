@@ -100,5 +100,8 @@
     <string name="storage_permission_denied">Storage permission denied</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="internet_connection">Internet connection is ok</string>
+    <string name="camera_and_storage_rationale">This app requires permissions to access camera and storage space.</string>
+    <string name="take_photo_image">Take photo image</string>
+
 
 </resources>

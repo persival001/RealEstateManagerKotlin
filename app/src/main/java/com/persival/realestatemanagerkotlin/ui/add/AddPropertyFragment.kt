@@ -1,18 +1,30 @@
 package com.persival.realestatemanagerkotlin.ui.add
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.camera.view.PreviewView
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import com.bumptech.glide.Glide
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -27,6 +39,8 @@ import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentAddPropertyBinding
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -38,33 +52,23 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         fun newInstance(): AddPropertyFragment {
             return AddPropertyFragment()
         }
-
-        private const val REQUEST_CODE_IMAGE1 = 1
-        private const val REQUEST_CODE_IMAGE2 = 2
-        private const val REQUEST_CODE_IMAGE3 = 3
-        private const val REQUEST_CODE_IMAGE4 = 4
-        private const val REQUEST_CODE_IMAGE5 = 5
-        private const val REQUEST_CODE_IMAGE6 = 6
     }
 
     private val binding by viewBinding { FragmentAddPropertyBinding.bind(it) }
     private val viewModel by viewModels<AddPropertyViewModel>()
 
     private val imageUris = arrayOfNulls<Uri?>(6)
-    private val requestCodes = arrayOf(
-        REQUEST_CODE_IMAGE1,
-        REQUEST_CODE_IMAGE2,
-        REQUEST_CODE_IMAGE3,
-        REQUEST_CODE_IMAGE4,
-        REQUEST_CODE_IMAGE5,
-        REQUEST_CODE_IMAGE6
-    )
-    private lateinit var imageViews: Array<ImageView>
-    private lateinit var editTexts: Array<EditText>
-    private lateinit var imageButtons: Array<ImageButton>
+    private val requestCodes = intArrayOf(1, 2, 3, 4, 5, 6)
 
     private var latLongString: String? = null
     private var currentRequestCode = 0
+    private var currentPhotoUri: Uri? = null
+
+    private lateinit var imageViews: Array<ImageView>
+    private lateinit var editTexts: Array<EditText>
+    private lateinit var imageButtons: Array<ImageButton>
+    private lateinit var viewFinder: PreviewView
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     private val openFileResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -75,14 +79,17 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                         it,
                         Intent.FLAG_GRANT_READ_URI_PERMISSION
                     )
-                    when (currentRequestCode) {
-                        REQUEST_CODE_IMAGE1 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE1)
-                        REQUEST_CODE_IMAGE2 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE2)
-                        REQUEST_CODE_IMAGE3 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE3)
-                        REQUEST_CODE_IMAGE4 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE4)
-                        REQUEST_CODE_IMAGE5 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE5)
-                        REQUEST_CODE_IMAGE6 -> setImageAndRequireName(it, REQUEST_CODE_IMAGE6)
-                    }
+                    setImageAndRequireName(it, currentRequestCode)
+                }
+            }
+        }
+
+    private val takePhotoResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val takenPhotoUri: Uri? = currentPhotoUri
+                takenPhotoUri?.let {
+                    setImageAndRequireName(it, currentRequestCode)
                 }
             }
         }
@@ -97,7 +104,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, items)
         binding.typeTextView.setAdapter(adapter)
 
-        // Initialize the Places API
+        // Initialize the Places API for Maps
         if (!Places.isInitialized()) {
             Places.initialize(requireContext(), MAPS_API_KEY)
         }
@@ -135,14 +142,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             autocompleteResultLauncher.launch(intent)
         }
 
-        // Initialize the date picker "for sale"
-        val datePickerEditText: TextInputEditText = view.findViewById(R.id.date_picker_edit_text)
-        datePickerEditText.setOnClickListener { showDatePicker(it) }
-
-        // Initialize the date picker "sold"
-        val datePickerSoldEditText: TextInputEditText =
-            view.findViewById(R.id.date_picker_to_sell_text)
-        datePickerSoldEditText.setOnClickListener { showDatePicker(it) }
+        setupDatePicker(binding.datePickerEditText, binding.datePickerToSellText)
 
         // Initialize the arrays of views
         imageViews = arrayOf(
@@ -170,24 +170,13 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             binding.card6ImageButton
         )
 
-        // Set the image selection callback for each ImageView
-        imageViews.forEachIndexed { index, imageView ->
-            imageView.setOnClickListener {
-                currentRequestCode = requestCodes[index]
-                val openFileIntent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                    type = "image/*"
-                }
-                openFileResult.launch(openFileIntent)
-            }
-        }
+        viewFinder = binding.cameraPreview
 
-        // Set the image remove callback for each remove button
-        imageButtons.forEachIndexed { index, imageButton ->
-            imageButton.setOnClickListener {
-                removeImageAndName(requestCodes[index])
-            }
-        }
+        // Initialize the buttons for open camera
+        setupImageButtonsForCamera()
+
+        // Initialize the buttons for open gallery
+        setupImageSelectionAndRemoval()
 
         // MODIFY PROPERTY - Complete form with property selected
         if (actionType == "modify") {
@@ -233,6 +222,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                     if (index < imageViews.size) {
                         Glide.with(imageViews[index])
                             .load(photoUrl)
+                            .override(800, 800)
                             .into(imageViews[index])
                     }
                 }
@@ -260,14 +250,28 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
         }
 
+        // Initialize requestPermissionLauncher
+        requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (isGranted) {
+                    viewModel.refreshStoragePermission()
+                    viewModel.refreshCameraPermission()
+                }
+            }
+
+
     }
 
     private fun setImageAndRequireName(uri: Uri, requestCode: Int) {
         val index = requestCodes.indexOf(requestCode)
-        imageViews[index].setImageURI(uri)
-        imageUris[index] = uri
-        editTexts[index].text.clear()
-        editTexts[index].requestFocus()
+        if (uri.toString().isNotEmpty() && uri != Uri.EMPTY) {
+            imageViews[index].setImageURI(uri)
+            imageUris[index] = uri
+            editTexts[index].text.clear()
+            editTexts[index].requestFocus()
+        } else {
+            Log.e("IMAGE_IMPORT", "Failed to set image from URI: $uri for requestCode: $requestCode")
+        }
     }
 
     private fun removeImageAndName(requestCode: Int) {
@@ -343,15 +347,107 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         return allFieldsFilled
     }
 
-    private fun showDatePicker(view: View) {
-        val datePicker = MaterialDatePicker.Builder.datePicker().build()
-        datePicker.addOnPositiveButtonClickListener { selection: Long? ->
-            val selectedDate: String? =
-                selection?.let { Date(it) }
-                    ?.let { SimpleDateFormat(viewModel.getFormattedDate(), Locale.getDefault()).format(it) }
-            (view as TextInputEditText).setText(selectedDate)
+    private fun setupImageSelectionAndRemoval() {
+        imageViews.forEachIndexed { index, imageView ->
+            imageView.setOnClickListener {
+                currentRequestCode = requestCodes[index]
+                if (viewModel.hasCameraPermission().asLiveData().value == true &&
+                    viewModel.hasStoragePermission().asLiveData().value == true
+                ) {
+                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                        addCategory(Intent.CATEGORY_OPENABLE)
+                        type = "image/*"
+                    }
+
+                    openFileResult.launch(intent)
+                }
+            }
         }
-        datePicker.show(parentFragmentManager, "date_picker_tag")
+
+        imageButtons.forEachIndexed { index, imageButton ->
+            imageButton.setOnClickListener {
+                removeImageAndName(requestCodes[index])
+            }
+        }
     }
+
+    private fun setupImageButtonsForCamera() {
+        val photoButtons = arrayOf(
+            binding.card1PhotoButton,
+            binding.card2PhotoButton,
+            binding.card3PhotoButton,
+            binding.card4PhotoButton,
+            binding.card5PhotoButton,
+            binding.card6PhotoButton
+        )
+
+        photoButtons.forEachIndexed { index, imageButton ->
+            imageButton.setOnClickListener {
+                currentRequestCode = requestCodes[index]
+                openCameraForPhoto()
+            }
+        }
+    }
+
+    private fun setupDatePicker(vararg editTexts: TextInputEditText) {
+        editTexts.forEach { editText ->
+            editText.setOnClickListener {
+                val datePicker = MaterialDatePicker.Builder.datePicker().build()
+                datePicker.addOnPositiveButtonClickListener { selection: Long? ->
+                    Log.d("DATE_PICKER", "Selected timestamp: $selection")
+                    val selectedDate: String? =
+                        selection?.let { Date(it) }
+                            ?.let { SimpleDateFormat(viewModel.getFormattedDate(), Locale.getDefault()).format(it) }
+                    Log.d("DATE_PICKER", "Formatted date: $selectedDate")
+                    editText.setText(selectedDate)
+                }
+
+                datePicker.show(parentFragmentManager, "date_picker_tag")
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onResume() {
+        // Refresh Storage and Camera permissions
+        viewModel.refreshStoragePermission()
+        viewModel.refreshCameraPermission()
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+        }
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+        super.onResume()
+    }
+
+    private fun openCameraForPhoto() {
+        val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        try {
+            val photoFile: File = createImageFile()
+            val photoURI: Uri = FileProvider.getUriForFile(
+                requireContext(),
+                "com.persival.realestatemanagerkotlin.fileprovider",
+                photoFile
+            )
+            takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+            takePhotoResult.launch(takePhotoIntent)
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+        }
+    }
+
+    private fun createImageFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir).apply {
+            currentPhotoUri = Uri.fromFile(this)
+        }
+    }
+
 
 }

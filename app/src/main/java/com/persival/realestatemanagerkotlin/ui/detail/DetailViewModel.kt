@@ -26,7 +26,7 @@ class DetailViewModel @Inject constructor(
     val detailItem: LiveData<DetailViewStateItem> = detailItemLiveData
 
     fun fetchAndLoadDetailsForSelectedProperty() {
-        val id = getSelectedPropertyIdUseCase()
+        val id = getSelectedPropertyIdUseCase().value
         selectedIdLiveData.value = id
 
         id?.let {

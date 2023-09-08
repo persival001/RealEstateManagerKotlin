@@ -1,7 +1,7 @@
 package com.persival.realestatemanagerkotlin.domain.location
 
 import com.persival.realestatemanagerkotlin.domain.location.model.LocationEntity
-import com.persival.realestatemanagerkotlin.domain.permissions.IsLocationPermissionUseCase
+import com.persival.realestatemanagerkotlin.domain.permissions.HasLocationPermissionUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -10,10 +10,10 @@ import javax.inject.Singleton
 
 @Singleton
 class GetLocationUseCase @Inject constructor(
-    private val isLocationPermissionUseCase: IsLocationPermissionUseCase,
+    private val hasLocationPermissionUseCase: HasLocationPermissionUseCase,
     private val locationRepository: LocationRepository,
 ) {
-    fun invoke(): Flow<LocationEntity> = isLocationPermissionUseCase.invoke()
+    fun invoke(): Flow<LocationEntity> = hasLocationPermissionUseCase.invoke()
         .flatMapLatest { hasPermission: Boolean ->
             if (hasPermission) {
                 locationRepository.getLocationFlow()
