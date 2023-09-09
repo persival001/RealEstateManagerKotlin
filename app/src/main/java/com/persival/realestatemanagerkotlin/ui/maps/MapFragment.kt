@@ -1,11 +1,9 @@
 package com.persival.realestatemanagerkotlin.ui.maps
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,20 +20,15 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.persival.realestatemanagerkotlin.R
-import com.persival.realestatemanagerkotlin.databinding.FragmentMapBinding
 import com.persival.realestatemanagerkotlin.ui.gps_dialog.GpsDialogFragment
 import com.persival.realestatemanagerkotlin.ui.navigation.NavigationHandler
-import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
     private var googleMap: GoogleMap? = null
-
-    private val binding by viewBinding { FragmentMapBinding.bind(it) }
     private val viewModel by viewModels<MapViewModel>()
-
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     companion object {
@@ -90,20 +83,16 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
                 }
             }
 
-
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        Log.d("MapFragment", "Attached to ${context.javaClass.simpleName}")
     }
 
     override fun onResume() {
         // Refresh GPS activation and location permission
         viewModel.refreshGpsActivation()
         viewModel.refreshLocationPermission()
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
@@ -127,20 +116,10 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
         // When user click on a marker, the details are displayed
         googleMap?.setOnMarkerClickListener { marker ->
-            Log.d("MapFragment", "Marker clicked!")
             val propertyId = marker.tag as? Long
-            if (propertyId == null) {
-                Log.d("MapFragment", "Property ID is null or not a Long!")
-            } else {
+            if (propertyId != null) {
                 viewModel.updateSelectedPropertyId(propertyId)
-                Log.d("MapFragment", "Property ID updated to: $propertyId")
-
-                val handler = activity as? NavigationHandler
-                if (handler == null) {
-                    Log.d("MapFragment", "Activity is not a NavigationHandler!")
-                } else {
-                    handler.navigateToDetail()
-                }
+                (activity as? NavigationHandler)?.navigateToDetail()
             }
             true
         }

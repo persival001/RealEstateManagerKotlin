@@ -22,8 +22,8 @@ class DetailViewModel @Inject constructor(
     private val detailLiveData = MutableLiveData<DetailViewState>()
     val details: LiveData<DetailViewState> = detailLiveData
 
-    private val detailItemLiveData = MutableLiveData<DetailViewStateItem>()
-    val detailItem: LiveData<DetailViewStateItem> = detailItemLiveData
+    private val detailItemLiveData = MutableLiveData<List<DetailViewStateItem>>()
+    val detailItem: LiveData<List<DetailViewStateItem>> = detailItemLiveData
 
     fun fetchAndLoadDetailsForSelectedProperty() {
         val id = getSelectedPropertyIdUseCase().value
@@ -63,15 +63,11 @@ class DetailViewModel @Inject constructor(
     private fun loadItemDetails(propertyId: Long) {
         viewModelScope.launch {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { details ->
-                val urls = details.photos.map { it.photoUrl }
-                val captions = details.photos.map { it.description }
+                val items = details.photos.map { photo ->
+                    DetailViewStateItem(url = photo.photoUrl, caption = photo.description)
+                }
 
-                val detailViewState = DetailViewStateItem(
-                    url = urls,
-                    caption = captions
-                )
-
-                detailItemLiveData.value = detailViewState
+                detailItemLiveData.value = items
             }
         }
     }
@@ -83,6 +79,5 @@ class DetailViewModel @Inject constructor(
         selectedIdLiveData.value = id
         fetchAndLoadDetailsForSelectedProperty()
     }
-
 
 }

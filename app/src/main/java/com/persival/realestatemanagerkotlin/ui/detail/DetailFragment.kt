@@ -45,13 +45,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         val recyclerView: RecyclerView = binding.carouselRecyclerView
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
+
         // observe the detailItem livedata
-        viewModel.detailItem.observe(viewLifecycleOwner) { detailViewStateItem ->
-            val detailImageAdapter = DetailImageAdapter(
-                requireContext(),
-                detailViewStateItem.url,
-                detailViewStateItem.caption
-            )
+        viewModel.detailItem.observe(viewLifecycleOwner) { detailViewStateItems ->
+            val detailImageAdapter = DetailImageAdapter(requireContext(), detailViewStateItems)
             recyclerView.adapter = detailImageAdapter
         }
 

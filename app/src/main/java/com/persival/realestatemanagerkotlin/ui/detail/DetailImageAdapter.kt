@@ -11,11 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.persival.realestatemanagerkotlin.R
 
-// TODO ListAdapter instead!
 class DetailImageAdapter(
     private val context: Context,
-    private val urls: List<String>,
-    private val captions: List<String>
+    private val items: List<DetailViewStateItem>
 ) : RecyclerView.Adapter<DetailImageAdapter.DetailImageViewHolder>() {
 
     inner class DetailImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -29,29 +27,26 @@ class DetailImageAdapter(
     }
 
     override fun onBindViewHolder(holder: DetailImageViewHolder, position: Int) {
-        val url = urls[position]
-        val caption = captions.getOrNull(position) ?: ""
+        val item = items[position]
 
-        if (url.startsWith("http://") || url.startsWith("https://")) {
+        if (item.url.startsWith("http://") || item.url.startsWith("https://")) {
             // It's a web URL, load it directly
             Glide.with(context)
-                .load(url)
+                .load(item.url)
+                .centerCrop()
                 .into(holder.imageView)
-        } else if (url.startsWith("content://") || url.startsWith("file://")) {
+        } else if (item.url.startsWith("content://") || item.url.startsWith("file://")) {
             // It's a local file URI, load it directly
             Glide.with(context)
-                .load(Uri.parse(url))
+                .load(Uri.parse(item.url))
+                .centerCrop()
                 .into(holder.imageView)
         }
 
-        holder.captionView.text = caption
+        holder.captionView.text = item.caption
     }
 
     override fun getItemCount(): Int {
-        return urls.size
+        return items.size
     }
 }
-
-
-
-

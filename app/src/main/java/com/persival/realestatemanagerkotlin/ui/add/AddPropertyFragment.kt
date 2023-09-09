@@ -1,6 +1,7 @@
 package com.persival.realestatemanagerkotlin.ui.add
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -61,8 +62,8 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
     private val requestCodes = intArrayOf(1, 2, 3, 4, 5, 6)
 
     private var latLongString: String? = null
-    private var currentRequestCode = 0
     private var currentPhotoUri: Uri? = null
+    private var currentRequestCode = 0
 
     private lateinit var imageViews: Array<ImageView>
     private lateinit var editTexts: Array<EditText>
@@ -394,35 +395,15 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             editText.setOnClickListener {
                 val datePicker = MaterialDatePicker.Builder.datePicker().build()
                 datePicker.addOnPositiveButtonClickListener { selection: Long? ->
-                    Log.d("DATE_PICKER", "Selected timestamp: $selection")
                     val selectedDate: String? =
                         selection?.let { Date(it) }
                             ?.let { SimpleDateFormat(viewModel.getFormattedDate(), Locale.getDefault()).format(it) }
-                    Log.d("DATE_PICKER", "Formatted date: $selectedDate")
                     editText.setText(selectedDate)
                 }
 
                 datePicker.show(parentFragmentManager, "date_picker_tag")
             }
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun onResume() {
-        // Refresh Storage and Camera permissions
-        viewModel.refreshStoragePermission()
-        viewModel.refreshCameraPermission()
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
-        }
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
-        }
-        super.onResume()
     }
 
     private fun openCameraForPhoto() {
@@ -441,6 +422,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun createImageFile(): File {
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -449,5 +431,23 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         }
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onResume() {
+        // Refresh Storage and Camera permissions
+        viewModel.refreshStoragePermission()
+        viewModel.refreshCameraPermission()
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+        }
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+        super.onResume()
+    }
 
 }
