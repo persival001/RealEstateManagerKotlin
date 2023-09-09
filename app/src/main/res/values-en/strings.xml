@@ -102,6 +102,7 @@
     <string name="internet_connection">Internet connection is ok</string>
     <string name="camera_and_storage_rationale">This app requires permissions to access camera and storage space.</string>
     <string name="take_photo_image">Take photo image</string>
+    <string name="loan_simulator">Loan simulator</string>
 
 
 </resources>

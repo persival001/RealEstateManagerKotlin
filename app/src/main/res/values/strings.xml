@@ -103,6 +103,7 @@
     <string name="internet_connection">Connection internet active</string>
     <string name="camera_and_storage_rationale">Cette application nécessite des permissions pour accéder à la caméra et à l\'espace de stockage.</string>
     <string name="take_photo_image">Take photo image</string>
+    <string name="loan_simulator">Loan simulator</string>
 
 
 </resources>
