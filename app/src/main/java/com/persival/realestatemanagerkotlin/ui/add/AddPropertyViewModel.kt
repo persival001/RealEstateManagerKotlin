@@ -24,6 +24,7 @@ import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -163,12 +164,12 @@ class AddPropertyViewModel @Inject constructor(
         )
     }
 
-    fun getFormattedDate(): String {
+    fun getFormattedDate(date: Date): String {
         val isFrenchDateEnabled = getSavedStateForDateConversionButtonUseCase.invoke()
         return if (isFrenchDateEnabled) {
-            Utils.getTodayDateInFrench()
+            Utils.getTodayDateInFrench(date)
         } else {
-            Utils.getTodayDate()
+            Utils.getTodayDate(date)
         }
     }
 

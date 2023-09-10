@@ -31,15 +31,16 @@ object Utils {
      * Conversion de la date d'aujourd'hui en un format plus approprié
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
      */
-    fun getTodayDate(): String {
+    // This function format date in us
+    fun getTodayDate(date: Date): String {
         val dateFormat: DateFormat = SimpleDateFormat("yyyy/MM/dd")
-        return dateFormat.format(Date())
+        return dateFormat.format(date)
     }
 
-    // This is the new function to get today date in french
-    fun getTodayDateInFrench(): String {
+    // This new function format date in french
+    fun getTodayDateInFrench(date: Date): String {
         val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
-        return dateFormat.format(Date())
+        return dateFormat.format(date)
     }
 
     /**

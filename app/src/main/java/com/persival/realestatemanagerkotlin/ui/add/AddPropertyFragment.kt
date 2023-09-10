@@ -44,7 +44,6 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 @AndroidEntryPoint
 class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
@@ -395,10 +394,9 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             editText.setOnClickListener {
                 val datePicker = MaterialDatePicker.Builder.datePicker().build()
                 datePicker.addOnPositiveButtonClickListener { selection: Long? ->
-                    val selectedDate: String? =
-                        selection?.let { Date(it) }
-                            ?.let { SimpleDateFormat(viewModel.getFormattedDate(), Locale.getDefault()).format(it) }
-                    editText.setText(selectedDate)
+                    val selectedDate = selection?.let { Date(it) }
+                    val formattedDate = selectedDate?.let { viewModel.getFormattedDate(it) }
+                    editText.setText(formattedDate)
                 }
 
                 datePicker.show(parentFragmentManager, "date_picker_tag")
