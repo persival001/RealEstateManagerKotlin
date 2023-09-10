@@ -52,7 +52,6 @@
     <string name="date_to_sell">Date d\'achat</string>
     <string name="your_position">Vous êtes ici !</string>
 
-    <!-- GPS FRAGMENT -->
     <string name="gps_off">Le GPS est désactivé</string>
     <string name="please_activate_gps">Pour faire fonctionner cette application avec toutes ses fonctionnalités, nous avons besoin que vous activiez votre Gps avec la localisation précise.
         \nNe vous inquiètez pas, nous ne collectons aucune de vos données.</string>
@@ -102,8 +101,14 @@
     <string name="no_internet_connection">Pas de connexion internet</string>
     <string name="internet_connection">Connection internet active</string>
     <string name="camera_and_storage_rationale">Cette application nécessite des permissions pour accéder à la caméra et à l\'espace de stockage.</string>
-    <string name="take_photo_image">Take photo image</string>
-    <string name="loan_simulator">Loan simulator</string>
-
+    <string name="take_photo_image">Prendre une photo</string>
+    <string name="loan_simulator">Simulateur de crédit</string>
+    <string name="error_message_duration">Durée ne peut pas être à zéro</string>
+    <string name="monthly_payment_text">Résultat: Paiement mensuel = %1$s%2$.2f</string>
+    <string name="bring">Apport (€)</string>
+    <string name="taux">Taux (%)</string>
+    <string name="duration">Durée (month)</string>
+    <string name="calculate">Calculer</string>
+    <string name="result">"Résultat : "</string>
 
 </resources>

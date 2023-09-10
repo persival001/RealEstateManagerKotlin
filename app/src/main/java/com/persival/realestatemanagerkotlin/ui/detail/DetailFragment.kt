@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.persival.realestatemanagerkotlin.BuildConfig.MAPS_API_KEY
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentDetailBinding
+import com.persival.realestatemanagerkotlin.ui.loan_simulator.LoanSimulatorDialogFragment
 import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +25,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     private val binding by viewBinding { FragmentDetailBinding.bind(it) }
     private val viewModel by viewModels<DetailViewModel>()
+    private var propertyPrice: Double = 0.0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,22 +33,19 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         // Fetch the property ID
         viewModel.fetchAndLoadDetailsForSelectedProperty()
 
-        // Observe the ID from ViewModel
+        // Details view is gone if no property selected
         viewModel.selectedId.observe(viewLifecycleOwner) { propertyId ->
-            if (propertyId != null) {
-                if (propertyId <= 0) {
-                    binding.root.visibility = View.GONE
-                } else {
-                    binding.root.visibility = View.VISIBLE
-                }
+            if (propertyId == null || propertyId <= 0) {
+                binding.root.visibility = View.GONE
+            } else {
+                binding.root.visibility = View.VISIBLE
             }
         }
 
+        // Show the property details photos
         val recyclerView: RecyclerView = binding.carouselRecyclerView
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-
-        // observe the detailItem livedata
         viewModel.detailItem.observe(viewLifecycleOwner) { detailViewStateItems ->
             val detailImageAdapter = DetailImageAdapter(requireContext(), detailViewStateItems)
             recyclerView.adapter = detailImageAdapter
@@ -61,6 +60,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             binding.surfaceTextView.text = details.surface
             binding.locationTextView.text = details.address
             binding.poiTextView.text = details.pointOfInterest
+            propertyPrice = details.price.toDouble()
 
             val isSoldString = if (details.isSold) {
                 getString(
@@ -103,6 +103,12 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 )
                 addToBackStack(null)
             }
+        }
+
+        // Loan simulator button
+        binding.loanSimulatorButton.setOnClickListener {
+            val loanSimulatorDialog = LoanSimulatorDialogFragment.newInstance(propertyPrice)
+            loanSimulatorDialog.show(parentFragmentManager, "loanSimulatorDialogTag")
         }
 
     }

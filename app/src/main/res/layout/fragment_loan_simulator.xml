@@ -6,37 +6,40 @@
     android:padding="16dp">
 
     <EditText
-        android:id="@+id/apportEditText"
+        android:id="@+id/bringEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Apport (€)"
+        android:autofillHints=""
+        android:hint="@string/bring"
         android:inputType="numberDecimal" />
 
     <EditText
-        android:id="@+id/tauxEditText"
+        android:id="@+id/rateEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Taux (%)"
+        android:autofillHints=""
+        android:hint="@string/taux"
         android:inputType="numberDecimal" />
 
     <EditText
-        android:id="@+id/dureeEditText"
+        android:id="@+id/durationEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Durée (mois)"
+        android:autofillHints=""
+        android:hint="@string/duration"
         android:inputType="number" />
 
     <Button
         android:id="@+id/calculateButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Calculer" />
+        android:text="@string/calculate" />
 
     <TextView
         android:id="@+id/resultTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Résultat: " />
+        android:text="@string/result" />
 
 </LinearLayout>
