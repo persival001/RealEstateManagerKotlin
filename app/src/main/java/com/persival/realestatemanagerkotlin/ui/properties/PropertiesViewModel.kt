@@ -8,11 +8,13 @@ import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCu
 import com.persival.realestatemanagerkotlin.domain.database.SynchronizeDatabaseUseCase
 import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.domain.search.GetActiveSearchFilterUseCase
+import com.persival.realestatemanagerkotlin.domain.search.SearchEntity
 import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.NumberFormat
 import java.util.Locale
 import javax.inject.Inject
@@ -23,6 +25,7 @@ class PropertiesViewModel @Inject constructor(
     private val setSelectedPropertyIdUseCase: SetSelectedPropertyIdUseCase,
     private val synchronizeDatabaseUseCase: SynchronizeDatabaseUseCase,
     private val getSavedStateForCurrencyConversionButton: GetSavedStateForCurrencyConversionButton,
+    private val getActiveSearchFilterUseCase: GetActiveSearchFilterUseCase,
 ) : ViewModel() {
 
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
@@ -30,29 +33,63 @@ class PropertiesViewModel @Inject constructor(
     private val propertyIdSelected = MutableLiveData<Long?>()
 
     init {
-        loadProperties()
+        combineFiltersWithProperties()
     }
 
-    private fun loadProperties() {
+    private fun combineFiltersWithProperties() {
         viewModelScope.launch {
+            val filterFlow = getActiveSearchFilterUseCase.invoke()
+            val propertiesFlow = getAllPropertiesWithPhotosAndPOIUseCase.invoke()
 
-            getAllPropertiesWithPhotosAndPOIUseCase.invoke().collect { properties ->
-                val viewStateItems = properties.map { propertyWithPhotosAndPOI ->
-                    PropertyViewStateItem(
-                        id = propertyWithPhotosAndPOI.property.id,
-                        type = propertyWithPhotosAndPOI.property.type,
-                        address = propertyWithPhotosAndPOI.property.address,
-                        price = getFormattedPrice(propertyWithPhotosAndPOI.property.price),
-                        pictureUri = propertyWithPhotosAndPOI.photos.firstOrNull()?.photoUrl ?: "",
-                        isSold = propertyWithPhotosAndPOI.property.isSold
-                    )
-                }.sortedBy { it.isSold }
-
-                withContext(Dispatchers.Main) {
-                    propertiesViewStateItem.value = viewStateItems
+            combine(filterFlow, propertiesFlow) { filter, properties ->
+                var filteredProperties = properties.filter {
+                    it.meetsFilterCriteria(filter)
                 }
+
+                filteredProperties = when (filter?.date) {
+                    "Old first" -> filteredProperties.sortedBy { it.property.entryDate }
+                    "Recent first" -> filteredProperties.sortedByDescending { it.property.entryDate }
+                    else -> filteredProperties
+                }
+
+                filteredProperties.map { propertyWithPhotosAndPOI ->
+                    transformToViewState(propertyWithPhotosAndPOI)
+                }
+            }.collect {
+                propertiesViewStateItem.value = it
             }
         }
+    }
+
+    private fun PropertyWithPhotosAndPOIEntity.meetsFilterCriteria(filter: SearchEntity?): Boolean {
+        if (filter == null) return true
+
+        if (this.property.type != filter.type) return false
+        
+        if (this.property.price < filter.minPrice) return false
+        if (filter.maxPrice != Int.MAX_VALUE && this.property.price > filter.maxPrice) return false
+
+        if (this.property.area < filter.minArea) return false
+        if (filter.maxArea != Int.MAX_VALUE && this.property.area > filter.maxArea) return false
+
+        filter.pois.let { poisFilter: String ->
+            val propertyPois: List<String> = this.pointsOfInterest.map { it.poi }
+            val filterPOIs = poisFilter.split(",")
+            if (!filterPOIs.all { it in propertyPois }) return false
+        }
+
+        return true
+    }
+
+    private fun transformToViewState(propertyWithPhotosAndPOIEntity: PropertyWithPhotosAndPOIEntity): PropertyViewStateItem {
+        return PropertyViewStateItem(
+            id = propertyWithPhotosAndPOIEntity.property.id,
+            type = propertyWithPhotosAndPOIEntity.property.type,
+            address = propertyWithPhotosAndPOIEntity.property.address,
+            price = getFormattedPrice(propertyWithPhotosAndPOIEntity.property.price),
+            pictureUri = propertyWithPhotosAndPOIEntity.photos.firstOrNull()?.photoUrl ?: "",
+            isSold = propertyWithPhotosAndPOIEntity.property.isSold
+        )
     }
 
     private fun getFormattedPrice(price: Int): String {

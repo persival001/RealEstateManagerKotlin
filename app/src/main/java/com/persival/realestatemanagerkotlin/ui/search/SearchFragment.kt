@@ -48,7 +48,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
 
         // Initialize the toggle button
-        binding.dateToggleButton.addOnButtonCheckedListener { group, checkedId, isChecked ->
+        binding.dateToggleButton.addOnButtonCheckedListener { _, checkedId, isChecked ->
             when (checkedId) {
                 R.id.button1 -> {
                     if (isChecked) {
@@ -126,5 +126,3 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     }
 
 }
-
-
