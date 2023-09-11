@@ -54,7 +54,16 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
 
         viewModel.properties.observe(viewLifecycleOwner) { properties ->
             propertyListAdapter.submitList(properties)
+
+            if (properties.isNullOrEmpty()) {
+                binding.propertiesRecyclerView.visibility = View.GONE
+                binding.emptyTextView.visibility = View.VISIBLE
+            } else {
+                binding.propertiesRecyclerView.visibility = View.VISIBLE
+                binding.emptyTextView.visibility = View.GONE
+            }
         }
+
 
         sharedPreferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             if (key == "KEY_CURRENCY") {

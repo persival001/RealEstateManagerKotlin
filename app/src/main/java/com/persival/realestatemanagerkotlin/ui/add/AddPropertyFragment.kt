@@ -227,6 +227,19 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                     }
                 }
 
+                val chips = listOf(
+                    binding.schoolChip,
+                    binding.publicTransportChip,
+                    binding.hospitalChip,
+                    binding.shopChip,
+                    binding.greenSpacesChip,
+                    binding.restaurantChip
+                )
+
+                for (chip in chips) {
+                    chip.isChecked = addViewState.pointsOfInterest.contains(chip.text, ignoreCase = true)
+                }
+
             }
         }
 

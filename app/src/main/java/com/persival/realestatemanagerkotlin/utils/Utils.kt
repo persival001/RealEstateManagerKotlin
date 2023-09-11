@@ -54,7 +54,6 @@ object Utils {
         return wifi.isWifiEnabled
     }
 
-
     // A broadcast receiver like this is more efficient for this purpose
     fun isConnexionAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

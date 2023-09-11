@@ -83,32 +83,22 @@ class LocalDatabaseRepository @Inject constructor(
 
             // Retrieve current photos from the database
             val currentPhotos = photoDao.getByPropertyId(propertyDto.id)
-            // Update photos that changed
             for (photoDto in photosDto) {
                 val currentPhoto = currentPhotos.find { it.id == photoDto.id }
                 if (currentPhoto == null || photoHasChanged(currentPhoto, photoDto)) {
-                    photoDao.updatePhotoAndDescriptionByPropertyId(
-                        propertyId = propertyDto.id,
-                        description = photoDto.description,
-                        photoUrl = photoDto.photoUrl,
-                        lastModified = photoDto.lastModified
-                    )
+                    if (currentPhoto != null) {
+                        photoDao.delete(currentPhoto)
+                    }
+                    photoDao.insert(photoDto)
                 }
             }
 
             // Retrieve current POIs from the database
-            val currentPOIs = pointOfInterestDao.getByPropertyId(propertyDto.id)
-            // Update POIs that changed
+            pointOfInterestDao.deletePOIsByPropertyId(propertyDto.id)
             for (poiDto in poisDto) {
-                val currentPOI = currentPOIs.find { it.id == poiDto.id }
-                if (currentPOI == null || poiHasChanged(currentPOI, poiDto)) {
-                    pointOfInterestDao.updatePOIByPropertyId(
-                        propertyId = propertyDto.id,
-                        poi = poiDto.poi,
-                        lastModified = poiDto.lastModified
-                    )
-                }
+                pointOfInterestDao.insert(poiDto)
             }
+
         }
     }
 

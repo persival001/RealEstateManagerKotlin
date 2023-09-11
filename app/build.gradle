@@ -129,7 +129,7 @@ dependencies {
     testImplementation "io.mockk:mockk:1.13.4"
     testImplementation "androidx.arch.core:core-testing:2.2.0"
     testImplementation 'ch.qos.logback:logback-classic:1.2.3'
-    testImplementation "org.robolectric:robolectric:4.7"
+    testImplementation "org.robolectric:robolectric:4.9"
     testImplementation 'org.slf4j:slf4j-nop:2.0.9'
 
 }

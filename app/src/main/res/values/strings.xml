@@ -110,5 +110,6 @@
     <string name="duration">Durée (month)</string>
     <string name="calculate">Calculer</string>
     <string name="result">"Résultat : "</string>
+    <string name="add_property_please">Please add a property with + button</string>
 
 </resources>
