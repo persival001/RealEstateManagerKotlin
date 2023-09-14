@@ -1,6 +1,6 @@
-package com.persival.realestatemanagerkotlin.ui.add
+package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
 
-data class AddViewState(
+data class AddOrModifyPropertyViewState(
     val type: String,
     val address: String,
     val latLng: String,

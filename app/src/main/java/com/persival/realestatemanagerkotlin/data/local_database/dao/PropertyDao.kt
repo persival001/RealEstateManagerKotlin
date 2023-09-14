@@ -21,9 +21,6 @@ interface PropertyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(propertyDto: List<PropertyDto>)
 
-    @Query("SELECT * FROM property WHERE id == :propertyId")
-    fun getById(propertyId: Long): PropertyDto?
-
     @Query("SELECT * FROM property")
     fun getAllPropertiesAsCursor(): Cursor
 
@@ -47,15 +44,7 @@ interface PropertyDao {
     @Update
     suspend fun update(propertyDto: PropertyDto): Int
 
-    @Update
-    fun updateBySelection(propertyDto: PropertyDto): Int
-
     @Query("UPDATE property SET isSynced = 1 WHERE id == :propertyId")
     suspend fun markAsSynced(propertyId: Long)
-
-    @Delete
-    suspend fun delete(propertyDto: PropertyDto)
-
-    @Query("DELETE FROM property WHERE id == :propertyId")
-    fun deleteBySelection(propertyId: Long): Int
+    
 }

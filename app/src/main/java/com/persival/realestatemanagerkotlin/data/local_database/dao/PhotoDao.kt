@@ -25,40 +25,20 @@ interface PhotoDao {
     @Query("SELECT * FROM photo WHERE propertyId = :propertyId")
     fun getByPropertyId(propertyId: Long): List<PhotoDto>
 
-    @Query("SELECT * FROM photo WHERE propertyId = :propertyId")
-    fun getPhotosByPropertyIdAsCursor(propertyId: Long): Cursor
-
     @Query("SELECT * FROM photo")
     fun getAllPhotosAsCursor(): Cursor
-
-    @Query("SELECT * FROM photo")
-    fun getAllPhotos(): Flow<List<PhotoDto>>
 
     @Query("SELECT * FROM photo WHERE isSynced = 0")
     fun getUnsyncedPhotos(): List<PhotoDto>
 
-    @Update
+    @Query("SELECT id FROM photo WHERE propertyId = :propertyId")
+    fun getPhotoIdsForProperty(propertyId: Long): Flow<List<Long>>
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(photoDto: PhotoDto): Int
 
-    @Query(
-        """
-    UPDATE photo 
-    SET description = :description, 
-        photo_url = :photoUrl, 
-        lastModified = :lastModified, 
-        isSynced = 0
-    WHERE propertyId = :propertyId
-"""
-    )
-    suspend fun updatePhotoAndDescriptionByPropertyId(
-        propertyId: Long,
-        description: String,
-        photoUrl: String,
-        lastModified: Long
-    )
-
-    @Update
-    fun updateBySelection(photo: PhotoDto): Int
+    @Query("UPDATE photo SET photo_url = :photoUrl, description = :description WHERE id = :photoId")
+    suspend fun updateByPhotoId(photoId: Long, photoUrl: String, description: String): Int
 
     @Query("UPDATE photo SET isSynced = 1 WHERE id = :photoId")
     suspend fun markAsSynced(photoId: Long)
@@ -66,10 +46,8 @@ interface PhotoDao {
     @Delete
     suspend fun delete(photoDto: PhotoDto)
 
-    @Query("DELETE FROM photo WHERE propertyId = :propertyId")
-    suspend fun deletePhotosByPropertyId(propertyId: Long)
+    @Query("DELETE FROM point_of_interest WHERE propertyId = :propertyId")
+    suspend fun deletePhotoByPropertyId(propertyId: Long)
 
-    @Query("DELETE FROM photo WHERE propertyId = :propertyId")
-    fun deleteBySelection(propertyId: Long): Int
 
 }

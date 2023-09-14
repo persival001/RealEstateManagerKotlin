@@ -24,5 +24,6 @@ class PropertyWithPhotosAndPoisDtoMapper @Inject constructor(
             pointsOfInterest = domainModel.pointsOfInterest.map { poiMapper.mapFromDomainModel(it) }
         )
     }
+
 }
 

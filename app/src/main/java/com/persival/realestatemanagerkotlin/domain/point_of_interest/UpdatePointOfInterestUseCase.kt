@@ -8,7 +8,7 @@ import javax.inject.Singleton
 class UpdatePointOfInterestUseCase @Inject constructor(
     private val localRepository: LocalRepository,
 ) {
-    suspend fun invoke(pointOfInterestEntity: PointOfInterestEntity) {
-        localRepository.updatePointOfInterest(pointOfInterestEntity)
+    suspend fun invoke(propertyId: Long, pointOfInterestEntities: List<PointOfInterestEntity>) {
+        localRepository.updatePointOfInterestWithPropertyId(propertyId, pointOfInterestEntities)
     }
 }

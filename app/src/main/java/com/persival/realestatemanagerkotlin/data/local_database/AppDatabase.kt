@@ -21,8 +21,11 @@ import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyDt
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun propertyDao(): PropertyDao
+
     abstract fun pointOfInterestDao(): PointOfInterestDao
+
     abstract fun photoDao(): PhotoDao
+
 }
 
 

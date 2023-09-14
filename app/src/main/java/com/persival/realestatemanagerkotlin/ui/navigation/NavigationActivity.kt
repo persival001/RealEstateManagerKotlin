@@ -7,7 +7,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.commit
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.ActivityNavigationBinding
-import com.persival.realestatemanagerkotlin.ui.add.AddPropertyFragment
+import com.persival.realestatemanagerkotlin.ui.add_or_modify_property.AddOrModifyPropertyFragment
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
 import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
 import com.persival.realestatemanagerkotlin.ui.search.SearchFragment
@@ -44,7 +44,7 @@ class NavigationActivity : AppCompatActivity(), NavigationHandler {
 
         when (intent.getStringExtra(SELECTED_ITEM)) {
             ADD_ITEM -> {
-                val fragment = AddPropertyFragment().apply {
+                val fragment = AddOrModifyPropertyFragment().apply {
                     arguments = Bundle().apply {
                         putString("ACTION_TYPE", "add")
                     }
@@ -55,7 +55,7 @@ class NavigationActivity : AppCompatActivity(), NavigationHandler {
             }
 
             MODIFY_ITEM -> {
-                val fragment = AddPropertyFragment().apply {
+                val fragment = AddOrModifyPropertyFragment().apply {
                     arguments = Bundle().apply {
                         putString("ACTION_TYPE", "modify")
                     }
@@ -85,7 +85,7 @@ class NavigationActivity : AppCompatActivity(), NavigationHandler {
 
             else -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_menu_container, AddPropertyFragment())
+                    .replace(R.id.fragment_menu_container, AddOrModifyPropertyFragment())
                     .commit()
             }
         }

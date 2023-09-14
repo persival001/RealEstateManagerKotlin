@@ -38,6 +38,7 @@ class DetailViewModel @Inject constructor(
     private fun loadDetails(propertyId: Long) {
         viewModelScope.launch {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { details ->
+
                 val viewState = DetailViewState(
                     propertyId = details.property.id,
                     type = details.property.type,
@@ -63,6 +64,7 @@ class DetailViewModel @Inject constructor(
     private fun loadItemDetails(propertyId: Long) {
         viewModelScope.launch {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { details ->
+
                 val items = details.photos.map { photo ->
                     DetailViewStateItem(url = photo.photoUrl, caption = photo.description)
                 }
@@ -74,10 +76,5 @@ class DetailViewModel @Inject constructor(
 
     private fun convertPOIToString(pointsOfInterest: List<PointOfInterestEntity>): String =
         pointsOfInterest.joinToString(", ") { it.poi }
-
-    fun setSelectedPropertyId(id: Long) {
-        selectedIdLiveData.value = id
-        fetchAndLoadDetailsForSelectedProperty()
-    }
 
 }

@@ -64,7 +64,6 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
             }
         }
 
-
         sharedPreferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             if (key == "KEY_CURRENCY") {
                 viewModel.updatePropertyPrices()

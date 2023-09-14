@@ -12,8 +12,12 @@ import com.persival.realestatemanagerkotlin.databinding.ItemPropertyBinding
 class PropertyListAdapter(
     private val onItemClicked: (PropertyViewStateItem) -> Unit
 ) : ListAdapter<PropertyViewStateItem, PropertyListAdapter.PropertyViewHolder>(PropertyDiffCallback()) {
-    class PropertyViewHolder(private val binding: ItemPropertyBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: PropertyViewStateItem, callback: (PropertyViewStateItem) -> Unit) {
+
+    var selectedPosition = RecyclerView.NO_POSITION
+
+    inner class PropertyViewHolder(private val binding: ItemPropertyBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: PropertyViewStateItem, selectedPos: Int, callback: (PropertyViewStateItem) -> Unit) {
+
             binding.propertyType.text = item.type
             binding.propertyAddress.text = item.address
             binding.propertyPrice.text = item.price
@@ -22,10 +26,20 @@ class PropertyListAdapter(
                 .into(binding.propertyPicture)
             binding.soldImageview.visibility = if (item.isSold) View.VISIBLE else View.GONE
             binding.soldTextview.visibility = if (item.isSold) View.VISIBLE else View.GONE
-            binding.root.setOnClickListener { callback.invoke(item) }
+
+            binding.root.isSelected = selectedPos == adapterPosition
+
+            binding.root.setOnClickListener {
+                val currentPosition = adapterPosition
+                if (selectedPosition != currentPosition && currentPosition != RecyclerView.NO_POSITION) {
+                    notifyItemChanged(selectedPosition)
+                    selectedPosition = currentPosition
+                    notifyItemChanged(selectedPosition)
+                }
+                callback.invoke(item)
+            }
         }
     }
-
 
     class PropertyDiffCallback : DiffUtil.ItemCallback<PropertyViewStateItem>() {
         override fun areItemsTheSame(oldItem: PropertyViewStateItem, newItem: PropertyViewStateItem): Boolean =
@@ -40,7 +54,9 @@ class PropertyListAdapter(
         return PropertyViewHolder(binding)
     }
 
+
     override fun onBindViewHolder(holder: PropertyViewHolder, position: Int) {
-        holder.bind(getItem(position), onItemClicked)
+        holder.bind(getItem(position), selectedPosition, onItemClicked)
     }
+
 }

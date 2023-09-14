@@ -4,9 +4,7 @@ import android.util.Log
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
 import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
-import com.persival.realestatemanagerkotlin.data.local_database.model.PhotoDto
 import com.persival.realestatemanagerkotlin.data.local_database.model.PhotoDtoMapper
-import com.persival.realestatemanagerkotlin.data.local_database.model.PointOfInterestDto
 import com.persival.realestatemanagerkotlin.data.local_database.model.PointOfInterestDtoMapper
 import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyDtoMapper
 import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyWithPhotosAndPoisDtoMapper
@@ -35,6 +33,7 @@ class LocalDatabaseRepository @Inject constructor(
     private val propertyWithPhotosAndPoisDtoMapper: PropertyWithPhotosAndPoisDtoMapper,
 ) : LocalRepository {
 
+    // Create
     override suspend fun insertProperty(propertyEntity: PropertyEntity): Long? =
         withContext(coroutineDispatcherProvider.io) {
             return@withContext try {
@@ -68,64 +67,7 @@ class LocalDatabaseRepository @Inject constructor(
             }
         }
 
-    override suspend fun updatePropertyWithPhotosAndPOIs(
-        property: PropertyEntity,
-        photos: List<PhotoEntity>,
-        pois: List<PointOfInterestEntity>
-    ) {
-        val propertyDto = propertyMapper.mapFromDomainModel(property)
-
-        withContext(coroutineDispatcherProvider.io) {
-            propertyDao.update(propertyDto)
-
-            val photosDto = photos.map { photoMapper.mapFromDomainModel(it) }
-            val poisDto = pois.map { poiMapper.mapFromDomainModel(it) }
-
-            // Retrieve current photos from the database
-            val currentPhotos = photoDao.getByPropertyId(propertyDto.id)
-            for (photoDto in photosDto) {
-                val currentPhoto = currentPhotos.find { it.id == photoDto.id }
-                if (currentPhoto == null || photoHasChanged(currentPhoto, photoDto)) {
-                    if (currentPhoto != null) {
-                        photoDao.delete(currentPhoto)
-                    }
-                    photoDao.insert(photoDto)
-                }
-            }
-
-            // Retrieve current POIs from the database
-            pointOfInterestDao.deletePOIsByPropertyId(propertyDto.id)
-            for (poiDto in poisDto) {
-                pointOfInterestDao.insert(poiDto)
-            }
-
-        }
-    }
-
-
-    private fun photoHasChanged(oldPhoto: PhotoDto, newPhoto: PhotoDto): Boolean {
-        return oldPhoto.description != newPhoto.description || oldPhoto.photoUrl != newPhoto.photoUrl
-    }
-
-    private fun poiHasChanged(oldPOI: PointOfInterestDto, newPOI: PointOfInterestDto): Boolean {
-        return oldPOI.poi != newPOI.poi
-    }
-
-
-    override suspend fun updateProperty(propertyEntity: PropertyEntity): Int = propertyDao.update(
-        propertyMapper.mapFromDomainModel(propertyEntity)
-    )
-
-    override suspend fun updatePhoto(photoEntity: PhotoEntity): Int {
-        val photoDto = photoMapper.mapFromDomainModel(photoEntity)
-        return photoDao.update(photoDto)
-    }
-
-    override suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Int {
-        val poiDto = poiMapper.mapFromDomainModel(pointOfInterestEntity)
-        return pointOfInterestDao.update(poiDto)
-    }
-
+    // Read
     override fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>> =
         propertyDao
             .getAllProperties()
@@ -144,4 +86,40 @@ class LocalDatabaseRepository @Inject constructor(
         propertyDao
             .getAllLatLng()
             .flowOn(coroutineDispatcherProvider.io)
+
+    override fun getPhotoIdsForProperty(propertyId: Long): Flow<List<Long>> =
+        photoDao.getPhotoIdsForProperty(propertyId).flowOn(coroutineDispatcherProvider.io)
+
+    // Update
+    override suspend fun updateProperty(propertyEntity: PropertyEntity): Int =
+        propertyDao.update(propertyMapper.mapFromDomainModel(propertyEntity))
+
+    override suspend fun updatePhotoWithPropertyId(propertyId: Long, photoEntities: List<PhotoEntity>) {
+        withContext(coroutineDispatcherProvider.io) {
+            photoDao.deletePhotoByPropertyId(propertyId)
+            val photosDto = photoEntities.map { photoMapper.mapFromDomainModel(it) }
+            photosDto.forEach { photoDto ->
+                photoDao.insert(photoDto)
+            }
+        }
+    }
+
+    override suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Int {
+        val poiDto = poiMapper.mapFromDomainModel(pointOfInterestEntity)
+        return pointOfInterestDao.update(poiDto)
+    }
+
+    override suspend fun updatePointOfInterestWithPropertyId(
+        propertyId: Long,
+        pointOfInterestEntities: List<PointOfInterestEntity>
+    ) {
+        withContext(coroutineDispatcherProvider.io) {
+            pointOfInterestDao.deletePOIsByPropertyId(propertyId)
+            val poisDto = pointOfInterestEntities.map { poiMapper.mapFromDomainModel(it) }
+            poisDto.forEach { poiDto ->
+                pointOfInterestDao.insert(poiDto)
+            }
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.ui.add
+package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -46,16 +46,16 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 @AndroidEntryPoint
-class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
+class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     companion object {
-        fun newInstance(): AddPropertyFragment {
-            return AddPropertyFragment()
+        fun newInstance(): AddOrModifyPropertyFragment {
+            return AddOrModifyPropertyFragment()
         }
     }
 
     private val binding by viewBinding { FragmentAddPropertyBinding.bind(it) }
-    private val viewModel by viewModels<AddPropertyViewModel>()
+    private val viewModel by viewModels<AddOrModifyPropertyViewModel>()
 
     private val imageUris = arrayOfNulls<Uri?>(6)
     private val requestCodes = intArrayOf(1, 2, 3, 4, 5, 6)
@@ -98,6 +98,15 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         super.onViewCreated(view, savedInstanceState)
 
         val actionType = arguments?.getString("ACTION_TYPE")
+
+        // Initialize requestPermissionLauncher
+        requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (isGranted) {
+                    viewModel.refreshStoragePermission()
+                    viewModel.refreshCameraPermission()
+                }
+            }
 
         // Initialize the type of property array
         val items = resources.getStringArray(R.array.property_items)
@@ -142,9 +151,10 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             autocompleteResultLauncher.launch(intent)
         }
 
+        // Initialize the date picker
         setupDatePicker(binding.datePickerEditText, binding.datePickerToSellText)
 
-        // Initialize the arrays of views
+        // Initialize the arrays of photos, descriptions, delete buttons and camera buttons
         imageViews = arrayOf(
             binding.card1ImageView,
             binding.card2ImageView,
@@ -178,11 +188,11 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         // Initialize the buttons for open gallery
         setupImageSelectionAndRemoval()
 
-        // MODIFY PROPERTY - Complete form with property selected
+        // MODIFY PROPERTY - Complete form with information's of property selected
         if (actionType == "modify") {
             viewModel.viewStateLiveData.observe(viewLifecycleOwner) { addViewState ->
 
-                // Set the property information
+                // Set the properties information's
                 binding.typeTextView.setText(addViewState.type)
                 binding.datePickerToSellText.setText(addViewState.soldAt)
                 binding.datePickerEditText.setText(addViewState.availableFrom)
@@ -195,7 +205,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 binding.addressEditText.setText(addViewState.address)
                 latLongString = addViewState.latLng
 
-                // Set the card photos and descriptions
+                // Set the descriptions of the photos
                 val cardEditTexts = listOf(
                     binding.card1EditText,
                     binding.card2EditText,
@@ -209,6 +219,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                     addViewState.photoDescriptions.getOrNull(index)?.let { editText.setText(it) }
                 }
 
+                // Set the images of the photos
                 val imageViews = listOf(
                     binding.card1ImageView,
                     binding.card2ImageView,
@@ -227,6 +238,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                     }
                 }
 
+                // Bind the chips for define states
                 val chips = listOf(
                     binding.schoolChip,
                     binding.publicTransportChip,
@@ -236,6 +248,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                     binding.restaurantChip
                 )
 
+                // Set the chips enabled or not
                 for (chip in chips) {
                     chip.isChecked = addViewState.pointsOfInterest.contains(chip.text, ignoreCase = true)
                 }
@@ -248,7 +261,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             requireActivity().finish()
         }
 
-        // Get the property added or modified by the user
+        // Initialize the ok button to get the property added or modified by the user
         binding.okButton.setOnClickListener {
             if (validateFields()) {
                 val addViewState = retrieveFormData()
@@ -262,15 +275,6 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 requireActivity().finish()
             }
         }
-
-        // Initialize requestPermissionLauncher
-        requestPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) {
-                    viewModel.refreshStoragePermission()
-                    viewModel.refreshCameraPermission()
-                }
-            }
 
 
     }
@@ -294,7 +298,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         editTexts[index].text.clear()
     }
 
-    private fun retrieveFormData(): AddViewState {
+    private fun retrieveFormData(): AddOrModifyPropertyViewState {
 
         // Retrieve photos and description
         val imageUrisList = imageUris.mapNotNull { uri -> uri?.toString() }
@@ -310,7 +314,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             binding.restaurantChip
         ).filter { it.isChecked }.map { it.text.toString() }
 
-        return AddViewState(
+        return AddOrModifyPropertyViewState(
             binding.typeTextView.text.toString(),
             binding.addressEditText.text.toString(),
             latLongString ?: "",
@@ -441,7 +445,6 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             currentPhotoUri = Uri.fromFile(this)
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onResume() {

@@ -7,28 +7,29 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalRepository {
 
-    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>>
-
-    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
-
     suspend fun insertProperty(propertyEntity: PropertyEntity): Long?
 
     suspend fun insertPointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Long?
 
     suspend fun insertPhoto(photoEntity: PhotoEntity): Long?
 
+    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>>
+
+    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
+
+    fun getAllPropertiesLatLng(): Flow<List<String>>
+
+    fun getPhotoIdsForProperty(propertyId: Long): Flow<List<Long>>
+
     suspend fun updateProperty(propertyEntity: PropertyEntity): Int
 
     suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Int
 
-    suspend fun updatePhoto(photoEntity: PhotoEntity): Int
-
-    suspend fun updatePropertyWithPhotosAndPOIs(
-        property: PropertyEntity,
-        photos: List<PhotoEntity>,
-        pois: List<PointOfInterestEntity>
+    suspend fun updatePointOfInterestWithPropertyId(
+        propertyId: Long,
+        pointOfInterestEntities: List<PointOfInterestEntity>
     )
 
-    fun getAllPropertiesLatLng(): Flow<List<String>>
+    suspend fun updatePhotoWithPropertyId(propertyId: Long, photoEntities: List<PhotoEntity>)
 
 }

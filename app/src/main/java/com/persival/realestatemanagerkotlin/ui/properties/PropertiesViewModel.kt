@@ -30,7 +30,7 @@ class PropertiesViewModel @Inject constructor(
 
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
     val properties: LiveData<List<PropertyViewStateItem>> = propertiesViewStateItem
-    private val propertyIdSelected = MutableLiveData<Long?>()
+    val propertyIdSelected = MutableLiveData<Long?>()
 
     init {
         combineFiltersWithProperties()
@@ -65,7 +65,7 @@ class PropertiesViewModel @Inject constructor(
         if (filter == null) return true
 
         if (this.property.type != filter.type) return false
-        
+
         if (this.property.price < filter.minPrice) return false
         if (filter.maxPrice != Int.MAX_VALUE && this.property.price > filter.maxPrice) return false
 
