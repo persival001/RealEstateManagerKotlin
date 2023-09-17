@@ -1,16 +1,13 @@
 package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.HasCameraPermissionUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.HasStoragePermissionUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshCameraPermissionUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshStoragePermissionUseCase
-import com.persival.realestatemanagerkotlin.domain.photo.GetPhotoIdsForPropertyUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.photo.UpdatePhotoUseCase
@@ -24,10 +21,11 @@ import com.persival.realestatemanagerkotlin.domain.property.UpdatePropertyUseCas
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
+import com.persival.realestatemanagerkotlin.utils.EquatableCallback
 import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -45,27 +43,37 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     private val refreshCameraPermissionUseCase: RefreshCameraPermissionUseCase,
     private val hasCameraPermissionUseCase: HasCameraPermissionUseCase,
     private val hasStoragePermissionUseCase: HasStoragePermissionUseCase,
-    private val getPhotoIdsForPropertyUseCase: GetPhotoIdsForPropertyUseCase,
     private val updatePointOfInterestUseCase: UpdatePointOfInterestUseCase,
     private val updatePropertyUseCase: UpdatePropertyUseCase,
     private val updatePhotoUseCase: UpdatePhotoUseCase,
 
     ) : ViewModel() {
 
-    val viewStateLiveData: LiveData<AddOrModifyPropertyViewState> = liveData {
+    val viewStateFlow: Flow<AddOrModifyPropertyViewState> = flow {
         val propertyId = getSelectedPropertyIdUseCase().value
         if (propertyId != null && propertyId > 0) {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { propertyWithPhotosAndPOIEntity ->
-                val photoIds = propertyWithPhotosAndPOIEntity.photos.map { it.id }
-                Log.d("ViewModel", "Photo IDs: $photoIds")
                 emit(mapEntityToViewState(propertyWithPhotosAndPOIEntity))
             }
         }
     }
 
-    fun addNewProperty(addOrModifyPropertyViewState: AddOrModifyPropertyViewState) {
+    val viewStateItemFlow: Flow<AddOrModifyPropertyViewStateItem> = flow {
+        val propertyId = getSelectedPropertyIdUseCase().value
+        if (propertyId != null && propertyId > 0) {
+            getPropertyPhotosUseCase.invoke(propertyId).collect { photoEntity ->
+                emit(mapEntityToViewState(photoEntity))
+            }
+        }
+    }
+
+    fun addNewProperty(
+        addOrModifyPropertyViewState: AddOrModifyPropertyViewState,
+        addOrModifyPropertyViewStateItem: AddOrModifyPropertyViewStateItem,
+    ) {
         viewModelScope.launch {
             val agentEntity = getRealEstateAgentUseCase.invoke()
+            Log.d("ViewModelDebug", "ADD_PROPERTY_CALLED")
 
             if (agentEntity != null) {
                 val propertyId = insertPropertyUseCase.invoke(
@@ -87,23 +95,17 @@ class AddOrModifyPropertyViewModel @Inject constructor(
                     )
                 )
 
+                // TODO: Add photos
                 if (propertyId != null) {
-                    val photoIds =
-                        getSelectedPropertyIdUseCase.invoke().value?.let {
-                            getPhotoIdsForPropertyUseCase.invoke(it).first()
-                        }
-
-                    addOrModifyPropertyViewState.photoUris.forEachIndexed { index, uri ->
-                        val photoId = if (index < (photoIds?.size ?: 0)) photoIds?.get(index) else null
+                    /*AddOrModifyPropertyViewStateItem.Type.PHOTO.forEachIndexed { index, uri ->
                         insertPhotoUseCase.invoke(
                             PhotoEntity(
-                                id = photoId ?: 0L,
                                 propertyId = propertyId,
-                                description = addOrModifyPropertyViewState.photoDescriptions.getOrNull(index) ?: "",
+                                description = addOrModifyPropertyViewStateItem.photoDescriptions.getOrNull(index) ?: "",
                                 photoUrl = uri
                             )
                         )
-                    }
+                    }*/
 
                     addOrModifyPropertyViewState.pointsOfInterest.split(",").forEach {
                         insertPointOfInterestUseCase.invoke(
@@ -115,43 +117,30 @@ class AddOrModifyPropertyViewModel @Inject constructor(
         }
     }
 
-
     fun updateProperty(addOrModifyPropertyViewState: AddOrModifyPropertyViewState) {
         val propertyId = getSelectedPropertyIdUseCase().value
         val agentName = getRealEstateAgentUseCase.invoke()?.name
-
+        Log.d("ViewModelDebug", "About to update property with data: $addOrModifyPropertyViewState")
         if (agentName != null && propertyId != null) {
             viewModelScope.launch {
                 val propertyEntity = mapToPropertyEntity(addOrModifyPropertyViewState, agentName, propertyId)
-                val photoEntities = mapToPhotoEntity(addOrModifyPropertyViewState, propertyId)
                 val pointOfInterestEntities = mapToPointOfInterestEntity(addOrModifyPropertyViewState, propertyId)
+
 
                 // Update the property
                 updatePropertyUseCase.invoke(propertyEntity)
 
                 // Update the photos
-                updatePhotoUseCase.invoke(propertyId, photoEntities)
+                // TODO: Update
 
-                // Update the points of interest
+                // Update the points of interests
                 updatePointOfInterestUseCase.invoke(propertyId, pointOfInterestEntities)
+                Log.d("ViewModelDebug", "POIS $propertyId - $pointOfInterestEntities")
             }
         }
     }
 
     private fun isThePropertyForSale(saleDate: String?): Boolean = !(saleDate == null || saleDate == "")
-
-    private fun mapToPhotoEntity(
-        addOrModifyPropertyViewState: AddOrModifyPropertyViewState,
-        propertyId: Long
-    ): List<PhotoEntity> {
-        return addOrModifyPropertyViewState.photoUris.mapIndexed { index, uri ->
-            PhotoEntity(
-                propertyId = propertyId,
-                description = addOrModifyPropertyViewState.photoDescriptions.getOrNull(index) ?: "",
-                photoUrl = uri
-            )
-        }
-    }
 
     private fun mapToPointOfInterestEntity(
         addOrModifyPropertyViewState: AddOrModifyPropertyViewState,
@@ -201,9 +190,19 @@ class AddOrModifyPropertyViewModel @Inject constructor(
             price = entity.property.price,
             availableFrom = entity.property.entryDate,
             soldAt = entity.property.saleDate ?: "",
-            photoUris = entity.photos.map { it.photoUrl },
-            photoDescriptions = entity.photos.map { it.description },
             pointsOfInterest = entity.pointsOfInterest.joinToString(",") { it.poi },
+        )
+    }
+
+    private fun mapPhotoEntityToViewStateItem(entity: PhotoEntity): AddOrModifyPropertyViewStateItem.Photo {
+        return AddOrModifyPropertyViewStateItem.Photo(
+            id = entity.id,
+            propertyId = entity.propertyId,
+            description = entity.description,
+            photoUrl = entity.photoUrl,
+            onDeleteEvent = EquatableCallback {
+                //TODO: Delete photo
+            }
         )
     }
 

@@ -12,7 +12,5 @@ data class AddOrModifyPropertyViewState(
     val price: Int,
     val availableFrom: String,
     val soldAt: String,
-    val photoUris: List<String>,
-    val photoDescriptions: List<String>,
     val pointsOfInterest: String,
 )

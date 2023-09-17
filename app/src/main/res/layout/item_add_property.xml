@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/itemCardView"
+    style="@style/Widget.Material3.CardView.Elevated"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/default_margin"
+    android:elevation="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp">
+
+            <!-- Media -->
+            <ImageView
+                android:id="@+id/itemImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/description_image"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/property_picture" />
+
+            <ImageButton
+                android:id="@+id/itemPhotoButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|top"
+                android:background="@android:color/white"
+                android:contentDescription="@string/take_photo_image"
+                android:padding="12dp"
+                android:src="@drawable/baseline_photo_camera_24">
+
+            </ImageButton>
+
+            <!-- Delete button -->
+            <ImageButton
+                android:id="@+id/itemDeleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top"
+                android:background="@android:color/white"
+                android:contentDescription="@string/delete_image"
+                android:padding="12dp"
+                android:src="@drawable/baseline_close_24" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/md_theme_light_background"
+            android:orientation="vertical"
+            android:padding="@dimen/default_margin">
+
+            <!-- Title of image -->
+            <EditText
+                android:id="@+id/itemDescriptionEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autofillHints="@string/image_name"
+                android:hint="@string/image_name"
+                android:inputType="text"
+                android:padding="14dp"
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

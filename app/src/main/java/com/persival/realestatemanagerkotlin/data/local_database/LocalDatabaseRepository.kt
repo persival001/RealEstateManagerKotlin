@@ -94,15 +94,8 @@ class LocalDatabaseRepository @Inject constructor(
     override suspend fun updateProperty(propertyEntity: PropertyEntity): Int =
         propertyDao.update(propertyMapper.mapFromDomainModel(propertyEntity))
 
-    override suspend fun updatePhotoWithPropertyId(propertyId: Long, photoEntities: List<PhotoEntity>) {
-        withContext(coroutineDispatcherProvider.io) {
-            photoDao.deletePhotoByPropertyId(propertyId)
-            val photosDto = photoEntities.map { photoMapper.mapFromDomainModel(it) }
-            photosDto.forEach { photoDto ->
-                photoDao.insert(photoDto)
-            }
-        }
-    }
+    override suspend fun updatePhoto(photoEntity: PhotoEntity): Int =
+        photoDao.update(photoMapper.mapFromDomainModel(photoEntity))
 
     override suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Int {
         val poiDto = poiMapper.mapFromDomainModel(pointOfInterestEntity)

@@ -23,13 +23,13 @@ interface LocalRepository {
 
     suspend fun updateProperty(propertyEntity: PropertyEntity): Int
 
+    suspend fun updatePhoto(photoEntity: PhotoEntity): Int
+
     suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Int
 
     suspend fun updatePointOfInterestWithPropertyId(
         propertyId: Long,
         pointOfInterestEntities: List<PointOfInterestEntity>
     )
-
-    suspend fun updatePhotoWithPropertyId(propertyId: Long, photoEntities: List<PhotoEntity>)
 
 }
