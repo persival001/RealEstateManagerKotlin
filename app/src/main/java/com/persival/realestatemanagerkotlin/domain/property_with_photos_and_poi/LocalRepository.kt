@@ -19,7 +19,7 @@ interface LocalRepository {
 
     fun getAllPropertiesLatLng(): Flow<List<String>>
 
-    fun getPhotoIdsForProperty(propertyId: Long): Flow<List<Long>>
+    fun getPropertyPhotos(propertyId: Long): Flow<List<PhotoEntity>>
 
     suspend fun updateProperty(propertyEntity: PropertyEntity): Int
 

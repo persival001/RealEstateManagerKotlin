@@ -27,9 +27,9 @@ class LocalDatabaseRepository @Inject constructor(
     private val propertyDao: PropertyDao,
     private val photoDao: PhotoDao,
     private val pointOfInterestDao: PointOfInterestDao,
-    private val propertyMapper: PropertyDtoMapper,
-    private val photoMapper: PhotoDtoMapper,
-    private val poiMapper: PointOfInterestDtoMapper,
+    private val propertyDtoMapper: PropertyDtoMapper,
+    private val photoDtoMapper: PhotoDtoMapper,
+    private val pointOfInterestDtoMapper: PointOfInterestDtoMapper,
     private val propertyWithPhotosAndPoisDtoMapper: PropertyWithPhotosAndPoisDtoMapper,
 ) : LocalRepository {
 
@@ -37,7 +37,7 @@ class LocalDatabaseRepository @Inject constructor(
     override suspend fun insertProperty(propertyEntity: PropertyEntity): Long? =
         withContext(coroutineDispatcherProvider.io) {
             return@withContext try {
-                val propertyDto = propertyMapper.mapFromDomainModel(propertyEntity)
+                val propertyDto = propertyDtoMapper.mapFromDomainModel(propertyEntity)
                 propertyDao.insert(propertyDto)
             } catch (e: Exception) {
                 Log.d("LocalDbRepository", e.toString())
@@ -48,7 +48,7 @@ class LocalDatabaseRepository @Inject constructor(
     override suspend fun insertPhoto(photoEntity: PhotoEntity): Long? =
         withContext(coroutineDispatcherProvider.io) {
             return@withContext try {
-                val photoDto = photoMapper.mapFromDomainModel(photoEntity)
+                val photoDto = photoDtoMapper.mapFromDomainModel(photoEntity)
                 photoDao.insert(photoDto)
             } catch (e: Exception) {
                 Log.d("LocalDbRepository", e.toString())
@@ -59,7 +59,7 @@ class LocalDatabaseRepository @Inject constructor(
     override suspend fun insertPointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Long? =
         withContext(coroutineDispatcherProvider.io) {
             return@withContext try {
-                val poiDto = poiMapper.mapFromDomainModel(pointOfInterestEntity)
+                val poiDto = pointOfInterestDtoMapper.mapFromDomainModel(pointOfInterestEntity)
                 pointOfInterestDao.insert(poiDto)
             } catch (e: Exception) {
                 Log.d("LocalDbRepository", e.toString())
@@ -87,18 +87,23 @@ class LocalDatabaseRepository @Inject constructor(
             .getAllLatLng()
             .flowOn(coroutineDispatcherProvider.io)
 
-    override fun getPhotoIdsForProperty(propertyId: Long): Flow<List<Long>> =
-        photoDao.getPhotoIdsForProperty(propertyId).flowOn(coroutineDispatcherProvider.io)
+    override fun getPropertyPhotos(propertyId: Long): Flow<List<PhotoEntity>> =
+        photoDao
+            .getPropertyPhotos(propertyId)
+            .map { list ->
+                list.map { photoDtoMapper.mapToEntity(it) }
+            }
+            .flowOn(coroutineDispatcherProvider.io)
 
     // Update
     override suspend fun updateProperty(propertyEntity: PropertyEntity): Int =
-        propertyDao.update(propertyMapper.mapFromDomainModel(propertyEntity))
+        propertyDao.update(propertyDtoMapper.mapFromDomainModel(propertyEntity))
 
     override suspend fun updatePhoto(photoEntity: PhotoEntity): Int =
-        photoDao.update(photoMapper.mapFromDomainModel(photoEntity))
+        photoDao.update(photoDtoMapper.mapFromDomainModel(photoEntity))
 
     override suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Int {
-        val poiDto = poiMapper.mapFromDomainModel(pointOfInterestEntity)
+        val poiDto = pointOfInterestDtoMapper.mapFromDomainModel(pointOfInterestEntity)
         return pointOfInterestDao.update(poiDto)
     }
 
@@ -108,7 +113,7 @@ class LocalDatabaseRepository @Inject constructor(
     ) {
         withContext(coroutineDispatcherProvider.io) {
             pointOfInterestDao.deletePOIsByPropertyId(propertyId)
-            val poisDto = pointOfInterestEntities.map { poiMapper.mapFromDomainModel(it) }
+            val poisDto = pointOfInterestEntities.map { pointOfInterestDtoMapper.mapFromDomainModel(it) }
             poisDto.forEach { poiDto ->
                 pointOfInterestDao.insert(poiDto)
             }

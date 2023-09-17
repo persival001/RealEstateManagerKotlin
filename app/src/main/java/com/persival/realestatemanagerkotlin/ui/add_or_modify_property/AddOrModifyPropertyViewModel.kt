@@ -8,6 +8,7 @@ import com.persival.realestatemanagerkotlin.domain.permissions.HasCameraPermissi
 import com.persival.realestatemanagerkotlin.domain.permissions.HasStoragePermissionUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshCameraPermissionUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshStoragePermissionUseCase
+import com.persival.realestatemanagerkotlin.domain.photo.GetPropertyPhotosUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.photo.UpdatePhotoUseCase
@@ -46,6 +47,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     private val updatePointOfInterestUseCase: UpdatePointOfInterestUseCase,
     private val updatePropertyUseCase: UpdatePropertyUseCase,
     private val updatePhotoUseCase: UpdatePhotoUseCase,
+    private val getPropertyPhotosUseCase: GetPropertyPhotosUseCase,
 
     ) : ViewModel() {
 
@@ -61,8 +63,8 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     val viewStateItemFlow: Flow<AddOrModifyPropertyViewStateItem> = flow {
         val propertyId = getSelectedPropertyIdUseCase().value
         if (propertyId != null && propertyId > 0) {
-            getPropertyPhotosUseCase.invoke(propertyId).collect { photoEntity ->
-                emit(mapEntityToViewState(photoEntity))
+            getPropertyPhotosUseCase.invoke(propertyId).collect { photoEntityList ->
+                photoEntityList.map { mapPhotoEntityToViewStateItem(it) }.forEach { emit(it) }
             }
         }
     }

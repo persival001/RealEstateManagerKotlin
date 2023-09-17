@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.AddPropertyEmptyStateItemBinding
 import com.persival.realestatemanagerkotlin.databinding.ItemAddPropertyBinding
 
@@ -51,13 +50,12 @@ class AddOrModifyPropertyListAdapter() :
             }
 
             fun bind(item: AddOrModifyPropertyViewStateItem.Photo) {
-
-                binding.itemDescriptionEditText.setText("BONJOUR")
+                //binding.root.setOnClickListener { item.onClickEvent.invoke() }
+                binding.itemDescriptionEditText.setText(item.description)
                 Glide.with(binding.itemImageView)
-                    .load(R.drawable.property_picture)
+                    .load(item.photoUrl)
                     .override(800, 800)
                     .into(binding.itemImageView)
-
             }
         }
 

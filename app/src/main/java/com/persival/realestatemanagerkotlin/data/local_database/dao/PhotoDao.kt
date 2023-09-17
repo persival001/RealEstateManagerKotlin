@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.persival.realestatemanagerkotlin.data.local_database.model.PhotoDto
 import kotlinx.coroutines.flow.Flow
@@ -31,8 +32,9 @@ interface PhotoDao {
     @Query("SELECT * FROM photo WHERE isSynced = 0")
     fun getUnsyncedPhotos(): List<PhotoDto>
 
-    @Query("SELECT id FROM photo WHERE propertyId = :propertyId")
-    fun getPhotoIdsForProperty(propertyId: Long): Flow<List<Long>>
+    @Transaction
+    @Query("SELECT * FROM photo WHERE propertyId = :propertyId")
+    fun getPropertyPhotos(propertyId: Long): Flow<List<PhotoDto>>
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(photoDto: PhotoDto): Int

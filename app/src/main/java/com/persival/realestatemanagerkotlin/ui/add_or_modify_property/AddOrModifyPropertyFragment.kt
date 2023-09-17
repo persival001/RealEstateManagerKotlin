@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -123,8 +122,6 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         if (actionType == "modify") {
             viewModel.viewStateFlow.asLiveData().observe(viewLifecycleOwner) { addViewState ->
 
-                addOrModifyPropertyListAdapter.updateList(addViewState.photoUris)
-
                 // Set the properties information's
                 binding.typeTextView.setText(addViewState.type)
                 binding.datePickerToSellText.setText(addViewState.soldAt)
@@ -156,6 +153,16 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
         }
 
+        // MODIFY PROPERTY - Photo list for recycler view
+        if (actionType == "modify") {
+            val currentList = mutableListOf<AddOrModifyPropertyViewStateItem>()
+
+            viewModel.viewStateItemFlow.asLiveData().observe(viewLifecycleOwner) { viewStateItem ->
+                currentList.add(viewStateItem)
+                addOrModifyPropertyListAdapter.updateList(currentList)
+            }
+        }
+
         // Initialize the cancel button
         binding.cancelButton.setOnClickListener {
             requireActivity().finish()
@@ -167,9 +174,8 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 val addViewState = retrieveFormData()
 
                 if (actionType == "add") {
-                    viewModel.addNewProperty(addViewState)
+                    //viewModel.addNewProperty(addViewState)
                 } else if (actionType == "modify") {
-                    Log.d("FragmentDebug", "MODIFY_BUTTON_CALLED: $addViewState")
                     viewModel.updateProperty(addViewState)
                 }
 
@@ -206,9 +212,6 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
             binding.priceEditText.text.toString().toInt(),
             binding.datePickerEditText.text.toString(),
             binding.datePickerToSellText.text.toString(),
-            emptyList(),
-            emptyList(),
-            emptyList(),
             selectedChips.joinToString()
         )
     }

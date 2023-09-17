@@ -6,10 +6,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetPhotoIdsForPropertyUseCase @Inject constructor(
+class GetPropertyPhotosUseCase @Inject constructor(
     private val localRepository: LocalRepository,
 ) {
-    fun invoke(propertyId: Long): Flow<List<Long>> {
-        return localRepository.getPhotoIdsForProperty(propertyId)
+    fun invoke(propertyId: Long): Flow<List<PhotoEntity>> {
+        return localRepository.getPropertyPhotos(propertyId)
     }
 }
