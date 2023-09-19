@@ -1,8 +1,8 @@
 package com.persival.realestatemanagerkotlin.domain.database
 
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
+import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDao
+import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDao
+import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDao
 import javax.inject.Inject
 import javax.inject.Singleton
 

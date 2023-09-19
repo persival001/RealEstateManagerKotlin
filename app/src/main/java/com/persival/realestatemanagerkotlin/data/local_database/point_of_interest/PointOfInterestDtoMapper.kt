@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.data.local_database.model
+package com.persival.realestatemanagerkotlin.data.local_database.point_of_interest
 
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import javax.inject.Inject

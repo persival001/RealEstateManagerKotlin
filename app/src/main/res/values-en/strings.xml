@@ -110,5 +110,8 @@
     <string name="calculate">Calculate</string>
     <string name="result">"Result: "</string>
     <string name="add_property_please">Please add a property with + button</string>
+    <string name="favorite">Favorite</string>
+    <string name="camera">Camera</string>
+    <string name="delete">Delete</string>
 
 </resources>

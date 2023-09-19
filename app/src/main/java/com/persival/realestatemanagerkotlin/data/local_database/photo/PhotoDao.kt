@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.data.local_database.dao
+package com.persival.realestatemanagerkotlin.data.local_database.photo
 
 import android.database.Cursor
 import androidx.room.Dao
@@ -8,7 +8,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.persival.realestatemanagerkotlin.data.local_database.model.PhotoDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao

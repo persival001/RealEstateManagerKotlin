@@ -6,10 +6,10 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.persival.realestatemanagerkotlin.data.local_database.model.PhotoDto
-import com.persival.realestatemanagerkotlin.data.local_database.model.PointOfInterestDto
-import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyDto
-import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyWithPhotosAndPoisDto
+import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDto
+import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDto
+import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDto
+import com.persival.realestatemanagerkotlin.data.local_database.property_with_photos_and_pois.PropertyWithPhotosAndPoisDto
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 import java.time.ZoneOffset

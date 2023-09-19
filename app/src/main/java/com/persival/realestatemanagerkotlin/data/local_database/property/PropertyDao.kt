@@ -1,15 +1,13 @@
-package com.persival.realestatemanagerkotlin.data.local_database.dao
+package com.persival.realestatemanagerkotlin.data.local_database.property
 
 import android.database.Cursor
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyDto
-import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyWithPhotosAndPoisDto
+import com.persival.realestatemanagerkotlin.data.local_database.property_with_photos_and_pois.PropertyWithPhotosAndPoisDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -46,5 +44,5 @@ interface PropertyDao {
 
     @Query("UPDATE property SET isSynced = 1 WHERE id == :propertyId")
     suspend fun markAsSynced(propertyId: Long)
-    
+
 }

@@ -7,10 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.AddPropertyEmptyStateItemBinding
 import com.persival.realestatemanagerkotlin.databinding.ItemAddPropertyBinding
 
-class AddOrModifyPropertyListAdapter() :
+class AddOrModifyPropertyListAdapter :
     ListAdapter<AddOrModifyPropertyViewStateItem, AddOrModifyPropertyListAdapter.PropertyViewHolder>(
         PropertyItemDiffCallback
     ) {
@@ -50,14 +51,38 @@ class AddOrModifyPropertyListAdapter() :
             }
 
             fun bind(item: AddOrModifyPropertyViewStateItem.Photo) {
-                //binding.root.setOnClickListener { item.onClickEvent.invoke() }
+
+                binding.itemImageView.setOnClickListener { item.onPictureEvent.invoke() }
+
                 binding.itemDescriptionEditText.setText(item.description)
+
                 Glide.with(binding.itemImageView)
                     .load(item.photoUrl)
                     .override(800, 800)
                     .into(binding.itemImageView)
+
+                binding.toggleButton.addOnButtonCheckedListener { group, checkedId, isChecked ->
+                    if (isChecked) {
+                        group.clearChecked()
+                    }
+
+                    when (checkedId) {
+                        R.id.favorite_button -> {
+                            item.onFavoriteEvent.invoke()
+                        }
+
+                        R.id.camera_button -> {
+                            item.onCameraEvent.invoke()
+                        }
+
+                        R.id.delete_button -> {
+                            item.onDeleteEvent.invoke()
+                        }
+                    }
+                }
             }
         }
+
 
         class EmptyState(val binding: AddPropertyEmptyStateItemBinding) : PropertyViewHolder(binding.root) {
             companion object {
@@ -90,4 +115,5 @@ class AddOrModifyPropertyListAdapter() :
         }
     }
 }
+
 

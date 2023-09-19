@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.data.local_database.model
+package com.persival.realestatemanagerkotlin.data.local_database.property
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

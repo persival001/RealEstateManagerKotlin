@@ -1,14 +1,15 @@
-package com.persival.realestatemanagerkotlin.data.local_database.model
+package com.persival.realestatemanagerkotlin.data.local_database.point_of_interest
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDto
 
 @Entity(
     indices = [Index("propertyId")],
-    tableName = "photo",
+    tableName = "point_of_interest",
     foreignKeys = [
         ForeignKey(
             entity = PropertyDto::class,
@@ -18,11 +19,10 @@ import androidx.room.PrimaryKey
         ),
     ]
 )
-data class PhotoDto(
+data class PointOfInterestDto(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "propertyId") val propertyId: Long,
-    val description: String,
-    @ColumnInfo(name = "photo_url") val photoUrl: String,
+    val poi: String,
     val lastModified: Long = System.currentTimeMillis(),
     val isSynced: Boolean = false
 )

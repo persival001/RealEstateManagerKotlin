@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.data.local_database.dao
+package com.persival.realestatemanagerkotlin.data.local_database.point_of_interest
 
 import android.database.Cursor
 import androidx.room.Dao
@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.persival.realestatemanagerkotlin.data.local_database.model.PointOfInterestDto
 
 @Dao
 interface PointOfInterestDao {

@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.data.local_database.model
+package com.persival.realestatemanagerkotlin.data.local_database.property
 
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 import javax.inject.Inject

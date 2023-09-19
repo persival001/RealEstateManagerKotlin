@@ -1,13 +1,13 @@
-package com.persival.realestatemanagerkotlin.data.local_database.content_provider
+package com.persival.realestatemanagerkotlin.data.content_provider
 
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
+import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDao
+import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDao
+import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDao
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors

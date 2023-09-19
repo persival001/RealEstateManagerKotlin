@@ -2,9 +2,9 @@ package com.persival.realestatemanagerkotlin.data.synchronize_database
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
+import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDao
+import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDao
+import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDao
 import com.persival.realestatemanagerkotlin.data.remote_database.firestore.FirestoreDataRepository
 import com.persival.realestatemanagerkotlin.domain.database.SyncRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,7 +21,8 @@ class DataSyncRepository @Inject constructor(
     private val pointOfInterestDao: PointOfInterestDao,
     private val firestoreDataRepository: FirestoreDataRepository,
 ) : SyncRepository {
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+    private val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
 
     companion object {
         private const val PREFERENCES_NAME = "sync_preferences"

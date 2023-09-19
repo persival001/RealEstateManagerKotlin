@@ -39,6 +39,8 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         fun newInstance(): AddOrModifyPropertyFragment {
             return AddOrModifyPropertyFragment()
         }
+
+        private const val ACTION_TYPE = "ACTION_TYPE"
     }
 
     private val binding by viewBinding { FragmentAddPropertyBinding.bind(it) }
@@ -53,7 +55,7 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val actionType = arguments?.getString("ACTION_TYPE")
+        val actionType = arguments?.getString(ACTION_TYPE)
 
         // Initialize requestPermissionLauncher
         requestPermissionLauncher =
@@ -82,7 +84,6 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
         // Google Places UI for address autocompletion
         val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
-
         val autocompleteResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 when (result.resultCode) {
@@ -104,7 +105,6 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
                     }
                 }
             }
-
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
             .setTypeFilter(TypeFilter.ADDRESS)
             .setCountry("US")
@@ -118,49 +118,10 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
         viewFinder = binding.cameraPreview
 
-        // MODIFY PROPERTY - Complete form with information's of property selected
+        // MODIFY PROPERTY - Complete form with information's of property selected'
         if (actionType == "modify") {
-            viewModel.viewStateFlow.asLiveData().observe(viewLifecycleOwner) { addViewState ->
-
-                // Set the properties information's
-                binding.typeTextView.setText(addViewState.type)
-                binding.datePickerToSellText.setText(addViewState.soldAt)
-                binding.datePickerEditText.setText(addViewState.availableFrom)
-                binding.priceEditText.setText(addViewState.price.toString())
-                binding.areaEditText.setText(addViewState.area.toString())
-                binding.roomsEditText.setText(addViewState.rooms.toString())
-                binding.bedroomsEditText.setText(addViewState.bedrooms.toString())
-                binding.bathroomsEditText.setText(addViewState.bathrooms.toString())
-                binding.descriptionEditText.setText(addViewState.description)
-                binding.addressEditText.setText(addViewState.address)
-                latLongString = addViewState.latLng
-
-                // Bind the chips for define states
-                val chips = listOf(
-                    binding.schoolChip,
-                    binding.publicTransportChip,
-                    binding.hospitalChip,
-                    binding.shopChip,
-                    binding.greenSpacesChip,
-                    binding.restaurantChip
-                )
-
-                // Set the chips enabled or not
-                for (chip in chips) {
-                    chip.isChecked = addViewState.pointsOfInterest.contains(chip.text, ignoreCase = true)
-                }
-
-            }
-        }
-
-        // MODIFY PROPERTY - Photo list for recycler view
-        if (actionType == "modify") {
-            val currentList = mutableListOf<AddOrModifyPropertyViewStateItem>()
-
-            viewModel.viewStateItemFlow.asLiveData().observe(viewLifecycleOwner) { viewStateItem ->
-                currentList.add(viewStateItem)
-                addOrModifyPropertyListAdapter.updateList(currentList)
-            }
+            displaysPropertyInformation()
+            displaysPropertyPhotos()
         }
 
         // Initialize the cancel button
@@ -184,6 +145,47 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         }
 
 
+    }
+
+    private fun displaysPropertyInformation() {
+        viewModel.viewStateFlow.asLiveData().observe(viewLifecycleOwner) { addViewState ->
+
+            // Fill in the fields for the property
+            binding.typeTextView.setText(addViewState.type)
+            binding.datePickerToSellText.setText(addViewState.soldAt)
+            binding.datePickerEditText.setText(addViewState.availableFrom)
+            binding.priceEditText.setText(addViewState.price.toString())
+            binding.areaEditText.setText(addViewState.area.toString())
+            binding.roomsEditText.setText(addViewState.rooms.toString())
+            binding.bedroomsEditText.setText(addViewState.bedrooms.toString())
+            binding.bathroomsEditText.setText(addViewState.bathrooms.toString())
+            binding.descriptionEditText.setText(addViewState.description)
+            binding.addressEditText.setText(addViewState.address)
+            latLongString = addViewState.latLng
+
+            // Fill in the chips for the poi's
+            val chips = listOf(
+                binding.schoolChip,
+                binding.publicTransportChip,
+                binding.hospitalChip,
+                binding.shopChip,
+                binding.greenSpacesChip,
+                binding.restaurantChip
+            )
+            for (chip in chips) {
+                chip.isChecked = addViewState.pointsOfInterest.contains(chip.text, ignoreCase = true)
+            }
+
+        }
+    }
+
+    private fun displaysPropertyPhotos() {
+        val currentList = mutableListOf<AddOrModifyPropertyViewStateItem>()
+
+        viewModel.viewStateItemFlow.asLiveData().observe(viewLifecycleOwner) { viewStateItem ->
+            currentList.add(viewStateItem)
+            addOrModifyPropertyListAdapter.updateList(currentList)
+        }
     }
 
     private fun retrieveFormData(): AddOrModifyPropertyViewState {

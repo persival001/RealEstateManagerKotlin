@@ -1,13 +1,13 @@
 package com.persival.realestatemanagerkotlin.data.local_database
 
 import android.util.Log
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PhotoDao
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PointOfInterestDao
-import com.persival.realestatemanagerkotlin.data.local_database.dao.PropertyDao
-import com.persival.realestatemanagerkotlin.data.local_database.model.PhotoDtoMapper
-import com.persival.realestatemanagerkotlin.data.local_database.model.PointOfInterestDtoMapper
-import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyDtoMapper
-import com.persival.realestatemanagerkotlin.data.local_database.model.PropertyWithPhotosAndPoisDtoMapper
+import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDao
+import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDtoMapper
+import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDao
+import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDtoMapper
+import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDao
+import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDtoMapper
+import com.persival.realestatemanagerkotlin.data.local_database.property_with_photos_and_pois.PropertyWithPhotosAndPoisDtoMapper
 import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity

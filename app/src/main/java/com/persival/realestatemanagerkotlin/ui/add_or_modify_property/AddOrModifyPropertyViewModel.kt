@@ -202,8 +202,25 @@ class AddOrModifyPropertyViewModel @Inject constructor(
             propertyId = entity.propertyId,
             description = entity.description,
             photoUrl = entity.photoUrl,
+            onPictureEvent = EquatableCallback {
+                viewModelScope.launch {
+                    // Todo: getPhotoFromGalleriaUseCase.invoke(entity.id)
+                }
+            },
+            onFavoriteEvent = EquatableCallback {
+                viewModelScope.launch {
+                    //TODO: isFavoritePhotoUseCase.invoke(entity.id)
+                }
+            },
+            onCameraEvent = EquatableCallback {
+                viewModelScope.launch {
+                    //TODO: getPhotoFromCameraUseCase.invoke(entity.id)
+                }
+            },
             onDeleteEvent = EquatableCallback {
-                //TODO: Delete photo
+                viewModelScope.launch {
+                    //TODO: deletePhotoUseCase.invoke(entity.id)
+                }
             }
         )
     }

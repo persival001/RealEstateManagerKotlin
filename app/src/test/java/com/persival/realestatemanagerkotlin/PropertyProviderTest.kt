@@ -3,7 +3,7 @@ package com.persival.realestatemanagerkotlin
 import android.content.Context
 import android.content.pm.ProviderInfo
 import androidx.test.core.app.ApplicationProvider
-import com.persival.realestatemanagerkotlin.data.local_database.content_provider.PropertyProvider
+import com.persival.realestatemanagerkotlin.data.content_provider.PropertyProvider
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric

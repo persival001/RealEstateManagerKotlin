@@ -1,5 +1,8 @@
-package com.persival.realestatemanagerkotlin.data.local_database.model
+package com.persival.realestatemanagerkotlin.data.local_database.property_with_photos_and_pois
 
+import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDtoMapper
+import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDtoMapper
+import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDtoMapper
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
 import javax.inject.Inject
 
