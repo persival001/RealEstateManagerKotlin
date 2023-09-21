@@ -15,9 +15,8 @@ sealed class AddOrModifyPropertyViewStateItem(
         val propertyId: Long,
         val description: String,
         val photoUrl: String,
-        val onPictureEvent: EquatableCallback,
+        val isFavorite: Boolean,
         val onFavoriteEvent: EquatableCallback,
-        val onCameraEvent: EquatableCallback,
         val onDeleteEvent: EquatableCallback,
     ) : AddOrModifyPropertyViewStateItem(Type.PHOTO)
 

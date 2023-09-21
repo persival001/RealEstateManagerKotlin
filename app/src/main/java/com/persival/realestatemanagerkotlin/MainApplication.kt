@@ -13,10 +13,10 @@ import javax.inject.Inject
 class MainApplication : Application(), Application.ActivityLifecycleCallbacks, Configuration.Provider {
 
     @Inject
-    lateinit var workerFactory: HiltWorkerFactory
+    lateinit var permissionRepository: PermissionRepository
 
     @Inject
-    lateinit var permissionRepository: PermissionRepository
+    lateinit var workerFactory: HiltWorkerFactory
 
     override fun getWorkManagerConfiguration() = Configuration.Builder()
         .setWorkerFactory(workerFactory)

@@ -96,7 +96,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/type_of_property_hint"
                 android:inputType="none"
-                android:padding="@dimen/default_large_margin"
                 app:simpleItems="@array/property_items" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -334,13 +333,55 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
 
+        <!-- Photos -->
+        <TextView
+            android:id="@+id/photos_text_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:text="@string/photos"
+            android:textSize="@dimen/default_text_middle_size"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/poiDivider" />
+
+        <!-- Import button -->
+        <Button
+            android:id="@+id/import_button"
+            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:padding="@dimen/default_margin"
+            android:text="@string/import_button"
+            app:icon="@drawable/baseline_add_photo_alternate_24"
+            app:iconSize="25dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/photos_text_textView" />
+
+        <!-- Camera button -->
+        <Button
+            android:id="@+id/camera_button"
+            style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:padding="@dimen/default_margin"
+            android:text="@string/camera_button"
+            app:icon="@drawable/baseline_photo_camera_24"
+            app:iconSize="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/photos_text_textView" />
+
         <FrameLayout
             android:id="@+id/layoutRecyclerView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poiDivider">
+            app:layout_constraintTop_toBottomOf="@+id/camera_button">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/addPhotoRecyclerView"

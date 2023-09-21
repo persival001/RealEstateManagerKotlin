@@ -1,18 +1,27 @@
 package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -30,6 +39,9 @@ import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentAddPropertyBinding
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.Date
 
 @AndroidEntryPoint
@@ -41,16 +53,43 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         }
 
         private const val ACTION_TYPE = "ACTION_TYPE"
+        private const val MODIFY = "modify"
+        private const val ADD = "add"
     }
 
     private val binding by viewBinding { FragmentAddPropertyBinding.bind(it) }
     private val viewModel by viewModels<AddOrModifyPropertyViewModel>()
 
     private var latLongString: String? = null
+    private var currentPhotoUri: Uri? = null
 
     private lateinit var viewFinder: PreviewView
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var addOrModifyPropertyListAdapter: AddOrModifyPropertyListAdapter
+
+    private val openFileResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri: Uri? = result.data?.data
+                uri?.let {
+                    requireContext().contentResolver.takePersistableUriPermission(
+                        it,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                    setImageUri(it)
+                }
+            }
+        }
+
+    private val takePhotoResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val takenPhotoUri: Uri? = currentPhotoUri
+                takenPhotoUri?.let {
+                    setImageUri(it)
+                }
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -116,27 +155,39 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         // Initialize the date picker
         setupDatePicker(binding.datePickerEditText, binding.datePickerToSellText)
 
+        // Open the picture picker
+        binding.importButton.setOnClickListener {
+            setupImageSelection()
+        }
+
+        // Open the camera
+        binding.cameraButton.setOnClickListener {
+            openCameraForPhoto()
+        }
+
+        // Add or modify property
+
         viewFinder = binding.cameraPreview
 
-        // MODIFY PROPERTY - Complete form with information's of property selected'
-        if (actionType == "modify") {
+        // MODIFY PROPERTY - Complete form with information's of property selected
+        if (actionType == MODIFY) {
             displaysPropertyInformation()
             displaysPropertyPhotos()
         }
 
-        // Initialize the cancel button
+        // Quit the fragment
         binding.cancelButton.setOnClickListener {
             requireActivity().finish()
         }
 
-        // Initialize the ok button to get the property added or modified by the user
+        // Get the property added or modified by the user
         binding.okButton.setOnClickListener {
             if (validateFields()) {
                 val addViewState = retrieveFormData()
 
-                if (actionType == "add") {
-                    //viewModel.addNewProperty(addViewState)
-                } else if (actionType == "modify") {
+                if (actionType == ADD) {
+                    viewModel.addNewProperty(addViewState)
+                } else if (actionType == MODIFY) {
                     viewModel.updateProperty(addViewState)
                 }
 
@@ -147,6 +198,7 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     }
 
+    // Displays the property information to modify
     private fun displaysPropertyInformation() {
         viewModel.viewStateFlow.asLiveData().observe(viewLifecycleOwner) { addViewState ->
 
@@ -180,11 +232,8 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
     }
 
     private fun displaysPropertyPhotos() {
-        val currentList = mutableListOf<AddOrModifyPropertyViewStateItem>()
-
-        viewModel.viewStateItemFlow.asLiveData().observe(viewLifecycleOwner) { viewStateItem ->
-            currentList.add(viewStateItem)
-            addOrModifyPropertyListAdapter.updateList(currentList)
+        viewModel.viewStateItemList.asLiveData().observe(viewLifecycleOwner) { viewStateItemList ->
+            addOrModifyPropertyListAdapter.updateList(viewStateItemList)
         }
     }
 
@@ -262,6 +311,86 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
                 datePicker.show(parentFragmentManager, "date_picker_tag")
             }
+        }
+    }
+
+    private fun setupImageSelection() {
+
+        if (viewModel.hasCameraPermission().asLiveData().value == true &&
+            viewModel.hasStoragePermission().asLiveData().value == true
+        ) {
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "image/*"
+            }
+
+            openFileResult.launch(intent)
+        }
+
+    }
+
+    private fun openCameraForPhoto() {
+        val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        try {
+            val photoFile: File = createImageFile()
+            val photoURI: Uri = FileProvider.getUriForFile(
+                requireContext(),
+                "com.persival.realestatemanagerkotlin.fileprovider",
+                photoFile
+            )
+            takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+            takePhotoResult.launch(takePhotoIntent)
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+        }
+    }
+
+    private fun setImageUri(uri: Uri) {
+        if (uri.toString().isNotEmpty() && uri != Uri.EMPTY) {
+            setImageDescription { description ->
+                if (description.isNotEmpty()) {
+                    viewModel.addImageAndDescription(uri.toString(), description)
+                } else {
+                    Toast.makeText(context, getString(R.string.not_empty), Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            Log.e("IMAGE_IMPORT", "Failed to set image from URI: $uri")
+        }
+    }
+
+    private fun setImageDescription(onDescriptionEntered: (String) -> Unit) {
+        val descriptionInput = EditText(context)
+        descriptionInput.hint = getString(R.string.image_description)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.image_description))
+            .setMessage(getString(R.string.enter_image_description))
+            .setView(descriptionInput)
+            .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+                val description = descriptionInput.text.toString()
+                if (description.isNotEmpty()) {
+                    onDescriptionEntered(description)
+                    dialog.dismiss()
+                } else {
+                    Toast.makeText(context, getString(R.string.not_empty), Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                dialog.cancel()
+            }
+            .create()
+
+        dialog.show()
+    }
+
+
+    @SuppressLint("SimpleDateFormat")
+    private fun createImageFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir).apply {
+            currentPhotoUri = Uri.fromFile(this)
         }
     }
 

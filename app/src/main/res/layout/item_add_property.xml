@@ -26,65 +26,48 @@
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/property_picture" />
 
+            <!-- Favorite button -->
+            <Button
+                android:id="@+id/favorite_button"
+                style="?attr/materialIconButtonFilledTonalStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|start"
+                android:layout_margin="@dimen/default_margin"
+                android:padding="@dimen/default_margin"
+                app:icon="@drawable/baseline_favorite_border_24"
+                app:iconSize="30dp" />
+
+            <!-- Delete button -->
+            <Button
+                android:id="@+id/delete_button"
+                style="?attr/materialIconButtonFilledTonalStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/default_margin"
+                android:padding="@dimen/default_margin"
+                app:icon="@drawable/baseline_delete_24"
+                app:iconSize="30dp" />
+
         </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/md_theme_light_background"
-            android:padding="@dimen/default_margin">
-
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/toggleButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <Button
-                    android:id="@+id/favorite_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/favorite"
-                    app:icon="@drawable/baseline_favorite_border_24" />
-
-                <Button
-                    android:id="@+id/camera_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/camera"
-                    app:icon="@drawable/baseline_photo_camera_24" />
-
-                <Button
-                    android:id="@+id/delete_button"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/delete"
-                    app:icon="@drawable/baseline_delete_24" />
-
-            </com.google.android.material.button.MaterialButtonToggleGroup>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/md_theme_light_background"
             android:orientation="vertical"
             android:padding="@dimen/default_margin">
 
             <!-- Title of image -->
-            <EditText
+            <TextView
                 android:id="@+id/itemDescriptionEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:autofillHints="@string/image_name"
-                android:hint="@string/image_name"
-                android:inputType="text"
-                android:padding="14dp"
+                android:layout_gravity="center"
+                android:text="@string/picture_description"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColorHint="@color/quantum_grey600" />
+                android:textColorHint="@color/quantum_grey600"
+                android:textSize="@dimen/default_text_middle_size" />
 
         </LinearLayout>
 

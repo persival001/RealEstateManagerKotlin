@@ -114,5 +114,12 @@
     <string name="favorite">Favorite</string>
     <string name="camera">Camera</string>
     <string name="delete">Delete</string>
+    <string name="photos">Pictures</string>
+    <string name="import_button">Ajouter une image</string>
+    <string name="camera_button">Prendre une photo</string>
+    <string name="not_empty">La description ne peut pas être vide.</string>
+    <string name="image_description">Entrez une déscription pour cette image</string>
+    <string name="enter_image_description">Enter image description :</string>
+    <string name="picture_description">Picture description</string>
 
 </resources>

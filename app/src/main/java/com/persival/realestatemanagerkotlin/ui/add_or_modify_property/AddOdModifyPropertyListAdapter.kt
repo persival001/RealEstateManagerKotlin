@@ -3,10 +3,12 @@ package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.button.MaterialButton
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.AddPropertyEmptyStateItemBinding
 import com.persival.realestatemanagerkotlin.databinding.ItemAddPropertyBinding
@@ -51,38 +53,29 @@ class AddOrModifyPropertyListAdapter :
             }
 
             fun bind(item: AddOrModifyPropertyViewStateItem.Photo) {
+                val favoriteButton = binding.favoriteButton as MaterialButton
 
-                binding.itemImageView.setOnClickListener { item.onPictureEvent.invoke() }
+                val context = binding.root.context
+                val drawableIcon = ContextCompat.getDrawable(context, R.drawable.baseline_favorite_24)
+                favoriteButton.icon = drawableIcon
 
-                binding.itemDescriptionEditText.setText(item.description)
+                binding.itemDescriptionEditText.text = item.description
 
                 Glide.with(binding.itemImageView)
                     .load(item.photoUrl)
                     .override(800, 800)
                     .into(binding.itemImageView)
 
-                binding.toggleButton.addOnButtonCheckedListener { group, checkedId, isChecked ->
-                    if (isChecked) {
-                        group.clearChecked()
-                    }
+                favoriteButton.setOnClickListener { item.onFavoriteEvent.invoke() }
+                favoriteButton.icon = ContextCompat.getDrawable(
+                    context,
+                    if (item.isFavorite) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
+                )
 
-                    when (checkedId) {
-                        R.id.favorite_button -> {
-                            item.onFavoriteEvent.invoke()
-                        }
-
-                        R.id.camera_button -> {
-                            item.onCameraEvent.invoke()
-                        }
-
-                        R.id.delete_button -> {
-                            item.onDeleteEvent.invoke()
-                        }
-                    }
-                }
+                binding.deleteButton.setOnClickListener { item.onDeleteEvent.invoke() }
             }
-        }
 
+        }
 
         class EmptyState(val binding: AddPropertyEmptyStateItemBinding) : PropertyViewHolder(binding.root) {
             companion object {

@@ -1,11 +1,15 @@
 package com.persival.realestatemanagerkotlin.di
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.persival.realestatemanagerkotlin.data.local_database.AppDatabase
 import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDao
 import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDao
@@ -23,9 +27,19 @@ class DataModule {
 
     @Singleton
     @Provides
+    fun provideWorkManager(application: Application): WorkManager =
+        WorkManager.getInstance(application)
+
+    @Singleton
+    @Provides
+    fun provideGson(): Gson = GsonBuilder().create()
+
+    @Singleton
+    @Provides
     fun provideFusedLocationProviderClient(
         @ApplicationContext app: Context
     ): FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(app)
+
 
     @Singleton
     @Provides
