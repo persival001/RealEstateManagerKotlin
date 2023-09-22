@@ -110,16 +110,19 @@
     <string name="duration">Durée (month)</string>
     <string name="calculate">Calculer</string>
     <string name="result">"Résultat : "</string>
-    <string name="add_property_please">Please add a property with + button</string>
-    <string name="favorite">Favorite</string>
+    <string name="add_property_please">Ajoutez une propriété avec + </string>
+    <string name="favorite">Favorit</string>
     <string name="camera">Camera</string>
-    <string name="delete">Delete</string>
-    <string name="photos">Pictures</string>
+    <string name="delete">Supprimer</string>
+    <string name="photos">Photos</string>
     <string name="import_button">Ajouter une image</string>
     <string name="camera_button">Prendre une photo</string>
     <string name="not_empty">La description ne peut pas être vide.</string>
     <string name="image_description">Entrez une déscription pour cette image</string>
-    <string name="enter_image_description">Enter image description :</string>
-    <string name="picture_description">Picture description</string>
+    <string name="enter_image_description">Entez une description :</string>
+    <string name="picture_description">Description de la photo</string>
+    <string name="add_description">Ajoutez une description à votre photo</string>
+    <string name="description_of_picture">Front, Garden, Swimming pool…</string>
+    <string name="add_a_description">Ajoutez une description</string>
 
 </resources>

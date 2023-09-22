@@ -8,6 +8,7 @@ import com.persival.realestatemanagerkotlin.domain.permissions.HasCameraPermissi
 import com.persival.realestatemanagerkotlin.domain.permissions.HasStoragePermissionUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshCameraPermissionUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshStoragePermissionUseCase
+import com.persival.realestatemanagerkotlin.domain.photo.DeletePhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.GetPropertyPhotosUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
@@ -49,6 +50,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     private val updatePointOfInterestUseCase: UpdatePointOfInterestUseCase,
     private val updatePropertyUseCase: UpdatePropertyUseCase,
     private val updatePhotoUseCase: UpdatePhotoUseCase,
+    private val deletePhotoUseCase: DeletePhotoUseCase,
     private val getPropertyPhotosUseCase: GetPropertyPhotosUseCase,
 
     ) : ViewModel() {
@@ -197,7 +199,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
             propertyId = entity.propertyId,
             description = entity.description,
             photoUrl = entity.photoUrl,
-            isFavorite = true,
+            isFavorite = false,
             onFavoriteEvent = EquatableCallback {
                 viewModelScope.launch {
                     //TODO: isFavoritePhotoUseCase.invoke(entity.id)
@@ -205,7 +207,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
             },
             onDeleteEvent = EquatableCallback {
                 viewModelScope.launch {
-                    //TODO: deletePhotoUseCase.invoke(entity.id)
+                    deletePhotoUseCase.invoke(entity.propertyId, entity.id)
                 }
             }
         )

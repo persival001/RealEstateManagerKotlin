@@ -13,12 +13,10 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -37,6 +35,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.persival.realestatemanagerkotlin.BuildConfig.MAPS_API_KEY
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentAddPropertyBinding
+import com.persival.realestatemanagerkotlin.ui.add_picture_dialog.AddPictureDialogFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -347,7 +346,7 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     private fun setImageUri(uri: Uri) {
         if (uri.toString().isNotEmpty() && uri != Uri.EMPTY) {
-            setImageDescription { description ->
+            setImageDescription(uri) { description ->
                 if (description.isNotEmpty()) {
                     viewModel.addImageAndDescription(uri.toString(), description)
                 } else {
@@ -359,31 +358,15 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         }
     }
 
-    private fun setImageDescription(onDescriptionEntered: (String) -> Unit) {
-        val descriptionInput = EditText(context)
-        descriptionInput.hint = getString(R.string.image_description)
-
-        val dialog = AlertDialog.Builder(requireContext())
-            .setTitle(getString(R.string.image_description))
-            .setMessage(getString(R.string.enter_image_description))
-            .setView(descriptionInput)
-            .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-                val description = descriptionInput.text.toString()
-                if (description.isNotEmpty()) {
-                    onDescriptionEntered(description)
-                    dialog.dismiss()
-                } else {
-                    Toast.makeText(context, getString(R.string.not_empty), Toast.LENGTH_SHORT).show()
-                }
+    private fun setImageDescription(uri: Uri, onDescriptionEntered: (String) -> Unit) {
+        val dialogFragment = AddPictureDialogFragment().apply {
+            arguments = Bundle().apply {
+                putString("image_uri", uri.toString())
             }
-            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-                dialog.cancel()
-            }
-            .create()
-
-        dialog.show()
+        }
+        dialogFragment.onDescriptionEntered = onDescriptionEntered
+        dialogFragment.show(requireActivity().supportFragmentManager, "AddPictureDialogFragment")
     }
-
 
     @SuppressLint("SimpleDateFormat")
     private fun createImageFile(): File {

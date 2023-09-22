@@ -47,8 +47,7 @@ interface PhotoDao {
     @Delete
     suspend fun delete(photoDto: PhotoDto)
 
-    @Query("DELETE FROM photo WHERE propertyId = :propertyId")
-    suspend fun deletePhotoByPropertyId(propertyId: Long)
-
+    @Query("DELETE FROM photo WHERE propertyId = :propertyId AND id = :photoId")
+    suspend fun deletePhotoByPropertyIdAndPhotoId(propertyId: Long, photoId: Long)
 
 }

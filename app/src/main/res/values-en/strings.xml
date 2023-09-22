@@ -120,5 +120,8 @@
     <string name="image_description">Enter a description for this image</string>
     <string name="enter_image_description">Enter image description :</string>
     <string name="picture_description">Picture description</string>
+    <string name="add_description">Add a description to your photo</string>
+    <string name="description_of_picture">Front, Garden, Swimming pool…</string>
+    <string name="add_a_description">Add a description</string>
 
 </resources>

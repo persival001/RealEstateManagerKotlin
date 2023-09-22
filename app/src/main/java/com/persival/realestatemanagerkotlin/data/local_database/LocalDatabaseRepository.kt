@@ -120,4 +120,10 @@ class LocalDatabaseRepository @Inject constructor(
         }
     }
 
+    override suspend fun deletePhotoByPropertyIdAndPhotoId(propertyId: Long, photoId: Long) {
+        withContext(coroutineDispatcherProvider.io) {
+            photoDao.deletePhotoByPropertyIdAndPhotoId(propertyId, photoId)
+        }
+    }
+
 }

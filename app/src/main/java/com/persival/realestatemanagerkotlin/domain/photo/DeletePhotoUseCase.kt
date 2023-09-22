@@ -5,10 +5,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class InsertPhotoUseCase @Inject constructor(
+class DeletePhotoUseCase @Inject constructor(
     private val localRepository: LocalRepository,
 ) {
-    suspend fun invoke(photoEntity: PhotoEntity): Long? {
-        return localRepository.insertPhoto(photoEntity)
+    suspend fun invoke(propertyId: Long, photoId: Long) {
+        return localRepository.deletePhotoByPropertyIdAndPhotoId(propertyId, photoId)
     }
 }

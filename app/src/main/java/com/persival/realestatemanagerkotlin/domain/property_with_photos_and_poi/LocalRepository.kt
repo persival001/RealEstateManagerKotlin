@@ -32,4 +32,6 @@ interface LocalRepository {
         pointOfInterestEntities: List<PointOfInterestEntity>
     )
 
+    suspend fun deletePhotoByPropertyIdAndPhotoId(propertyId: Long, photoId: Long)
+
 }
