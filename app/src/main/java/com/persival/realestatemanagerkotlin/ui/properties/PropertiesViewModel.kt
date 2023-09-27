@@ -30,7 +30,10 @@ class PropertiesViewModel @Inject constructor(
 
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
     val properties: LiveData<List<PropertyViewStateItem>> = propertiesViewStateItem
-    val propertyIdSelected = MutableLiveData<Long?>()
+    private val propertyIdSelected = MutableLiveData<Long?>()
+    val showNotificationEvent = MutableLiveData<Boolean>()
+
+    private var lastPropertyCount = 0
 
     init {
         combineFiltersWithProperties()
@@ -42,6 +45,12 @@ class PropertiesViewModel @Inject constructor(
             val propertiesFlow = getAllPropertiesWithPhotosAndPOIUseCase.invoke()
 
             combine(filterFlow, propertiesFlow) { filter, properties ->
+                if (properties.size > lastPropertyCount) {
+                    showNotificationForNewProperty()
+                }
+
+                lastPropertyCount = properties.size
+
                 var filteredProperties = properties.filter {
                     it.meetsFilterCriteria(filter)
                 }
@@ -135,6 +144,10 @@ class PropertiesViewModel @Inject constructor(
     fun updateSelectedPropertyId(id: Long?) {
         setSelectedPropertyIdUseCase(id)
         propertyIdSelected.value = id
+    }
+
+    private fun showNotificationForNewProperty() {
+        showNotificationEvent.value = true
     }
 
     fun synchronizeDatabase() {

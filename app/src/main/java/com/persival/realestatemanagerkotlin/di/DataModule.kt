@@ -1,6 +1,7 @@
 package com.persival.realestatemanagerkotlin.di
 
 import android.app.Application
+import android.app.NotificationManager
 import android.content.Context
 import androidx.room.Room
 import androidx.work.WorkManager
@@ -47,6 +48,12 @@ class DataModule {
         context,
         AppDatabase::class.java, "database-room"
     ).build()
+
+    @Provides
+    @Singleton
+    fun provideNotificationManager(@ApplicationContext context: Context): NotificationManager {
+        return context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
 
     @Singleton
     @Provides

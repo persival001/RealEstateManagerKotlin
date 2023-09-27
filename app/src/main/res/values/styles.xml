@@ -1,8 +1,10 @@
 <resources>
+
     <style name="AppStyle" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorPrimaryDark">@color/md_theme_dark_primary</item>
         <item name="colorAccent">@color/md_theme_light_error</item>
+        <item name="android:colorBackground">@color/md_theme_light_background</item>
     </style>
 </resources>
 

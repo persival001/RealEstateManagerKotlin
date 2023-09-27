@@ -12,7 +12,6 @@ import com.persival.realestatemanagerkotlin.domain.photo.DeletePhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.GetPropertyPhotosUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
-import com.persival.realestatemanagerkotlin.domain.photo.UpdatePhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.InsertPointOfInterestUseCase
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.UpdatePointOfInterestUseCase
@@ -49,14 +48,13 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     private val hasStoragePermissionUseCase: HasStoragePermissionUseCase,
     private val updatePointOfInterestUseCase: UpdatePointOfInterestUseCase,
     private val updatePropertyUseCase: UpdatePropertyUseCase,
-    private val updatePhotoUseCase: UpdatePhotoUseCase,
     private val deletePhotoUseCase: DeletePhotoUseCase,
     private val getPropertyPhotosUseCase: GetPropertyPhotosUseCase,
 
     ) : ViewModel() {
 
-    private val _viewStateItemList = MutableStateFlow<List<AddOrModifyPropertyViewStateItem>>(emptyList())
-    val viewStateItemList: StateFlow<List<AddOrModifyPropertyViewStateItem>> = _viewStateItemList
+    private val viewStateItemListFlow = MutableStateFlow<List<AddOrModifyPropertyViewStateItem>>(emptyList())
+    val viewStateItemList: StateFlow<List<AddOrModifyPropertyViewStateItem>> = viewStateItemListFlow
 
     init {
         viewModelScope.launch {
@@ -64,7 +62,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
             if (propertyId != null && propertyId > 0) {
                 getPropertyPhotosUseCase.invoke(propertyId).collect { photoEntityList ->
                     val viewStateItems = photoEntityList.map { mapPhotoEntityToViewStateItem(it) }
-                    _viewStateItemList.value = viewStateItems
+                    viewStateItemListFlow.value = viewStateItems
                 }
             }
         }
@@ -135,6 +133,23 @@ class AddOrModifyPropertyViewModel @Inject constructor(
 
                 // Update the points of interests
                 updatePointOfInterestUseCase.invoke(propertyId, pointOfInterestEntities)
+            }
+        }
+    }
+
+    fun insertImageAndDescription(uri: String, description: String) {
+        viewModelScope.launch {
+            getSelectedPropertyIdUseCase().value?.let {
+                PhotoEntity(
+                    id = 0,
+                    propertyId = it,
+                    description = description,
+                    photoUrl = uri
+                )
+            }?.let {
+                insertPhotoUseCase.invoke(
+                    it
+                )
             }
         }
     }
@@ -211,23 +226,6 @@ class AddOrModifyPropertyViewModel @Inject constructor(
                 }
             }
         )
-    }
-
-    fun addImageAndDescription(uri: String, description: String) {
-        viewModelScope.launch {
-            getSelectedPropertyIdUseCase().value?.let {
-                PhotoEntity(
-                    id = 0,
-                    propertyId = it,
-                    description = description,
-                    photoUrl = uri
-                )
-            }?.let {
-                insertPhotoUseCase.invoke(
-                    it
-                )
-            }
-        }
     }
 
     fun getFormattedDate(date: Date): String {

@@ -1,4 +1,3 @@
-
 <resources>
     <color name="seed">#6750A4</color>
     <color name="md_theme_light_primary">#6750A4</color>
@@ -48,7 +47,7 @@
     <color name="md_theme_dark_errorContainer">#8C1D18</color>
     <color name="md_theme_dark_onErrorContainer">#F9DEDC</color>
     <color name="md_theme_dark_outline">#938F99</color>
-    <color name="md_theme_dark_background">#1C1B1F</color>
+    <color name="md_theme_dark_background">#E5E0F3</color>
     <color name="md_theme_dark_onBackground">#E6E1E5</color>
     <color name="md_theme_dark_surface">#1C1B1F</color>
     <color name="md_theme_dark_onSurface">#E6E1E5</color>

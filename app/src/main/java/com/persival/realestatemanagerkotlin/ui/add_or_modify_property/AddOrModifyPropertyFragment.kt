@@ -17,7 +17,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -53,7 +52,6 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
         private const val ACTION_TYPE = "ACTION_TYPE"
         private const val MODIFY = "modify"
-        private const val ADD = "add"
     }
 
     private val binding by viewBinding { FragmentAddPropertyBinding.bind(it) }
@@ -62,7 +60,6 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
     private var latLongString: String? = null
     private var currentPhotoUri: Uri? = null
 
-    private lateinit var viewFinder: PreviewView
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var addOrModifyPropertyListAdapter: AddOrModifyPropertyListAdapter
 
@@ -93,8 +90,6 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val actionType = arguments?.getString(ACTION_TYPE)
-
         // Initialize requestPermissionLauncher
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -115,12 +110,10 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, items)
         binding.typeTextView.setAdapter(adapter)
 
-        // Initialize the Places API for Maps
+        // Google Places UI for address autocompletion
         if (!Places.isInitialized()) {
             Places.initialize(requireContext(), MAPS_API_KEY)
         }
-
-        // Google Places UI for address autocompletion
         val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
         val autocompleteResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -161,15 +154,11 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
         // Open the camera
         binding.cameraButton.setOnClickListener {
-            openCameraForPhoto()
+            openCameraForTakeAPicture()
         }
 
-        // Add or modify property
-
-        viewFinder = binding.cameraPreview
-
         // MODIFY PROPERTY - Complete form with information's of property selected
-        if (actionType == MODIFY) {
+        if (isModifyAction()) {
             displaysPropertyInformation()
             displaysPropertyPhotos()
         }
@@ -184,16 +173,12 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
             if (validateFields()) {
                 val addViewState = retrieveFormData()
 
-                if (actionType == ADD) {
-                    viewModel.addNewProperty(addViewState)
-                } else if (actionType == MODIFY) {
-                    viewModel.updateProperty(addViewState)
-                }
+                (takeIf { isModifyAction() }?.let { viewModel::updateProperty } ?: viewModel::addNewProperty)
+                    .invoke(addViewState)
 
                 requireActivity().finish()
             }
         }
-
 
     }
 
@@ -238,8 +223,6 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     private fun retrieveFormData(): AddOrModifyPropertyViewState {
 
-        // Retrieve photos and description
-
         // Retrieve poi selected
         val selectedChips = listOf(
             binding.schoolChip,
@@ -279,23 +262,20 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
             binding.datePickerEditText
         )
 
-        var allFieldsFilled = true
-
-        editTextList.forEach { editText ->
-            if (editText.text?.isEmpty() == true) {
-                editText.error = getString(R.string.error_message)
-                allFieldsFilled = false
-            } else {
-                editText.error = null
-            }
+        // Check if all fields are filled and set error messages
+        val allFieldsFilled = editTextList.all { editText ->
+            val isFilled = editText.text?.isNotEmpty() == true
+            editText.error = if (isFilled) null else getString(R.string.error_message)
+            isFilled
         }
 
-        if (latLongString == null || latLongString == "") {
+        // Check if latLongString is valid
+        val isLatLongValid = !latLongString.isNullOrBlank()
+        if (!isLatLongValid) {
             binding.addressEditText.error = getString(R.string.invalid_address_message)
-            return false
         }
 
-        return allFieldsFilled
+        return allFieldsFilled && isLatLongValid
     }
 
     private fun setupDatePicker(vararg editTexts: TextInputEditText) {
@@ -328,7 +308,7 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     }
 
-    private fun openCameraForPhoto() {
+    private fun openCameraForTakeAPicture() {
         val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             val photoFile: File = createImageFile()
@@ -344,11 +324,21 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         }
     }
 
+    private fun setImageDescription(uri: Uri, onDescriptionEntered: (String) -> Unit) {
+        val dialogFragment = AddPictureDialogFragment().apply {
+            arguments = Bundle().apply {
+                putString("image_uri", uri.toString())
+            }
+        }
+        dialogFragment.onDescriptionEntered = onDescriptionEntered
+        dialogFragment.show(requireActivity().supportFragmentManager, "AddPictureDialogFragment")
+    }
+
     private fun setImageUri(uri: Uri) {
         if (uri.toString().isNotEmpty() && uri != Uri.EMPTY) {
             setImageDescription(uri) { description ->
                 if (description.isNotEmpty()) {
-                    viewModel.addImageAndDescription(uri.toString(), description)
+                    viewModel.insertImageAndDescription(uri.toString(), description)
                 } else {
                     Toast.makeText(context, getString(R.string.not_empty), Toast.LENGTH_SHORT).show()
                 }
@@ -358,14 +348,8 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         }
     }
 
-    private fun setImageDescription(uri: Uri, onDescriptionEntered: (String) -> Unit) {
-        val dialogFragment = AddPictureDialogFragment().apply {
-            arguments = Bundle().apply {
-                putString("image_uri", uri.toString())
-            }
-        }
-        dialogFragment.onDescriptionEntered = onDescriptionEntered
-        dialogFragment.show(requireActivity().supportFragmentManager, "AddPictureDialogFragment")
+    private fun isModifyAction(): Boolean {
+        return arguments?.getString(ACTION_TYPE) == MODIFY
     }
 
     @SuppressLint("SimpleDateFormat")

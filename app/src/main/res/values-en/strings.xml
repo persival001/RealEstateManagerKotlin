@@ -123,5 +123,7 @@
     <string name="add_description">Add a description to your photo</string>
     <string name="description_of_picture">Front, Garden, Swimming pool…</string>
     <string name="add_a_description">Add a description</string>
+    <string name="notification_title">Property</string>
+    <string name="notification_text">Property added with success !</string>
 
 </resources>

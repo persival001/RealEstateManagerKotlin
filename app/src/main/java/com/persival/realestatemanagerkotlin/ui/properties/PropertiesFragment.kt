@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -27,7 +28,6 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
     private val sharedPreferences: SharedPreferences by lazy {
         requireActivity().getSharedPreferences("SharedPrefs", Context.MODE_PRIVATE)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,6 +61,13 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
             } else {
                 binding.propertiesRecyclerView.visibility = View.VISIBLE
                 binding.emptyTextView.visibility = View.GONE
+            }
+        }
+
+        viewModel.showNotificationEvent.observe(viewLifecycleOwner) { shouldShow ->
+            if (shouldShow) {
+                Toast.makeText(requireContext(), getString(R.string.property_added), Toast.LENGTH_SHORT).show()
+                viewModel.showNotificationEvent.value = false
             }
         }
 
