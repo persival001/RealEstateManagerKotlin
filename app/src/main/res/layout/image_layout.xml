@@ -1,22 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.carousel.MaskableFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="380dp"
     android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    android:foreground="?attr/selectableItemBackground"
+    app:shapeAppearance="?attr/shapeAppearanceCornerExtraLarge">
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:contentDescription="@string/illustrative_picture"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         tools:src="@drawable/property_picture" />
 
     <TextView
         android:id="@+id/imageCaption"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_gravity="bottom"
         android:background="#80000000"
         android:padding="8dp"
@@ -26,4 +29,4 @@
         android:textSize="20sp"
         tools:ignore="RtlCompat" />
 
-</FrameLayout>
+</com.google.android.material.carousel.MaskableFrameLayout>

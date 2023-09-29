@@ -1,41 +1,38 @@
-package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
+package com.persival.realestatemanagerkotlin.ui.modify_property
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.material.button.MaterialButton
-import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.AddPropertyEmptyStateItemBinding
 import com.persival.realestatemanagerkotlin.databinding.ItemAddPropertyBinding
 
-class AddOrModifyPropertyListAdapter :
-    ListAdapter<AddOrModifyPropertyViewStateItem, AddOrModifyPropertyListAdapter.PropertyViewHolder>(
+class ModifyPropertyListAdapter :
+    ListAdapter<ModifyPropertyViewStateItem, ModifyPropertyListAdapter.PropertyViewHolder>(
         PropertyItemDiffCallback
     ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PropertyViewHolder =
-        when (AddOrModifyPropertyViewStateItem.Type.values()[viewType]) {
-            AddOrModifyPropertyViewStateItem.Type.PHOTO -> PropertyViewHolder.Photo.create(parent)
-            AddOrModifyPropertyViewStateItem.Type.EMPTY_STATE -> PropertyViewHolder.EmptyState.create(parent)
+        when (ModifyPropertyViewStateItem.Type.values()[viewType]) {
+            ModifyPropertyViewStateItem.Type.PHOTO -> PropertyViewHolder.Photo.create(parent)
+            ModifyPropertyViewStateItem.Type.EMPTY_STATE -> PropertyViewHolder.EmptyState.create(parent)
         }
 
     override fun onBindViewHolder(holder: PropertyViewHolder, position: Int) {
         when (holder) {
-            is PropertyViewHolder.Photo -> holder.bind(getItem(position) as AddOrModifyPropertyViewStateItem.Photo)
+            is PropertyViewHolder.Photo -> holder.bind(getItem(position) as ModifyPropertyViewStateItem.Photo)
             is PropertyViewHolder.EmptyState -> Unit
         }
     }
 
     override fun getItemViewType(position: Int): Int = getItem(position).type.ordinal
 
-    fun updateList(list: List<AddOrModifyPropertyViewStateItem>) {
-        val updatedList = if (list.isEmpty() || list[0].type == AddOrModifyPropertyViewStateItem.Type.EMPTY_STATE) {
-            listOf(AddOrModifyPropertyViewStateItem.EmptyState) + list
+    fun updateList(list: List<ModifyPropertyViewStateItem>) {
+        val updatedList = if (list.isEmpty() || list[0].type == ModifyPropertyViewStateItem.Type.EMPTY_STATE) {
+            listOf(ModifyPropertyViewStateItem.EmptyState) + list
         } else {
             list
         }
@@ -52,25 +49,13 @@ class AddOrModifyPropertyListAdapter :
                 }
             }
 
-            fun bind(item: AddOrModifyPropertyViewStateItem.Photo) {
-                val favoriteButton = binding.favoriteButton as MaterialButton
-
-                val context = binding.root.context
-                val drawableIcon = ContextCompat.getDrawable(context, R.drawable.baseline_favorite_24)
-                favoriteButton.icon = drawableIcon
-
+            fun bind(item: ModifyPropertyViewStateItem.Photo) {
                 binding.itemDescriptionEditText.text = item.description
 
                 Glide.with(binding.itemImageView)
                     .load(item.photoUrl)
                     .override(800, 800)
                     .into(binding.itemImageView)
-
-                favoriteButton.setOnClickListener { item.onFavoriteEvent.invoke() }
-                favoriteButton.icon = ContextCompat.getDrawable(
-                    context,
-                    if (item.isFavorite) R.drawable.baseline_favorite_24 else R.drawable.baseline_favorite_border_24
-                )
 
                 binding.deleteButton.setOnClickListener { item.onDeleteEvent.invoke() }
             }
@@ -88,21 +73,21 @@ class AddOrModifyPropertyListAdapter :
         }
     }
 
-    object PropertyItemDiffCallback : DiffUtil.ItemCallback<AddOrModifyPropertyViewStateItem>() {
+    object PropertyItemDiffCallback : DiffUtil.ItemCallback<ModifyPropertyViewStateItem>() {
         override fun areItemsTheSame(
-            oldItem: AddOrModifyPropertyViewStateItem,
-            newItem: AddOrModifyPropertyViewStateItem
+            oldItem: ModifyPropertyViewStateItem,
+            newItem: ModifyPropertyViewStateItem
         ): Boolean {
             return when {
-                oldItem is AddOrModifyPropertyViewStateItem.Photo && newItem is AddOrModifyPropertyViewStateItem.Photo -> oldItem.id == newItem.id
-                oldItem is AddOrModifyPropertyViewStateItem.EmptyState && newItem is AddOrModifyPropertyViewStateItem.EmptyState -> true
+                oldItem is ModifyPropertyViewStateItem.Photo && newItem is ModifyPropertyViewStateItem.Photo -> oldItem.id == newItem.id
+                oldItem is ModifyPropertyViewStateItem.EmptyState && newItem is ModifyPropertyViewStateItem.EmptyState -> true
                 else -> false
             }
         }
 
         override fun areContentsTheSame(
-            oldItem: AddOrModifyPropertyViewStateItem,
-            newItem: AddOrModifyPropertyViewStateItem
+            oldItem: ModifyPropertyViewStateItem,
+            newItem: ModifyPropertyViewStateItem
         ): Boolean {
             return oldItem == newItem
         }

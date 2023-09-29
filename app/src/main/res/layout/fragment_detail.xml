@@ -22,26 +22,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.carousel.MaskableFrameLayout
-            android:id="@+id/carousel_item_container"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:foreground="?attr/selectableItemBackground"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/carousel_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="@dimen/default_margin"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/media_textView"
-            app:shapeAppearance="?attr/shapeAppearanceCornerExtraLarge">
+            app:layout_constraintTop_toBottomOf="@+id/media_textView" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/carousel_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:clipToPadding="false" />
+        <TextView
+            android:id="@+id/location_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:drawablePadding="10dp"
+            android:text="@string/location"
+            android:textSize="@dimen/default_text_middle_size"
+            android:textStyle="bold"
+            app:drawableLeftCompat="@drawable/baseline_location_on_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/carousel_recycler_view" />
 
-        </com.google.android.material.carousel.MaskableFrameLayout>
-
-        <!-- Characteristics -->
         <View
             android:id="@+id/media_view"
             android:layout_width="match_parent"
@@ -50,151 +54,120 @@
             android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/carousel_item_container" />
+            app:layout_constraintTop_toBottomOf="@+id/location_textView" />
+
+        <!-- Surface -->
+        <TextView
+            android:id="@+id/surface_title_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_large_margin"
+            android:drawablePadding="10dp"
+            android:text="@string/surface"
+            android:textSize="@dimen/default_text_size"
+            android:textStyle="bold"
+            app:drawableLeftCompat="@drawable/baseline_settings_overscan_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/media_view" />
 
         <TextView
-            android:id="@+id/characteristics_textView"
+            android:id="@+id/surface_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="34dp"
+            android:textSize="@dimen/default_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/surface_title_textView"
+            tools:text="@string/surface" />
+
+        <!-- Rooms -->
+        <TextView
+            android:id="@+id/rooms_title_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_margin"
-            android:text="@string/characteristics"
-            android:textSize="@dimen/default_text_middle_size"
+            android:drawablePadding="10dp"
+            android:text="@string/rooms"
+            android:textSize="@dimen/default_text_size"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/linear_layout_block"
-            app:layout_constraintTop_toBottomOf="@+id/media_view" />
+            app:drawableLeftCompat="@drawable/baseline_home_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/surface_textView" />
 
-        <LinearLayout
-            android:id="@+id/linear_layout_block"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/rooms_textView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_large_margin"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/characteristics_textView">
+            android:layout_marginStart="34dp"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:textSize="@dimen/default_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rooms_title_textView"
+            tools:text="@string/rooms" />
 
-            <!-- LinearLayout left -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
+        <!-- Bathrooms -->
+        <TextView
+            android:id="@+id/bathrooms_title_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:drawablePadding="10dp"
+            android:text="@string/bathrooms"
+            android:textSize="@dimen/default_text_size"
+            android:textStyle="bold"
+            app:drawableLeftCompat="@drawable/baseline_bathtub_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rooms_textView" />
 
-                <!-- Surface -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="10dp"
-                    android:text="@string/surface"
-                    android:textSize="@dimen/default_text_size"
-                    android:textStyle="bold"
-                    app:drawableLeftCompat="@drawable/baseline_settings_overscan_24" />
+        <TextView
+            android:id="@+id/bathrooms_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="34dp"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:textSize="@dimen/default_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bathrooms_title_textView"
+            tools:text="@string/bathrooms" />
 
-                <TextView
-                    android:id="@+id/surface_textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="34dp"
-                    android:layout_marginBottom="@dimen/default_margin"
-                    android:textSize="@dimen/default_text_size"
-                    tools:text="@string/surface" />
+        <!-- Bedrooms -->
+        <TextView
+            android:id="@+id/bedrooms_title_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_margin"
+            android:drawablePadding="10dp"
+            android:text="@string/bedrooms"
+            android:textSize="@dimen/default_text_size"
+            android:textStyle="bold"
+            app:drawableLeftCompat="@drawable/baseline_bed_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bathrooms_textView" />
 
-                <!-- Rooms -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="10dp"
-                    android:text="@string/rooms"
-                    android:textSize="@dimen/default_text_size"
-                    android:textStyle="bold"
-                    app:drawableLeftCompat="@drawable/baseline_home_24" />
+        <TextView
+            android:id="@+id/bedrooms_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="34dp"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:textSize="@dimen/default_text_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bedrooms_title_textView"
+            tools:text="@string/bedrooms" />
 
-                <TextView
-                    android:id="@+id/rooms_textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="34dp"
-                    android:layout_marginBottom="@dimen/default_margin"
-                    android:textSize="@dimen/default_text_size"
-                    tools:text="@string/rooms" />
+        <!-- Static view map -->
+        <ImageView
+            android:id="@+id/map_imageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/default_margin"
+            android:contentDescription="@string/map_view"
+            app:layout_constraintBottom_toBottomOf="@+id/bedrooms_textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bathrooms_title_textView"
+            app:layout_constraintTop_toTopOf="@+id/surface_title_textView">
 
-                <!-- Bathrooms -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="10dp"
-                    android:text="@string/bathrooms"
-                    android:textSize="@dimen/default_text_size"
-                    android:textStyle="bold"
-                    app:drawableLeftCompat="@drawable/baseline_bathtub_24" />
-
-                <TextView
-                    android:id="@+id/bathrooms_textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="34dp"
-                    android:layout_marginBottom="@dimen/default_margin"
-                    android:textSize="@dimen/default_text_size"
-                    tools:text="@string/bathrooms" />
-
-                <!-- Bedrooms -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="10dp"
-                    android:text="@string/bedrooms"
-                    android:textSize="@dimen/default_text_size"
-                    android:textStyle="bold"
-                    app:drawableLeftCompat="@drawable/baseline_bed_24" />
-
-                <TextView
-                    android:id="@+id/bedrooms_textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="34dp"
-                    android:layout_marginBottom="@dimen/default_margin"
-                    android:textSize="@dimen/default_text_size"
-                    tools:text="@string/bedrooms" />
-
-                <!-- Location -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="10dp"
-                    android:text="@string/location"
-                    android:textSize="@dimen/default_text_size"
-                    android:textStyle="bold"
-                    app:drawableLeftCompat="@drawable/baseline_location_on_24" />
-
-                <TextView
-                    android:id="@+id/location_textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="34dp"
-                    android:layout_marginBottom="@dimen/default_margin"
-                    android:textSize="@dimen/default_text_size"
-                    tools:text="@string/location" />
-
-            </LinearLayout>
-
-            <!-- LinearLayout right -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <!-- Static view map -->
-                <ImageView
-                    android:id="@+id/map_imageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/map_view">
-
-                </ImageView>
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </ImageView>
 
         <!-- Point of interest -->
         <View
@@ -206,7 +179,7 @@
             android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linear_layout_block" />
+            app:layout_constraintTop_toBottomOf="@+id/bedrooms_textView" />
 
         <TextView
             android:id="@+id/poi_text_textView"
@@ -264,13 +237,11 @@
             app:layout_constraintTop_toBottomOf="@+id/description_text_textView"
             tools:text="@string/description_exemple" />
 
-        <!-- Information -->
         <View
-            android:id="@+id/contact_view"
+            android:id="@+id/loan_simulator_view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/default_large_margin"
-            android:layout_marginBottom="@dimen/default_large_margin"
             android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -281,19 +252,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
+            android:layout_marginTop="@dimen/default_large_margin"
             android:padding="@dimen/default_large_margin"
             android:text="@string/loan_simulator"
             android:textSize="@dimen/default_text_middle_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/contact_view" />
+            app:layout_constraintTop_toBottomOf="@+id/loan_simulator_view" />
 
         <View
-            android:id="@+id/loan_simulator_view"
+            android:id="@+id/contact_view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="@dimen/default_large_margin"
-            android:layout_marginBottom="@dimen/default_large_margin"
+            android:layout_marginTop="@dimen/default_margin"
             android:background="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -309,7 +280,7 @@
             android:textSize="@dimen/default_text_middle_size"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/loan_simulator_view" />
+            app:layout_constraintTop_toBottomOf="@+id/contact_view" />
 
         <TextView
             android:id="@+id/contact_textView"

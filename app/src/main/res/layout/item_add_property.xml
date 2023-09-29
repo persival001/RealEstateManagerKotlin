@@ -26,18 +26,6 @@
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/property_picture" />
 
-            <!-- Favorite button -->
-            <Button
-                android:id="@+id/favorite_button"
-                style="?attr/materialIconButtonFilledTonalStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|start"
-                android:layout_margin="@dimen/default_margin"
-                android:padding="@dimen/default_margin"
-                app:icon="@drawable/baseline_favorite_border_24"
-                app:iconSize="30dp" />
-
             <!-- Delete button -->
             <Button
                 android:id="@+id/delete_button"

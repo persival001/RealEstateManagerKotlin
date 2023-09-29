@@ -5,9 +5,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.bumptech.glide.Glide
+import com.google.android.material.carousel.CarouselLayoutManager
 import com.persival.realestatemanagerkotlin.BuildConfig.MAPS_API_KEY
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentDetailBinding
@@ -43,12 +43,15 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
 
         // Show the property details photos
-        val recyclerView: RecyclerView = binding.carouselRecyclerView
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.layoutManager = layoutManager
+        val carouselLayoutManager = CarouselLayoutManager()
+        binding.carouselRecyclerView.layoutManager = carouselLayoutManager
+
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(binding.carouselRecyclerView)
+
         viewModel.detailItem.observe(viewLifecycleOwner) { detailViewStateItems ->
             val detailImageAdapter = DetailImageAdapter(requireContext(), detailViewStateItems)
-            recyclerView.adapter = detailImageAdapter
+            binding.carouselRecyclerView.adapter = detailImageAdapter
         }
 
         // Show the property details

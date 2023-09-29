@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
+package com.persival.realestatemanagerkotlin.ui.modify_property
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -43,25 +43,22 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 @AndroidEntryPoint
-class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
+class ModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     companion object {
-        fun newInstance(): AddOrModifyPropertyFragment {
-            return AddOrModifyPropertyFragment()
+        fun newInstance(): ModifyPropertyFragment {
+            return ModifyPropertyFragment()
         }
-
-        private const val ACTION_TYPE = "ACTION_TYPE"
-        private const val MODIFY = "modify"
     }
 
     private val binding by viewBinding { FragmentAddPropertyBinding.bind(it) }
-    private val viewModel by viewModels<AddOrModifyPropertyViewModel>()
+    private val viewModel by viewModels<ModifyPropertyViewModel>()
 
     private var latLongString: String? = null
     private var currentPhotoUri: Uri? = null
 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    private lateinit var addOrModifyPropertyListAdapter: AddOrModifyPropertyListAdapter
+    private lateinit var modifyPropertyListAdapter: ModifyPropertyListAdapter
 
     private val openFileResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -100,8 +97,8 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
 
         // Initialize adapter and set it for horizontal view
-        addOrModifyPropertyListAdapter = AddOrModifyPropertyListAdapter()
-        binding.addPhotoRecyclerView.adapter = addOrModifyPropertyListAdapter
+        modifyPropertyListAdapter = ModifyPropertyListAdapter()
+        binding.addPhotoRecyclerView.adapter = modifyPropertyListAdapter
         val horizontalLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.addPhotoRecyclerView.layoutManager = horizontalLayoutManager
 
@@ -157,11 +154,9 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
             openCameraForTakeAPicture()
         }
 
-        // MODIFY PROPERTY - Complete form with information's of property selected
-        if (isModifyAction()) {
-            displaysPropertyInformation()
-            displaysPropertyPhotos()
-        }
+        // Complete form with information's of property selected
+        displaysPropertyInformation()
+        displaysPropertyPhotos()
 
         // Quit the fragment
         binding.cancelButton.setOnClickListener {
@@ -172,9 +167,7 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         binding.okButton.setOnClickListener {
             if (validateFields()) {
                 val addViewState = retrieveFormData()
-
-                (takeIf { isModifyAction() }?.let { viewModel::updateProperty } ?: viewModel::addNewProperty)
-                    .invoke(addViewState)
+                viewModel::updateProperty.invoke(addViewState)
 
                 requireActivity().finish()
             }
@@ -184,20 +177,20 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     // Displays the property information to modify
     private fun displaysPropertyInformation() {
-        viewModel.viewStateFlow.asLiveData().observe(viewLifecycleOwner) { addViewState ->
+        viewModel.viewStateFlow.asLiveData().observe(viewLifecycleOwner) { modifyViewState ->
 
             // Fill in the fields for the property
-            binding.typeTextView.setText(addViewState.type)
-            binding.datePickerToSellText.setText(addViewState.soldAt)
-            binding.datePickerEditText.setText(addViewState.availableFrom)
-            binding.priceEditText.setText(addViewState.price.toString())
-            binding.areaEditText.setText(addViewState.area.toString())
-            binding.roomsEditText.setText(addViewState.rooms.toString())
-            binding.bedroomsEditText.setText(addViewState.bedrooms.toString())
-            binding.bathroomsEditText.setText(addViewState.bathrooms.toString())
-            binding.descriptionEditText.setText(addViewState.description)
-            binding.addressEditText.setText(addViewState.address)
-            latLongString = addViewState.latLng
+            binding.typeTextView.setText(modifyViewState.type)
+            binding.datePickerToSellText.setText(modifyViewState.soldAt)
+            binding.datePickerEditText.setText(modifyViewState.availableFrom)
+            binding.priceEditText.setText(modifyViewState.price.toString())
+            binding.areaEditText.setText(modifyViewState.area.toString())
+            binding.roomsEditText.setText(modifyViewState.rooms.toString())
+            binding.bedroomsEditText.setText(modifyViewState.bedrooms.toString())
+            binding.bathroomsEditText.setText(modifyViewState.bathrooms.toString())
+            binding.descriptionEditText.setText(modifyViewState.description)
+            binding.addressEditText.setText(modifyViewState.address)
+            latLongString = modifyViewState.latLng
 
             // Fill in the chips for the poi's
             val chips = listOf(
@@ -209,7 +202,7 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 binding.restaurantChip
             )
             for (chip in chips) {
-                chip.isChecked = addViewState.pointsOfInterest.contains(chip.text, ignoreCase = true)
+                chip.isChecked = modifyViewState.pointsOfInterest.contains(chip.text, ignoreCase = true)
             }
 
         }
@@ -217,11 +210,11 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     private fun displaysPropertyPhotos() {
         viewModel.viewStateItemList.asLiveData().observe(viewLifecycleOwner) { viewStateItemList ->
-            addOrModifyPropertyListAdapter.updateList(viewStateItemList)
+            modifyPropertyListAdapter.updateList(viewStateItemList)
         }
     }
 
-    private fun retrieveFormData(): AddOrModifyPropertyViewState {
+    private fun retrieveFormData(): ModifyPropertyViewState {
 
         // Retrieve poi selected
         val selectedChips = listOf(
@@ -233,7 +226,7 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
             binding.restaurantChip
         ).filter { it.isChecked }.map { it.text.toString() }
 
-        return AddOrModifyPropertyViewState(
+        return ModifyPropertyViewState(
             binding.typeTextView.text.toString(),
             binding.addressEditText.text.toString(),
             latLongString ?: "",
@@ -335,21 +328,19 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
     }
 
     private fun setImageUri(uri: Uri) {
-        if (uri.toString().isNotEmpty() && uri != Uri.EMPTY) {
-            setImageDescription(uri) { description ->
-                if (description.isNotEmpty()) {
-                    viewModel.insertImageAndDescription(uri.toString(), description)
-                } else {
-                    Toast.makeText(context, getString(R.string.not_empty), Toast.LENGTH_SHORT).show()
-                }
-            }
-        } else {
+        if (uri.toString().isEmpty() || uri == Uri.EMPTY) {
             Log.e("IMAGE_IMPORT", "Failed to set image from URI: $uri")
+            return
         }
-    }
 
-    private fun isModifyAction(): Boolean {
-        return arguments?.getString(ACTION_TYPE) == MODIFY
+        setImageDescription(uri) { description ->
+            if (description.isEmpty()) {
+                Toast.makeText(context, getString(R.string.not_empty), Toast.LENGTH_SHORT).show()
+                return@setImageDescription
+            }
+            viewModel.insertImageAndDescription(uri.toString(), description)
+        }
+
     }
 
     @SuppressLint("SimpleDateFormat")

@@ -11,7 +11,7 @@ import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyI
 import com.persival.realestatemanagerkotlin.domain.property.InsertPropertyUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
-import com.persival.realestatemanagerkotlin.ui.add_or_modify_property.AddOrModifyPropertyViewModel
+import com.persival.realestatemanagerkotlin.ui.add_property.AddPropertyViewModel
 import com.persival.realestatemanagerkotlin.utils.Utils
 import io.mockk.Runs
 import io.mockk.clearAllMocks
@@ -29,7 +29,7 @@ import org.junit.Before
 import org.junit.Test
 import java.util.Date
 
-class AddOrModifyPropertyViewModelTest {
+class AddPropertyViewModelTest {
 
     // Mocks
     private val getRealEstateAgentUseCase = mockk<GetRealEstateAgentUseCase>()
@@ -45,12 +45,12 @@ class AddOrModifyPropertyViewModelTest {
     private val hasCameraPermissionUseCase = mockk<HasCameraPermissionUseCase>()
     private val hasStoragePermissionUseCase = mockk<HasStoragePermissionUseCase>()
 
-    private lateinit var viewModel: AddOrModifyPropertyViewModel
+    private lateinit var viewModel: AddPropertyViewModel
 
     @Before
     fun setUp() {
         clearAllMocks()
-        viewModel = AddOrModifyPropertyViewModel(
+        viewModel = AddPropertyViewModel(
             getRealEstateAgentUseCase,
             insertPropertyUseCase,
             insertPhotoUseCase,

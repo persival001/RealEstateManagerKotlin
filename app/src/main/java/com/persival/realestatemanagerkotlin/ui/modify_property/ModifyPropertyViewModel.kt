@@ -1,6 +1,5 @@
-package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
+package com.persival.realestatemanagerkotlin.ui.modify_property
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
@@ -12,11 +11,9 @@ import com.persival.realestatemanagerkotlin.domain.photo.DeletePhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.GetPropertyPhotosUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
-import com.persival.realestatemanagerkotlin.domain.point_of_interest.InsertPointOfInterestUseCase
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.UpdatePointOfInterestUseCase
 import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyIdUseCase
-import com.persival.realestatemanagerkotlin.domain.property.InsertPropertyUseCase
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 import com.persival.realestatemanagerkotlin.domain.property.UpdatePropertyUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
@@ -34,11 +31,9 @@ import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class AddOrModifyPropertyViewModel @Inject constructor(
+class ModifyPropertyViewModel @Inject constructor(
     private val getRealEstateAgentUseCase: GetRealEstateAgentUseCase,
-    private val insertPropertyUseCase: InsertPropertyUseCase,
     private val insertPhotoUseCase: InsertPhotoUseCase,
-    private val insertPointOfInterestUseCase: InsertPointOfInterestUseCase,
     private val getPropertyWithPhotoAndPOIUseCase: GetPropertyWithPhotoAndPOIUseCase,
     private val getSelectedPropertyIdUseCase: GetSelectedPropertyIdUseCase,
     private val getSavedStateForDateConversionButtonUseCase: GetSavedStateForDateConversionButtonUseCase,
@@ -53,8 +48,8 @@ class AddOrModifyPropertyViewModel @Inject constructor(
 
     ) : ViewModel() {
 
-    private val viewStateItemListFlow = MutableStateFlow<List<AddOrModifyPropertyViewStateItem>>(emptyList())
-    val viewStateItemList: StateFlow<List<AddOrModifyPropertyViewStateItem>> = viewStateItemListFlow
+    private val viewStateItemListFlow = MutableStateFlow<List<ModifyPropertyViewStateItem>>(emptyList())
+    val viewStateItemList: StateFlow<List<ModifyPropertyViewStateItem>> = viewStateItemListFlow
 
     init {
         viewModelScope.launch {
@@ -68,7 +63,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
         }
     }
 
-    val viewStateFlow: Flow<AddOrModifyPropertyViewState> = flow {
+    val viewStateFlow: Flow<ModifyPropertyViewState> = flow {
         val propertyId = getSelectedPropertyIdUseCase().value
         if (propertyId != null && propertyId > 0) {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { propertyWithPhotosAndPOIEntity ->
@@ -77,59 +72,16 @@ class AddOrModifyPropertyViewModel @Inject constructor(
         }
     }
 
-    fun addNewProperty(
-        addOrModifyPropertyViewState: AddOrModifyPropertyViewState,
-    ) {
-        viewModelScope.launch {
-            val agentEntity = getRealEstateAgentUseCase.invoke()
-            Log.d("ViewModelDebug", "ADD_PROPERTY_CALLED")
-
-            if (agentEntity != null) {
-                val propertyId = insertPropertyUseCase.invoke(
-                    PropertyEntity(
-                        id = 0,
-                        type = addOrModifyPropertyViewState.type,
-                        address = addOrModifyPropertyViewState.address,
-                        latLng = addOrModifyPropertyViewState.latLng,
-                        area = addOrModifyPropertyViewState.area,
-                        rooms = addOrModifyPropertyViewState.rooms,
-                        bathrooms = addOrModifyPropertyViewState.bathrooms,
-                        bedrooms = addOrModifyPropertyViewState.bedrooms,
-                        description = addOrModifyPropertyViewState.description,
-                        price = addOrModifyPropertyViewState.price,
-                        isSold = isThePropertyForSale(addOrModifyPropertyViewState.soldAt),
-                        entryDate = addOrModifyPropertyViewState.availableFrom,
-                        saleDate = addOrModifyPropertyViewState.soldAt,
-                        agentName = agentEntity.name
-                    )
-                )
-
-                if (propertyId != null) {
-                    // Add point of interests
-                    addOrModifyPropertyViewState.pointsOfInterest.split(",").forEach {
-                        insertPointOfInterestUseCase.invoke(
-                            PointOfInterestEntity(propertyId = propertyId, poi = it.trim())
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    fun updateProperty(addOrModifyPropertyViewState: AddOrModifyPropertyViewState) {
+    fun updateProperty(modifyPropertyViewState: ModifyPropertyViewState) {
         val propertyId = getSelectedPropertyIdUseCase().value
         val agentName = getRealEstateAgentUseCase.invoke()?.name
         if (agentName != null && propertyId != null) {
             viewModelScope.launch {
-                val propertyEntity = mapToPropertyEntity(addOrModifyPropertyViewState, agentName, propertyId)
-                val pointOfInterestEntities = mapToPointOfInterestEntity(addOrModifyPropertyViewState, propertyId)
-
+                val propertyEntity = mapToPropertyEntity(modifyPropertyViewState, agentName, propertyId)
+                val pointOfInterestEntities = mapToPointOfInterestEntity(modifyPropertyViewState, propertyId)
 
                 // Update the property
                 updatePropertyUseCase.invoke(propertyEntity)
-
-                // Update the photos
-                // TODO: Update
 
                 // Update the points of interests
                 updatePointOfInterestUseCase.invoke(propertyId, pointOfInterestEntities)
@@ -157,10 +109,10 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     private fun isThePropertyForSale(saleDate: String?): Boolean = !(saleDate == null || saleDate == "")
 
     private fun mapToPointOfInterestEntity(
-        addOrModifyPropertyViewState: AddOrModifyPropertyViewState,
+        modifyPropertyViewState: ModifyPropertyViewState,
         propertyId: Long
     ): List<PointOfInterestEntity> {
-        return addOrModifyPropertyViewState.pointsOfInterest.split(",").map { poi ->
+        return modifyPropertyViewState.pointsOfInterest.split(",").map { poi ->
             PointOfInterestEntity(
                 propertyId = propertyId,
                 poi = poi.trim()
@@ -169,30 +121,30 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     }
 
     private fun mapToPropertyEntity(
-        addOrModifyPropertyViewState: AddOrModifyPropertyViewState,
+        modifyPropertyViewState: ModifyPropertyViewState,
         agentName: String,
         propertyId: Long
     ): PropertyEntity {
         return PropertyEntity(
             propertyId,
-            addOrModifyPropertyViewState.type,
-            addOrModifyPropertyViewState.address,
-            addOrModifyPropertyViewState.latLng,
-            addOrModifyPropertyViewState.area,
-            addOrModifyPropertyViewState.rooms,
-            addOrModifyPropertyViewState.bathrooms,
-            addOrModifyPropertyViewState.bedrooms,
-            addOrModifyPropertyViewState.description,
-            addOrModifyPropertyViewState.price,
-            isThePropertyForSale(addOrModifyPropertyViewState.soldAt),
-            addOrModifyPropertyViewState.availableFrom,
-            addOrModifyPropertyViewState.soldAt,
+            modifyPropertyViewState.type,
+            modifyPropertyViewState.address,
+            modifyPropertyViewState.latLng,
+            modifyPropertyViewState.area,
+            modifyPropertyViewState.rooms,
+            modifyPropertyViewState.bathrooms,
+            modifyPropertyViewState.bedrooms,
+            modifyPropertyViewState.description,
+            modifyPropertyViewState.price,
+            isThePropertyForSale(modifyPropertyViewState.soldAt),
+            modifyPropertyViewState.availableFrom,
+            modifyPropertyViewState.soldAt,
             agentName
         )
     }
 
-    private fun mapEntityToViewState(entity: PropertyWithPhotosAndPOIEntity): AddOrModifyPropertyViewState {
-        return AddOrModifyPropertyViewState(
+    private fun mapEntityToViewState(entity: PropertyWithPhotosAndPOIEntity): ModifyPropertyViewState {
+        return ModifyPropertyViewState(
             type = entity.property.type,
             address = entity.property.address,
             latLng = entity.property.latLng,
@@ -208,18 +160,12 @@ class AddOrModifyPropertyViewModel @Inject constructor(
         )
     }
 
-    private fun mapPhotoEntityToViewStateItem(entity: PhotoEntity): AddOrModifyPropertyViewStateItem.Photo {
-        return AddOrModifyPropertyViewStateItem.Photo(
+    private fun mapPhotoEntityToViewStateItem(entity: PhotoEntity): ModifyPropertyViewStateItem.Photo {
+        return ModifyPropertyViewStateItem.Photo(
             id = entity.id,
             propertyId = entity.propertyId,
             description = entity.description,
             photoUrl = entity.photoUrl,
-            isFavorite = false,
-            onFavoriteEvent = EquatableCallback {
-                viewModelScope.launch {
-                    //TODO: isFavoritePhotoUseCase.invoke(entity.id)
-                }
-            },
             onDeleteEvent = EquatableCallback {
                 viewModelScope.launch {
                     deletePhotoUseCase.invoke(entity.propertyId, entity.id)
