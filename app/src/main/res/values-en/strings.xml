@@ -18,7 +18,7 @@
     <string name="add_property">Add property</string>
     <string name="modify_property">Modify property</string>
     <string name="media">Media</string>
-    <string name="description_exemple">This luxurious villa offers a sanctuary of serenity nestled in a prime location with breathtaking ocean views. With 5 en-suite bedrooms, this exceptional residence offers contemporary design, high-end finishes and state-of-the-art equipment.</string>
+    <string name="description_exemple">Luxurious villa offers a sanctuary of serenity</string>
     <string name="conversion_title">Currency conversion</string>
     <string name="conversion_description">Dollar to euro conversion</string>
     <string name="date_title">Sort by date</string>

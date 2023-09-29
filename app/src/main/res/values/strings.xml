@@ -18,7 +18,7 @@
     <string name="add_property">Ajouter une propriété</string>
     <string name="modify_property">Modifier l\'annonce</string>
     <string name="media">Photos</string>
-    <string name="description_exemple">Cette luxueuse villa offre un sanctuaire de sérénité niché dans un emplacement privilégié avec une vue imprenable sur l\'océan. Dotée de 5 chambres en suite, cette demeure d\'exception offre un design contemporain, des finitions haut de gamme et des équipements de pointe.</string>
+    <string name="description_exemple">Luxueuse villa qui offre un sanctuaire de sérénité</string>
     <string name="conversion_title">Conversion de devises</string>
     <string name="conversion_description">Convertir les dollars en euros</string>
     <string name="date_title">Conversion de la date</string>

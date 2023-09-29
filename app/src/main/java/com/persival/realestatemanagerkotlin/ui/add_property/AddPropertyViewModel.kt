@@ -9,12 +9,13 @@ import com.persival.realestatemanagerkotlin.domain.permissions.HasStoragePermiss
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshCameraPermissionUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshStoragePermissionUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
+import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.InsertPointOfInterestUseCase
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property.InsertPropertyUseCase
 import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
-import com.persival.realestatemanagerkotlin.utils.EquatableCallback
+import com.persival.realestatemanagerkotlin.utils.EquatableCallbackWithParam
 import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -70,6 +71,17 @@ class AddPropertyViewModel @Inject constructor(
 
                 if (propertyId != null) {
                     // Add Image and description
+                    addViewStateItemListFlow.value.forEach { viewStateItem ->
+                        if (viewStateItem is AddPropertyViewStateItem.Photo) {
+                            val photoEntity = PhotoEntity(
+                                id = viewStateItem.id,
+                                propertyId = propertyId,
+                                description = viewStateItem.description,
+                                photoUrl = viewStateItem.photoUrl
+                            )
+                            insertPhotoUseCase.invoke(photoEntity)
+                        }
+                    }
 
                     // Add point of interests
                     addPropertyViewState.pointsOfInterest.split(",").forEach {
@@ -89,9 +101,13 @@ class AddPropertyViewModel @Inject constructor(
                 propertyId = 0,
                 description = description,
                 photoUrl = uri,
-                onDeleteEvent = EquatableCallback {
+                onDeleteEvent = EquatableCallbackWithParam { position ->
                     viewModelScope.launch {
-                        // TODO: remove
+                        val currentList = addViewStateItemListFlow.value.toMutableList()
+                        if (position in currentList.indices) {
+                            currentList.removeAt(position)
+                            addViewStateItemListFlow.emit(currentList)
+                        }
                     }
                 }
             )
@@ -102,6 +118,7 @@ class AddPropertyViewModel @Inject constructor(
             addViewStateItemListFlow.emit(newList)
         }
     }
+
 
     private fun isThePropertyForSale(saleDate: String?): Boolean = !(saleDate == null || saleDate == "")
 

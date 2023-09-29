@@ -23,7 +23,7 @@ class AddPropertyListAdapter :
 
     override fun onBindViewHolder(holder: PropertyViewHolder, position: Int) {
         when (holder) {
-            is PropertyViewHolder.Photo -> holder.bind(getItem(position) as AddPropertyViewStateItem.Photo)
+            is PropertyViewHolder.Photo -> holder.bind(getItem(position) as AddPropertyViewStateItem.Photo, position)
             is PropertyViewHolder.EmptyState -> Unit
         }
     }
@@ -49,7 +49,7 @@ class AddPropertyListAdapter :
                 }
             }
 
-            fun bind(item: AddPropertyViewStateItem.Photo) {
+            fun bind(item: AddPropertyViewStateItem.Photo, position: Int) {
                 binding.itemDescriptionEditText.text = item.description
 
                 Glide.with(binding.itemImageView)
@@ -57,7 +57,7 @@ class AddPropertyListAdapter :
                     .override(800, 800)
                     .into(binding.itemImageView)
 
-                binding.deleteButton.setOnClickListener { item.onDeleteEvent.invoke() }
+                binding.deleteButton.setOnClickListener { item.onDeleteEvent.invoke(position) }
             }
 
         }
