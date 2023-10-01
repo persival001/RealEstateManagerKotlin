@@ -1,6 +1,7 @@
 package com.persival.realestatemanagerkotlin.ui.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -94,7 +95,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 pois = pois,
                 date = dateValue
             )
-
+            Log.d(
+                "VALUES",
+                "type: $typeValue, minPrice: $minPrice, maxPrice: $maxPrice, minArea: $minArea, maxArea: $maxArea, pois: $pois, date: $dateValue"
+            )
             viewModel.setSearchedProperties(viewState)
 
             requireActivity().finish()
