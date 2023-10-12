@@ -9,11 +9,9 @@ import com.persival.realestatemanagerkotlin.domain.database.SynchronizeDatabaseU
 import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
-import com.persival.realestatemanagerkotlin.domain.search.GetActiveSearchFilterUseCase
-import com.persival.realestatemanagerkotlin.domain.search.SearchEntity
 import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
@@ -25,7 +23,6 @@ class PropertiesViewModel @Inject constructor(
     private val setSelectedPropertyIdUseCase: SetSelectedPropertyIdUseCase,
     private val synchronizeDatabaseUseCase: SynchronizeDatabaseUseCase,
     private val getSavedStateForCurrencyConversionButton: GetSavedStateForCurrencyConversionButton,
-    private val getActiveSearchFilterUseCase: GetActiveSearchFilterUseCase,
 ) : ViewModel() {
 
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
@@ -33,61 +30,41 @@ class PropertiesViewModel @Inject constructor(
     private val propertyIdSelected = MutableLiveData<Long?>()
     val showNotificationEvent = MutableLiveData<Boolean>()
 
-    private var lastPropertyCount = 0
-
     init {
-        combineFiltersWithProperties()
+        combineFiltersWithProperties("")
     }
 
-    private fun combineFiltersWithProperties() {
+    fun combineFiltersWithProperties(searchQuery: String) {
         viewModelScope.launch {
-            val filterFlow = getActiveSearchFilterUseCase.invoke()
             val propertiesFlow = getAllPropertiesWithPhotosAndPOIUseCase.invoke()
 
-            combine(filterFlow, propertiesFlow) { filter, properties ->
-                if (properties.size > lastPropertyCount) {
-                    showNotificationForNewProperty()
-                }
+            propertiesFlow.map { properties ->
+                if (searchQuery.isBlank()) {
+                    // If search query is empty, return all properties
+                    properties.map { transformToViewState(it) }
+                } else {
+                    // Filter properties based on search query
+                    properties.filter { propertyWithPhotosAndPOI ->
+                        val property = propertyWithPhotosAndPOI.property
 
-                lastPropertyCount = properties.size
-
-                var filteredProperties = properties.filter {
-                    it.meetsFilterCriteria(filter)
-                }
-
-                filteredProperties = when (filter?.date) {
-                    "Old first" -> filteredProperties.sortedBy { it.property.entryDate }
-                    "Recent first" -> filteredProperties.sortedByDescending { it.property.entryDate }
-                    else -> filteredProperties
-                }
-
-                filteredProperties.map { propertyWithPhotosAndPOI ->
-                    transformToViewState(propertyWithPhotosAndPOI)
+                        // Check if the search query appears in any of the relevant fields
+                        property.type.contains(searchQuery, ignoreCase = true) ||
+                                property.address.contains(searchQuery, ignoreCase = true) ||
+                                property.area.toString().contains(searchQuery, ignoreCase = true) ||
+                                property.rooms.toString().contains(searchQuery, ignoreCase = true) ||
+                                property.bathrooms.toString().contains(searchQuery, ignoreCase = true) ||
+                                property.bedrooms.toString().contains(searchQuery, ignoreCase = true) ||
+                                property.description.contains(searchQuery, ignoreCase = true) ||
+                                property.price.toString().contains(searchQuery, ignoreCase = true) ||
+                                property.agentName.contains(searchQuery, ignoreCase = true)
+                    }.map { propertyWithPhotosAndPOI ->
+                        transformToViewState(propertyWithPhotosAndPOI)
+                    }
                 }
             }.collect {
                 propertiesViewStateItem.value = it
             }
         }
-    }
-
-    private fun PropertyWithPhotosAndPOIEntity.meetsFilterCriteria(filter: SearchEntity?): Boolean {
-        if (filter == null) return true
-
-        if (this.property.type != filter.type) return false
-
-        if (this.property.price < filter.minPrice) return false
-        if (filter.maxPrice != Int.MAX_VALUE && this.property.price > filter.maxPrice) return false
-
-        if (this.property.area < filter.minArea) return false
-        if (filter.maxArea != Int.MAX_VALUE && this.property.area > filter.maxArea) return false
-
-        filter.pois.let { poisFilter: String ->
-            val propertyPois: List<String> = this.pointsOfInterest.map { it.poi }
-            val filterPOIs = poisFilter.split(",")
-            if (!filterPOIs.all { it in propertyPois }) return false
-        }
-
-        return true
     }
 
     private fun transformToViewState(propertyWithPhotosAndPOIEntity: PropertyWithPhotosAndPOIEntity): PropertyViewStateItem {

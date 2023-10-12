@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -20,20 +21,40 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
 
     companion object {
         fun newInstance() = PropertiesFragment()
+        const val SHARED_PREFS = "sharedPrefs"
+        const val KEY_CURRENCY = "KEY_CURRENCY"
     }
 
     private val binding by viewBinding { FragmentPropertiesBinding.bind(it) }
     private val viewModel by viewModels<PropertiesViewModel>()
     private lateinit var sharedPreferenceListener: SharedPreferences.OnSharedPreferenceChangeListener
     private val sharedPreferences: SharedPreferences by lazy {
-        requireActivity().getSharedPreferences("SharedPrefs", Context.MODE_PRIVATE)
+        requireActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Synchronize firebase and room
         viewModel.synchronizeDatabase()
 
+        // Search view
+        val searchView = binding.searchView
+
+        // Set the listener to capture user query input
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Call viewModel method even if newText is empty or null
+                viewModel.combineFiltersWithProperties(newText ?: "")
+                return true
+            }
+        })
+
+        // Initializes PropertyListAdapter to handle property selection
         val propertyListAdapter = PropertyListAdapter { property ->
             onPropertySelected(property.id)
             val detailFragment = DetailFragment.newInstance()
@@ -72,7 +93,7 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
         }
 
         sharedPreferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == "KEY_CURRENCY") {
+            if (key == KEY_CURRENCY) {
                 viewModel.updatePropertyPrices()
             }
         }

@@ -174,13 +174,6 @@ class MainActivity : AppCompatActivity(), NavigationHandler {
                 return true
             }
 
-            R.id.action_search -> {
-                val intent = Intent(this, NavigationActivity::class.java)
-                intent.putExtra(SELECTED_ITEM, SEARCH_ITEM)
-                startActivity(intent)
-                return true
-            }
-
             R.id.action_map -> {
                 val intent = Intent(this, NavigationActivity::class.java)
                 intent.putExtra(SELECTED_ITEM, MAP_ITEM)

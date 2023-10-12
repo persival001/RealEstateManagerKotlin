@@ -11,7 +11,6 @@ import com.persival.realestatemanagerkotlin.ui.add_property.AddPropertyFragment
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
 import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
 import com.persival.realestatemanagerkotlin.ui.modify_property.ModifyPropertyFragment
-import com.persival.realestatemanagerkotlin.ui.search.SearchFragment
 import com.persival.realestatemanagerkotlin.ui.settings.SettingsFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,12 +52,6 @@ class NavigationActivity : AppCompatActivity(), NavigationHandler {
             MODIFY_ITEM -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_menu_container, ModifyPropertyFragment())
-                    .commit()
-            }
-
-            SEARCH_ITEM -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_menu_container, SearchFragment())
                     .commit()
             }
 
