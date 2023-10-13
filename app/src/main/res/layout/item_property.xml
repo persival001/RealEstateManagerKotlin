@@ -1,107 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view"
-    style="@style/Widget.Material3.CardView.Elevated"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp"
-    android:elevation="8dp">
+    android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/item"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/item_background_selector"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="7dp">
 
-        <TextView
-            android:id="@+id/property_type"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_little_margin"
-            android:layout_marginTop="@dimen/default_little_margin"
-            android:singleLine="true"
-            android:textColor="#000000"
-            android:textSize="@dimen/default_text_middle_size"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/property_picture"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Penthouse" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/property_address"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_little_margin"
-            android:layout_marginEnd="@dimen/default_little_margin"
-            android:maxLines="2"
-            android:textSize="@dimen/default_text_size"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toTopOf="@+id/property_price"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/property_picture"
-            app:layout_constraintTop_toBottomOf="@+id/property_type"
-            tools:text="Brooklyn" />
+            <!-- Property photo with sold elements -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/property_price"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/default_little_margin"
-            android:layout_marginBottom="@dimen/default_little_margin"
-            android:singleLine="true"
-            android:textAllCaps="false"
-            android:textColor="@color/md_theme_light_tertiary"
-            android:textSize="@dimen/default_text_big_size"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/property_picture"
-            tools:text="$60,000,000" />
+                <ImageView
+                    android:id="@+id/property_picture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/property_picture"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/property_picture" />
 
-        <ImageView
-            android:id="@+id/property_picture"
-            android:layout_width="150dp"
-            android:layout_height="95dp"
-            android:layout_margin="@dimen/default_margin"
-            android:contentDescription="@string/property_picture"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/property_picture" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="#80FFFFFF"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/property_price"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/property_type">
+                    <TextView
+                        android:id="@+id/rooms_textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/default_micro_margin"
+                        android:drawablePadding="@dimen/default_micro_margin"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        app:drawableLeftCompat="@drawable/baseline_home_24" />
 
-            <ImageView
-                android:id="@+id/sold_imageview"
-                android:layout_width="170dp"
-                android:layout_height="70dp"
-                android:contentDescription="@string/sold_label"
-                android:src="@drawable/sold_label" />
+                    <TextView
+                        android:id="@+id/bedrooms_textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/default_micro_margin"
+                        android:drawablePadding="@dimen/default_micro_margin"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        app:drawableLeftCompat="@drawable/baseline_bed_24" />
 
+                    <TextView
+                        android:id="@+id/bathrooms_textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/default_micro_margin"
+                        android:drawablePadding="@dimen/default_micro_margin"
+                        android:textColor="#000000"
+                        android:textStyle="bold"
+                        app:drawableLeftCompat="@drawable/baseline_bathtub_24" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/property_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|top"
+                    android:background="#80000000"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:singleLine="true"
+                    android:textColor="@color/quantum_white_100"
+                    android:textSize="@dimen/default_text_middle_size"
+                    android:textStyle="bold"
+                    tools:text="Penthouse" />
+
+                <TextView
+                    android:id="@+id/property_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="#80000000"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:singleLine="true"
+                    android:textAllCaps="false"
+                    android:textColor="@color/quantum_white_100"
+                    android:textSize="@dimen/default_text_middle_size"
+                    android:textStyle="bold"
+                    tools:text="$60,000,000" />
+
+                <ImageView
+                    android:id="@+id/sold_imageview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/sold_label"
+                    android:src="@drawable/sold_sign" />
+
+                <TextView
+                    android:id="@+id/sold_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/sold"
+                    android:textColor="@color/md_theme_light_onPrimary"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+            </FrameLayout>
+
+            <!-- Information's of property -->
             <TextView
-                android:id="@+id/sold_textview"
-                android:layout_width="wrap_content"
+                android:id="@+id/property_address"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/sold"
-                android:textColor="@color/md_theme_light_onPrimary"
-                android:textSize="@dimen/default_text_big_size"
-                android:textStyle="bold" />
+                android:layout_marginStart="@dimen/default_little_margin"
+                android:layout_marginEnd="@dimen/default_little_margin"
+                android:gravity="center"
+                android:textSize="@dimen/default_text_size"
+                android:textStyle="normal"
+                tools:text="Brooklyn" />
 
-        </FrameLayout>
+        </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
-</androidx.cardview.widget.CardView>
+</LinearLayout>

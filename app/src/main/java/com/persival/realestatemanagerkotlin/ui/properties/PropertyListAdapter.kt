@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.ItemPropertyBinding
 
 class PropertyListAdapter(
@@ -18,9 +19,14 @@ class PropertyListAdapter(
     inner class PropertyViewHolder(private val binding: ItemPropertyBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: PropertyViewStateItem, selectedPos: Int, callback: (PropertyViewStateItem) -> Unit) {
 
-            binding.propertyType.text = item.type
+            val formattedString = binding.root.context.getString(R.string.property_description, item.type, item.surface)
+
+            binding.propertyType.text = formattedString
             binding.propertyAddress.text = item.address
             binding.propertyPrice.text = item.price
+            binding.roomsTextView.text = item.rooms
+            binding.bathroomsTextView.text = item.bathrooms
+            binding.bedroomsTextView.text = item.bedrooms
             Glide.with(binding.root.context)
                 .load(item.pictureUri)
                 .into(binding.propertyPicture)

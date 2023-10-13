@@ -119,7 +119,6 @@ class AddPropertyViewModel @Inject constructor(
         }
     }
 
-
     private fun isThePropertyForSale(saleDate: String?): Boolean = !(saleDate == null || saleDate == "")
 
     fun getFormattedDate(date: Date): String {

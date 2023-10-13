@@ -5,6 +5,11 @@ data class PropertyViewStateItem(
     val type: String,
     val address: String,
     val price: String,
+    val rooms: String,
+    val surface: String,
+    val bathrooms: String,
+    val bedrooms: String,
+    val poi: String,
     val pictureUri: String,
     val isSold: Boolean
 )

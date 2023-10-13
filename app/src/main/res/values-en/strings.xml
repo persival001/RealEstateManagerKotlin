@@ -21,7 +21,7 @@
     <string name="description_exemple">Luxurious villa offers a sanctuary of serenity</string>
     <string name="conversion_title">Currency conversion</string>
     <string name="conversion_description">Dollar to euro conversion</string>
-    <string name="date_title">Sort by date</string>
+    <string name="date_title">Date conversion</string>
     <string name="date_description">Format the date in french version</string>
     <string name="properties">List of properties for sale</string>
     <string name="surface">Surface</string>
@@ -127,5 +127,9 @@
     <string name="notification_text">Property added with success !</string>
     <string name="searchbar_hint">Search information of property</string>
     <string name="searchbar_description">Search informations of a property</string>
+    <string name="sold_title">Sold</string>
+    <string name="property_description">%1$s - %2$sm²</string>
+    <string name="what_are_you_looking_for">What are you looking for ?</string>
+    <string name="photo_required">At least one image is required</string>
 
 </resources>

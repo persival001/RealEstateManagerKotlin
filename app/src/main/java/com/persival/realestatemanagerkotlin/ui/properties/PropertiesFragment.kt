@@ -9,7 +9,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentPropertiesBinding
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
@@ -25,9 +25,9 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
         const val KEY_CURRENCY = "KEY_CURRENCY"
     }
 
+    private lateinit var sharedPreferenceListener: SharedPreferences.OnSharedPreferenceChangeListener
     private val binding by viewBinding { FragmentPropertiesBinding.bind(it) }
     private val viewModel by viewModels<PropertiesViewModel>()
-    private lateinit var sharedPreferenceListener: SharedPreferences.OnSharedPreferenceChangeListener
     private val sharedPreferences: SharedPreferences by lazy {
         requireActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
     }
@@ -38,21 +38,35 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
         // Synchronize firebase and room
         viewModel.synchronizeDatabase()
 
-        // Search view
-        val searchView = binding.searchView
-
         // Set the listener to capture user query input
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 // Call viewModel method even if newText is empty or null
-                viewModel.combineFiltersWithProperties(newText ?: "")
+                viewModel.combineFiltersWithProperties(
+                    newText ?: "", areaSearch = false, roomSearch = false, priceSearch = false,
+                    soldSearch = false
+                )
                 return true
             }
         })
+
+        // Initialize chip listeners
+        binding.areaChip.setOnCheckedChangeListener { _, _ ->
+            updateFiltersAndSearch(binding.searchView.query.toString())
+        }
+        binding.roomsChip.setOnCheckedChangeListener { _, _ ->
+            updateFiltersAndSearch(binding.searchView.query.toString())
+        }
+        binding.priceChip.setOnCheckedChangeListener { _, _ ->
+            updateFiltersAndSearch(binding.searchView.query.toString())
+        }
+        binding.soldChip.setOnCheckedChangeListener { _, _ ->
+            updateFiltersAndSearch(binding.searchView.query.toString())
+        }
 
         // Initializes PropertyListAdapter to handle property selection
         val propertyListAdapter = PropertyListAdapter { property ->
@@ -70,8 +84,10 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
             }
         }
 
-        binding.propertiesRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.propertiesRecyclerView.adapter = propertyListAdapter
+        binding.propertiesRecyclerView.apply {
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            binding.propertiesRecyclerView.adapter = propertyListAdapter
+        }
 
         viewModel.properties.observe(viewLifecycleOwner) { properties ->
             propertyListAdapter.submitList(properties)
@@ -100,6 +116,17 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceListener)
 
+    }
+
+    // Update the ViewModel based on the text and chip states
+    private fun updateFiltersAndSearch(query: String) {
+        val areaSearch = binding.areaChip.isChecked
+        val roomSearch = binding.roomsChip.isChecked
+        val priceSearch = binding.priceChip.isChecked
+        val soldSearch = binding.soldChip.isChecked
+
+        // Combine all filter info and query text
+        viewModel.combineFiltersWithProperties(query, areaSearch, roomSearch, priceSearch, soldSearch)
     }
 
     private fun onPropertySelected(id: Long?) {

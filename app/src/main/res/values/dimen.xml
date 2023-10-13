@@ -4,6 +4,7 @@
     <dimen name="default_large_margin">20dp</dimen>
     <dimen name="default_margin">10dp</dimen>
     <dimen name="default_little_margin">8dp</dimen>
+    <dimen name="default_micro_margin">5dp</dimen>
     <dimen name="default_title_size">20sp</dimen>
     <dimen name="default_text_big_size">24sp</dimen>
     <dimen name="default_text_middle_size">18sp</dimen>

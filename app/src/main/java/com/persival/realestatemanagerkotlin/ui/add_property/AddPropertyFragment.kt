@@ -56,6 +56,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     private var latLongString: String? = null
     private var currentPhotoUri: Uri? = null
+    private var areImagesPresent = false
 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var addPropertyListAdapter: AddPropertyListAdapter
@@ -176,6 +177,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
     private fun displaysAddedPropertyPhotos() {
         viewModel.addViewStateItemList.asLiveData().observe(viewLifecycleOwner) { viewStateItemList ->
             addPropertyListAdapter.updateList(viewStateItemList)
+            areImagesPresent = viewStateItemList.isNotEmpty()
         }
     }
 
@@ -233,7 +235,12 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             binding.addressEditText.error = getString(R.string.invalid_address_message)
         }
 
-        return allFieldsFilled && isLatLongValid
+        // Check if at least one photo is filled
+        if (!areImagesPresent) {
+            Toast.makeText(requireContext(), getString(R.string.photo_required), Toast.LENGTH_SHORT).show()
+        }
+
+        return allFieldsFilled && isLatLongValid && areImagesPresent
     }
 
     private fun setupDatePicker(vararg editTexts: TextInputEditText) {

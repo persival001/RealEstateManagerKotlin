@@ -50,12 +50,13 @@ class AddPropertyListAdapter :
             }
 
             fun bind(item: AddPropertyViewStateItem.Photo, position: Int) {
-                binding.itemDescriptionEditText.text = item.description
 
                 Glide.with(binding.itemImageView)
                     .load(item.photoUrl)
                     .override(800, 800)
                     .into(binding.itemImageView)
+
+                binding.itemDescriptionEditText.text = item.description
 
                 binding.deleteButton.setOnClickListener { item.onDeleteEvent.invoke(position) }
             }

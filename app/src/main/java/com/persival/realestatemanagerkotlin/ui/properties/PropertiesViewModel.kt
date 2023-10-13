@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButton
 import com.persival.realestatemanagerkotlin.domain.database.SynchronizeDatabaseUseCase
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
@@ -31,23 +32,30 @@ class PropertiesViewModel @Inject constructor(
     val showNotificationEvent = MutableLiveData<Boolean>()
 
     init {
-        combineFiltersWithProperties("")
+        combineFiltersWithProperties(
+            "", areaSearch = false, roomSearch = false, priceSearch = false,
+            soldSearch = false
+        )
     }
 
-    fun combineFiltersWithProperties(searchQuery: String) {
+    fun combineFiltersWithProperties(
+        searchQuery: String,
+        areaSearch: Boolean,
+        roomSearch: Boolean,
+        priceSearch: Boolean,
+        soldSearch: Boolean,
+    ) {
         viewModelScope.launch {
             val propertiesFlow = getAllPropertiesWithPhotosAndPOIUseCase.invoke()
 
             propertiesFlow.map { properties ->
-                if (searchQuery.isBlank()) {
-                    // If search query is empty, return all properties
-                    properties.map { transformToViewState(it) }
+                val finalProperties = if (searchQuery.isBlank()) {
+                    // If searchQuery is blank, sort properties using sortProperties
+                    sortProperties(properties, areaSearch, roomSearch, priceSearch, soldSearch)
                 } else {
-                    // Filter properties based on search query
-                    properties.filter { propertyWithPhotosAndPOI ->
+                    // Otherwise, apply the existing filtering logic
+                    val filteredProperties = properties.filter { propertyWithPhotosAndPOI ->
                         val property = propertyWithPhotosAndPOI.property
-
-                        // Check if the search query appears in any of the relevant fields
                         property.type.contains(searchQuery, ignoreCase = true) ||
                                 property.address.contains(searchQuery, ignoreCase = true) ||
                                 property.area.toString().contains(searchQuery, ignoreCase = true) ||
@@ -57,14 +65,42 @@ class PropertiesViewModel @Inject constructor(
                                 property.description.contains(searchQuery, ignoreCase = true) ||
                                 property.price.toString().contains(searchQuery, ignoreCase = true) ||
                                 property.agentName.contains(searchQuery, ignoreCase = true)
-                    }.map { propertyWithPhotosAndPOI ->
-                        transformToViewState(propertyWithPhotosAndPOI)
-                    }
+                    }.map { transformToViewState(it) }
+                    filteredProperties
                 }
+
+                finalProperties
             }.collect {
                 propertiesViewStateItem.value = it
             }
         }
+    }
+
+    // Sort properties based on boolean flags and transform to ViewState
+    private fun sortProperties(
+        properties: List<PropertyWithPhotosAndPOIEntity>,
+        areaSearch: Boolean,
+        roomSearch: Boolean,
+        priceSearch: Boolean,
+        soldSearch: Boolean
+    ): List<PropertyViewStateItem> {
+
+        // Step 1: Sort by isSold first
+        val initialSorted = if (soldSearch) {
+            properties.sortedBy { if (it.property.isSold) 0 else 1 }
+        } else {
+            properties.sortedBy { if (it.property.isSold) 1 else 0 }
+        }
+
+        // Step 2: Apply additional sort based on other flags
+        val finalSortedProperties = when {
+            areaSearch -> initialSorted.sortedBy { it.property.area }
+            roomSearch -> initialSorted.sortedBy { it.property.rooms }
+            priceSearch -> initialSorted.sortedBy { it.property.price }
+            else -> initialSorted
+        }
+
+        return finalSortedProperties.map { transformToViewState(it) }
     }
 
     private fun transformToViewState(propertyWithPhotosAndPOIEntity: PropertyWithPhotosAndPOIEntity): PropertyViewStateItem {
@@ -73,6 +109,11 @@ class PropertiesViewModel @Inject constructor(
             type = propertyWithPhotosAndPOIEntity.property.type,
             address = propertyWithPhotosAndPOIEntity.property.address,
             price = getFormattedPrice(propertyWithPhotosAndPOIEntity.property.price),
+            rooms = propertyWithPhotosAndPOIEntity.property.rooms.toString(),
+            surface = propertyWithPhotosAndPOIEntity.property.area.toString(),
+            bathrooms = propertyWithPhotosAndPOIEntity.property.bathrooms.toString(),
+            bedrooms = propertyWithPhotosAndPOIEntity.property.bedrooms.toString(),
+            poi = getFormattedPoi(propertyWithPhotosAndPOIEntity.pointsOfInterest),
             pictureUri = propertyWithPhotosAndPOIEntity.photos.firstOrNull()?.photoUrl ?: "",
             isSold = propertyWithPhotosAndPOIEntity.property.isSold
         )
@@ -116,6 +157,10 @@ class PropertiesViewModel @Inject constructor(
         }
 
         propertiesViewStateItem.value = updatedProperties
+    }
+
+    private fun getFormattedPoi(pointsOfInterest: List<PointOfInterestEntity>): String {
+        return pointsOfInterest.joinToString(separator = ", ") { it.poi }
     }
 
     fun updateSelectedPropertyId(id: Long?) {
