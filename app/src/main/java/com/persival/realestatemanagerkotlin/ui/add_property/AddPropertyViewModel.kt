@@ -1,6 +1,7 @@
 package com.persival.realestatemanagerkotlin.ui.add_property
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
@@ -36,46 +37,46 @@ class AddPropertyViewModel @Inject constructor(
     private val refreshCameraPermissionUseCase: RefreshCameraPermissionUseCase,
     private val hasCameraPermissionUseCase: HasCameraPermissionUseCase,
     private val hasStoragePermissionUseCase: HasStoragePermissionUseCase,
-
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val addViewStateItemListFlow = MutableStateFlow<List<AddPropertyViewStateItem>>(emptyList())
     val addViewStateItemList: StateFlow<List<AddPropertyViewStateItem>> = addViewStateItemListFlow
+    val propertyAddStatus = MutableLiveData<Long?>()
 
-    fun addNewProperty(
-        addPropertyViewState: AddPropertyViewState,
-    ) {
+    fun addNewProperty(addPropertyViewState: AddPropertyViewState) {
         viewModelScope.launch {
             val agentEntity = getRealEstateAgentUseCase.invoke()
             Log.d("ViewModelDebug", "ADD_PROPERTY_CALLED")
 
             if (agentEntity != null) {
-                val propertyId = insertPropertyUseCase.invoke(
-                    PropertyEntity(
-                        id = 0,
-                        type = addPropertyViewState.type,
-                        address = addPropertyViewState.address,
-                        latLng = addPropertyViewState.latLng,
-                        area = addPropertyViewState.area,
-                        rooms = addPropertyViewState.rooms,
-                        bathrooms = addPropertyViewState.bathrooms,
-                        bedrooms = addPropertyViewState.bedrooms,
-                        description = addPropertyViewState.description,
-                        price = addPropertyViewState.price,
-                        isSold = isThePropertyForSale(addPropertyViewState.soldAt),
-                        entryDate = addPropertyViewState.availableFrom,
-                        saleDate = addPropertyViewState.soldAt,
-                        agentName = agentEntity.name
-                    )
+                val propertyEntity = PropertyEntity(
+                    id = 0,
+                    type = addPropertyViewState.type,
+                    address = addPropertyViewState.address,
+                    latLng = addPropertyViewState.latLng,
+                    area = addPropertyViewState.area,
+                    rooms = addPropertyViewState.rooms,
+                    bathrooms = addPropertyViewState.bathrooms,
+                    bedrooms = addPropertyViewState.bedrooms,
+                    description = addPropertyViewState.description,
+                    price = addPropertyViewState.price,
+                    isSold = isThePropertyForSale(addPropertyViewState.soldAt),
+                    entryDate = addPropertyViewState.availableFrom,
+                    saleDate = addPropertyViewState.soldAt,
+                    agentName = agentEntity.name
                 )
 
-                if (propertyId != null) {
+                // Insert property and post the newId to LiveData
+                val newId = insertPropertyUseCase.invoke(propertyEntity)
+                propertyAddStatus.postValue(newId)
+
+                if (newId != null) {
                     // Add Image and description
                     addViewStateItemListFlow.value.forEach { viewStateItem ->
                         if (viewStateItem is AddPropertyViewStateItem.Photo) {
                             val photoEntity = PhotoEntity(
                                 id = viewStateItem.id,
-                                propertyId = propertyId,
+                                propertyId = newId,
                                 description = viewStateItem.description,
                                 photoUrl = viewStateItem.photoUrl
                             )
@@ -86,7 +87,7 @@ class AddPropertyViewModel @Inject constructor(
                     // Add point of interests
                     addPropertyViewState.pointsOfInterest.split(",").forEach {
                         insertPointOfInterestUseCase.invoke(
-                            PointOfInterestEntity(propertyId = propertyId, poi = it.trim())
+                            PointOfInterestEntity(propertyId = newId, poi = it.trim())
                         )
                     }
                 }

@@ -131,5 +131,6 @@
     <string name="property_description">%1$s - %2$sm²</string>
     <string name="what_are_you_looking_for">What are you looking for ?</string>
     <string name="photo_required">At least one image is required</string>
+    <string name="property_not_added">Error saving property</string>
 
 </resources>

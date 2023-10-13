@@ -29,7 +29,6 @@ class PropertiesViewModel @Inject constructor(
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
     val properties: LiveData<List<PropertyViewStateItem>> = propertiesViewStateItem
     private val propertyIdSelected = MutableLiveData<Long?>()
-    val showNotificationEvent = MutableLiveData<Boolean>()
 
     init {
         combineFiltersWithProperties(
@@ -85,14 +84,14 @@ class PropertiesViewModel @Inject constructor(
         soldSearch: Boolean
     ): List<PropertyViewStateItem> {
 
-        // Step 1: Sort by isSold first
+        // Sort by isSold first
         val initialSorted = if (soldSearch) {
             properties.sortedBy { if (it.property.isSold) 0 else 1 }
         } else {
             properties.sortedBy { if (it.property.isSold) 1 else 0 }
         }
 
-        // Step 2: Apply additional sort based on other flags
+        // Apply additional sort based on other flags
         val finalSortedProperties = when {
             areaSearch -> initialSorted.sortedBy { it.property.area }
             roomSearch -> initialSorted.sortedBy { it.property.rooms }
@@ -166,10 +165,6 @@ class PropertiesViewModel @Inject constructor(
     fun updateSelectedPropertyId(id: Long?) {
         setSelectedPropertyIdUseCase(id)
         propertyIdSelected.value = id
-    }
-
-    private fun showNotificationForNewProperty() {
-        showNotificationEvent.value = true
     }
 
     fun synchronizeDatabase() {

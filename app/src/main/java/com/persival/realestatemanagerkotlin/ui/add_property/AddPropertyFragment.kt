@@ -158,6 +158,15 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         // Filled the recycle view with the list of added photos
         displaysAddedPropertyPhotos()
 
+        // Notify user when the property is successfully added in room database
+        viewModel.propertyAddStatus.observe(viewLifecycleOwner) { newId ->
+            if (newId != null && newId > 0) {
+                Toast.makeText(requireContext(), getString(R.string.property_added), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.property_not_added), Toast.LENGTH_SHORT).show()
+            }
+        }
+
         // Quit the fragment
         binding.cancelButton.setOnClickListener {
             requireActivity().finish()
