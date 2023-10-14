@@ -37,7 +37,6 @@ class AddPropertyViewModelTest {
     private val insertPhotoUseCase = mockk<InsertPhotoUseCase>()
     private val insertPointOfInterestUseCase = mockk<InsertPointOfInterestUseCase>()
     private val getPropertyWithPhotoAndPOIUseCase = mockk<GetPropertyWithPhotoAndPOIUseCase>()
-    private val updatePropertyWithPhotoAndPOIUseCase = mockk<UpdatePropertyWithPhotoAndPOIUseCase>()
     private val getSelectedPropertyIdUseCase = mockk<GetSelectedPropertyIdUseCase>()
     private val getSavedStateForDateConversionButtonUseCase = mockk<GetSavedStateForDateConversionButtonUseCase>()
     private val refreshStoragePermissionUseCase = mockk<RefreshStoragePermissionUseCase>()
@@ -55,9 +54,6 @@ class AddPropertyViewModelTest {
             insertPropertyUseCase,
             insertPhotoUseCase,
             insertPointOfInterestUseCase,
-            getPropertyWithPhotoAndPOIUseCase,
-            updatePropertyWithPhotoAndPOIUseCase,
-            getSelectedPropertyIdUseCase,
             getSavedStateForDateConversionButtonUseCase,
             refreshStoragePermissionUseCase,
             refreshCameraPermissionUseCase,

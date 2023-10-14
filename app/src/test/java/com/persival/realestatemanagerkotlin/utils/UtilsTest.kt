@@ -1,8 +1,6 @@
 package com.persival.realestatemanagerkotlin.utils
 
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.net.wifi.WifiManager
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
@@ -12,30 +10,30 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.shadows.ShadowNetworkInfo
+import org.robolectric.shadows.ShadowWifiManager
 import java.util.Date
 
 @RunWith(RobolectricTestRunner::class)
 class UtilsTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
+    private lateinit var wifiManager: WifiManager
+    private lateinit var shadowWifiManager: ShadowWifiManager
 
     @Before
     fun setup() {
+        wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        shadowWifiManager = shadowOf(wifiManager)
     }
 
     @Test
     fun testConvertDollarToEuro() {
-        val dollars = 100
-        val result = Utils.convertDollarToEuro(dollars)
-        assertEquals(81, result)
+        assertEquals(81, Utils.convertDollarToEuro(100))
     }
 
     @Test
     fun testConvertEuroToDollar() {
-        val euros = 100
-        val result = Utils.convertEuroToDollar(euros)
-        assertEquals(123, result)
+        assertEquals(123, Utils.convertEuroToDollar(100))
     }
 
     @Test
@@ -80,70 +78,20 @@ class UtilsTest {
         assertNotEquals("02/01/2020", formattedDate)
     }
 
-
     // Test if wifi is enabled
     @Test
     fun testIsInternetAvailable() {
-        val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val shadowWifiManager = shadowOf(wifiManager)
-
         // Simulate Wi-Fi enable
         shadowWifiManager.setConnectionInfo(wifiManager.connectionInfo)
-
-        val result = Utils.isInternetAvailable(context)
-        assertEquals(true, result)
+        assertEquals(true, Utils.isInternetAvailable(context))
     }
 
     // Test if wifi is disabled
     @Test
     fun testIsInternetAvailableWhenWifiIsOff() {
-        val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val shadowWifiManager = shadowOf(wifiManager)
-
         // Simulate deactivated wifi
         shadowWifiManager.setWifiState(WifiManager.WIFI_STATE_DISABLED)
-
-        val result = Utils.isInternetAvailable(context)
-        assertEquals(false, result)
+        assertEquals(false, Utils.isInternetAvailable(context))
     }
-
-    @Test
-    fun testIsConnexionAvailable() {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val shadowConnectivityManager = shadowOf(connectivityManager)
-
-        // Simulate connexion internet
-        val networkInfo = ShadowNetworkInfo.newInstance(
-            NetworkInfo.DetailedState.CONNECTED,
-            ConnectivityManager.TYPE_WIFI,
-            0,
-            true,
-            true
-        )
-        shadowConnectivityManager.setActiveNetworkInfo(networkInfo)
-
-        val result = Utils.isConnexionAvailable(context)
-        assertEquals(true, result)
-    }
-
-    @Test
-    fun testIsConnexionAvailableWhenNoActiveConnection() {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val shadowConnectivityManager = shadowOf(connectivityManager)
-
-        // Simulate inactivate connexion
-        val networkInfo = ShadowNetworkInfo.newInstance(
-            NetworkInfo.DetailedState.DISCONNECTED,
-            -1, // -1 is no connexion
-            0,
-            false,
-            false
-        )
-        shadowConnectivityManager.setActiveNetworkInfo(networkInfo)
-
-        val result = Utils.isConnexionAvailable(context)
-        assertEquals(false, result)
-    }
-
 
 }

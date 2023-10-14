@@ -19,6 +19,7 @@ import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCas
 import com.persival.realestatemanagerkotlin.utils.EquatableCallbackWithParam
 import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -67,7 +68,8 @@ class AddPropertyViewModel @Inject constructor(
                 )
 
                 // Insert property and post the newId to LiveData
-                val newId = insertPropertyUseCase.invoke(propertyEntity)
+                val newIdDeferred = async { insertPropertyUseCase.invoke(propertyEntity) }
+                val newId = newIdDeferred.await()
                 propertyAddStatus.postValue(newId)
 
                 if (newId != null) {

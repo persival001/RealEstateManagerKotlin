@@ -1,86 +1,78 @@
 package com.persival.realestatemanagerkotlin
 
+import android.content.ContentResolver
 import android.content.Context
-import android.content.pm.ProviderInfo
+import android.database.Cursor
+import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.persival.realestatemanagerkotlin.data.content_provider.PropertyProvider
+import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDao
+import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDao
+import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDao
+import io.mockk.Runs
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.Assert
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowContentResolver
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
 class PropertyProviderTest {
 
-    private lateinit var shadowContentResolver: ShadowContentResolver
-    private lateinit var provider: PropertyProvider
+    private lateinit var propertyProvider: PropertyProvider
+    private lateinit var mockPropertyDao: PropertyDao
+    private lateinit var mockPhotoDao: PhotoDao
+    private lateinit var mockPointOfInterestDao: PointOfInterestDao
+    private lateinit var contentResolver: ContentResolver
+    private lateinit var context: Context
 
     @Before
-    fun setUp() {
-        val contentResolver = ApplicationProvider.getApplicationContext<Context>().contentResolver
+    fun setup() {
+        context = ApplicationProvider.getApplicationContext()
+        contentResolver = mockk(relaxed = true)
 
-        shadowContentResolver = shadowOf(contentResolver)
+        mockPropertyDao = mockk()
+        mockPhotoDao = mockk()
+        mockPointOfInterestDao = mockk()
 
-        provider = Robolectric.buildContentProvider(PropertyProvider::class.java).create(
-            ProviderInfo().apply {
-                grantUriPermissions = true
-            }
-        ).get()
+        propertyProvider = PropertyProvider().apply {
+            propertyDao = mockPropertyDao
+            photoDao = mockPhotoDao
+            pointOfInterestDao = mockPointOfInterestDao
+        }
+
+        val fakeCursor: Cursor = mockk(relaxed = true)
+        every { mockPropertyDao.getAllPropertiesAsCursor() } returns fakeCursor
+        every { fakeCursor.setNotificationUri(any(), any()) } just Runs
     }
 
-    /* @Test
-     fun testQueryForAllProperties() {
+    // This unit test ensures that the query method of the PropertyProvider class behaves as expected when given a certain URI.
+    // It also verifies that the correct methods are called on the mocked objects.
+    @Test
+    fun `query should return correct Cursor based on URI`() {
+        val fakeCursor: Cursor = mockk(relaxed = true)
+        every {
+            fakeCursor.setNotificationUri(
+                any(),
+                any()
+            )
+        } just Runs
 
+        every { mockPropertyDao.getAllPropertiesAsCursor() } returns fakeCursor
 
-         val result = shadowContentResolver.query(
-             Uri.parse("content://${PropertyProvider.Companion.AUTHORITY}/properties"),
-             null, null, null, null
-         )
+        val uri = Uri.parse("content://${PropertyProvider.AUTHORITY}/properties")
+        val resultCursor = propertyProvider.query(uri, null, null, null, null)
 
-         assertNotNull(result)
-         verify { mockPropertyDao.getAllPropertiesAsCursor() }
-     }
+        verify { mockPropertyDao.getAllPropertiesAsCursor() }
+        verify { fakeCursor.setNotificationUri(any(), any()) }
 
-     @Test
-     fun testQueryForAllPhotos() {
-         val mockCursor = mockk<Cursor>(relaxed = true)
-         every { mockPhotoDao.getAllPhotosAsCursor() } returns mockCursor
+        Assert.assertEquals(fakeCursor, resultCursor)
+    }
 
-         val result = contentProvider.query(
-             Uri.parse(
-                 "content://${
-                     com.persival.realestatemanagerkotlin.data.local_database.content_provider.PropertyProvider.Companion.AUTHORITY
-                 }/photos"
-             ),
-             null, null, null, null
-         )
-
-         assertNotNull(result)
-         verify { mockPhotoDao.getAllPhotosAsCursor() }
-     }
-
-     @Test
-     fun testQueryForAllPOIs() {
-         val mockCursor = mockk<Cursor>(relaxed = true)
-         every { mockPointOfInterestDao.getAllPointsOfInterestAsCursor() } returns mockCursor
-
-         val result = contentProvider.query(
-             Uri.parse(
-                 "content://${
-                     com.persival.realestatemanagerkotlin.data.local_database.content_provider.PropertyProvider.Companion.AUTHORITY
-                 }/points_of_interest"
-             ),
-             null, null, null, null
-         )
-
-         assertNotNull(result)
-         verify { mockPointOfInterestDao.getAllPointsOfInterestAsCursor() }
-     }
- */
 }
-
-

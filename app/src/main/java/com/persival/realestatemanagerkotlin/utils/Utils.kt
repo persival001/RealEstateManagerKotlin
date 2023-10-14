@@ -55,6 +55,7 @@ object Utils {
     }
 
     // A broadcast receiver like this is more efficient for this purpose
+    @Suppress("DEPRECATION")
     fun isConnexionAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 

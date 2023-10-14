@@ -1,13 +1,10 @@
 package com.persival.realestatemanagerkotlin.data.permissions
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Build
-import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.persival.realestatemanagerkotlin.domain.permissions.PermissionRepository
@@ -24,7 +21,7 @@ class PermissionDataRepository @Inject constructor(
 ) : PermissionRepository {
 
     private val locationPermissionFlow = MutableStateFlow(false)
-    private val isGpsActivatedLiveData = MutableStateFlow(false)
+    private val isGpsActivatedLiveData = MutableStateFlow(true)
     private val cameraPermissionFlow = MutableStateFlow(false)
     private val storageReadImagesPermissionFlow = MutableStateFlow(false)
     private val storageReadVideoPermissionFlow = MutableStateFlow(false)
@@ -79,5 +76,5 @@ class PermissionDataRepository @Inject constructor(
         ) == PackageManager.PERMISSION_GRANTED
         storageReadVideoPermissionFlow.value = hasPermission
     }
-    
+
 }
