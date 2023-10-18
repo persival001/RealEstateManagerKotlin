@@ -22,6 +22,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -37,6 +38,7 @@ import com.persival.realestatemanagerkotlin.databinding.FragmentAddPropertyBindi
 import com.persival.realestatemanagerkotlin.ui.add_picture_dialog.AddPictureDialogFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -258,8 +260,10 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 val datePicker = MaterialDatePicker.Builder.datePicker().build()
                 datePicker.addOnPositiveButtonClickListener { selection: Long? ->
                     val selectedDate = selection?.let { Date(it) }
-                    val formattedDate = selectedDate?.let { viewModel.getFormattedDate(it) }
-                    editText.setText(formattedDate)
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        val formattedDate = selectedDate?.let { viewModel.getFormattedDate(it) }
+                        editText.setText(formattedDate)
+                    }
                 }
 
                 datePicker.show(parentFragmentManager, "date_picker_tag")

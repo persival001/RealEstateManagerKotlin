@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.domain.conversion
 
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -7,6 +8,5 @@ import javax.inject.Singleton
 class GetSavedStateForCurrencyConversionButton @Inject constructor(
     private val sharedPreferencesRepository: SharedPreferencesRepository
 ) {
-
-    fun invoke(): Boolean = sharedPreferencesRepository.getCurrencyConversion()
+    fun invoke(): Flow<Boolean> = sharedPreferencesRepository.getCurrencyConversion()
 }

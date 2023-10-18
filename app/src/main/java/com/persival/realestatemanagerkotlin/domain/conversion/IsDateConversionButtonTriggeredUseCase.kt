@@ -7,8 +7,7 @@ import javax.inject.Singleton
 class IsDateConversionButtonTriggeredUseCase @Inject constructor(
     private val sharedPreferencesRepository: SharedPreferencesRepository
 ) {
-
-    fun invoke(isActivated: Boolean) {
+    suspend fun invoke(isActivated: Boolean) {
         sharedPreferencesRepository.setDateConversion(isActivated)
     }
 }

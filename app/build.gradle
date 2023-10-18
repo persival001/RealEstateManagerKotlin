@@ -73,6 +73,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     // Material
     implementation 'com.google.android.material:material:1.10.0'
@@ -93,10 +94,6 @@ dependencies {
     kapt 'com.google.dagger:hilt-android-compiler:2.46'
     implementation 'androidx.hilt:hilt-work:1.0.0'
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
-
-    // Hilt for Android Testing
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.46.1'
-    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.46'
 
     // WorkManager
     implementation "androidx.work:work-runtime-ktx:2.8.1"

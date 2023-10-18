@@ -1,7 +1,5 @@
 package com.persival.realestatemanagerkotlin.ui.properties
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.SearchView
@@ -20,16 +18,10 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
 
     companion object {
         fun newInstance() = PropertiesFragment()
-        const val SHARED_PREFS = "sharedPrefs"
-        const val KEY_CURRENCY = "KEY_CURRENCY"
     }
 
-    private lateinit var sharedPreferenceListener: SharedPreferences.OnSharedPreferenceChangeListener
     private val binding by viewBinding { FragmentPropertiesBinding.bind(it) }
     private val viewModel by viewModels<PropertiesViewModel>()
-    private val sharedPreferences: SharedPreferences by lazy {
-        requireActivity().getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -100,14 +92,6 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
             }
         }
 
-        sharedPreferenceListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == KEY_CURRENCY) {
-                viewModel.updatePropertyPrices()
-            }
-        }
-
-        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceListener)
-
     }
 
     // Update the ViewModel based on the text and chip states
@@ -123,11 +107,6 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
 
     private fun onPropertySelected(id: Long?) {
         viewModel.updateSelectedPropertyId(id)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceListener)
     }
 
 }

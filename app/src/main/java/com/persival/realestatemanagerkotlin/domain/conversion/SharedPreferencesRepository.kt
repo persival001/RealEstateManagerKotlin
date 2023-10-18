@@ -1,13 +1,15 @@
 package com.persival.realestatemanagerkotlin.domain.conversion
 
+import kotlinx.coroutines.flow.Flow
+
 interface SharedPreferencesRepository {
 
-    fun getCurrencyConversion(): Boolean
+    fun getCurrencyConversion(): Flow<Boolean>
 
-    fun getDateConversion(): Boolean
+    suspend fun getDateConversion(): Boolean
 
-    fun setCurrencyConversion(isActivated: Boolean)
+    suspend fun setCurrencyConversion(isActivated: Boolean)
 
-    fun setDateConversion(isActivated: Boolean)
-
+    suspend fun setDateConversion(isActivated: Boolean)
 }
+

@@ -12,7 +12,10 @@ import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
 import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
@@ -35,6 +38,15 @@ class PropertiesViewModel @Inject constructor(
             "", areaSearch = false, roomSearch = false, priceSearch = false,
             soldSearch = false
         )
+        observeCurrencyChanges()
+    }
+
+    private fun observeCurrencyChanges() {
+        getSavedStateForCurrencyConversionButton.invoke()
+            .onEach {
+                updatePropertyPrices()
+            }
+            .launchIn(viewModelScope)
     }
 
     fun combineFiltersWithProperties(
@@ -46,11 +58,12 @@ class PropertiesViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val propertiesFlow = getAllPropertiesWithPhotosAndPOIUseCase.invoke()
+            val isConversionEnabled = getSavedStateForCurrencyConversionButton.invoke().first()
 
             propertiesFlow.map { properties ->
                 val finalProperties = if (searchQuery.isBlank()) {
                     // If searchQuery is blank, sort properties using sortProperties
-                    sortProperties(properties, areaSearch, roomSearch, priceSearch, soldSearch)
+                    sortProperties(properties, areaSearch, roomSearch, priceSearch, soldSearch, isConversionEnabled)
                 } else {
                     // Otherwise, apply the existing filtering logic
                     val filteredProperties = properties.filter { propertyWithPhotosAndPOI ->
@@ -64,7 +77,7 @@ class PropertiesViewModel @Inject constructor(
                                 property.description.contains(searchQuery, ignoreCase = true) ||
                                 property.price.toString().contains(searchQuery, ignoreCase = true) ||
                                 property.agentName.contains(searchQuery, ignoreCase = true)
-                    }.map { transformToViewState(it) }
+                    }.map { transformToViewState(it, isConversionEnabled) }
                     filteredProperties
                 }
 
@@ -81,7 +94,8 @@ class PropertiesViewModel @Inject constructor(
         areaSearch: Boolean,
         roomSearch: Boolean,
         priceSearch: Boolean,
-        soldSearch: Boolean
+        soldSearch: Boolean,
+        isConversionEnabled: Boolean
     ): List<PropertyViewStateItem> {
 
         // Sort by isSold first
@@ -99,15 +113,21 @@ class PropertiesViewModel @Inject constructor(
             else -> initialSorted
         }
 
-        return finalSortedProperties.map { transformToViewState(it) }
+        return finalSortedProperties.map { transformToViewState(it, isConversionEnabled) }
+
     }
 
-    private fun transformToViewState(propertyWithPhotosAndPOIEntity: PropertyWithPhotosAndPOIEntity): PropertyViewStateItem {
+    private fun transformToViewState(
+        propertyWithPhotosAndPOIEntity: PropertyWithPhotosAndPOIEntity,
+        isConversionEnabled: Boolean
+    ): PropertyViewStateItem {
+        val formattedPrice = getFormattedPrice(propertyWithPhotosAndPOIEntity.property.price, isConversionEnabled)
+
         return PropertyViewStateItem(
             id = propertyWithPhotosAndPOIEntity.property.id,
             type = propertyWithPhotosAndPOIEntity.property.type,
             address = propertyWithPhotosAndPOIEntity.property.address,
-            price = getFormattedPrice(propertyWithPhotosAndPOIEntity.property.price),
+            price = formattedPrice,
             rooms = propertyWithPhotosAndPOIEntity.property.rooms.toString(),
             surface = propertyWithPhotosAndPOIEntity.property.area.toString(),
             bathrooms = propertyWithPhotosAndPOIEntity.property.bathrooms.toString(),
@@ -118,9 +138,7 @@ class PropertiesViewModel @Inject constructor(
         )
     }
 
-    private fun getFormattedPrice(price: Int): String {
-        val isConversionEnabled = getSavedStateForCurrencyConversionButton.invoke()
-
+    private fun getFormattedPrice(price: Int, isConversionEnabled: Boolean): String {
         return if (isConversionEnabled) {
             val euroValue = Utils.convertDollarToEuro(price)
             formatPriceAsEuro(euroValue)
@@ -142,20 +160,17 @@ class PropertiesViewModel @Inject constructor(
     }
 
     fun updatePropertyPrices() {
-        val currentProperties = propertiesViewStateItem.value ?: return
-        val updatedProperties = currentProperties.map {
-            val cleanedPrice = it.price.replace("\\D".toRegex(), "")
-            val originalPrice = cleanedPrice.toInt()
-            if (it.price.contains("$")) {
-                val euroValue = Utils.convertDollarToEuro(originalPrice)
-                it.copy(price = formatPriceAsEuro(euroValue))
-            } else {
-                val dollarValue = Utils.convertEuroToDollar(originalPrice)
-                it.copy(price = formatPriceAsDollar(dollarValue))
+        viewModelScope.launch {
+            val isConversionEnabled = getSavedStateForCurrencyConversionButton.invoke().first()
+            val currentProperties = propertiesViewStateItem.value ?: return@launch
+            val updatedProperties = currentProperties.map {
+                val cleanedPrice = it.price.replace("\\D".toRegex(), "")
+                val originalPrice = cleanedPrice.toInt()
+                val formattedPrice = getFormattedPrice(originalPrice, isConversionEnabled)
+                it.copy(price = formattedPrice)
             }
+            propertiesViewStateItem.value = updatedProperties
         }
-
-        propertiesViewStateItem.value = updatedProperties
     }
 
     private fun getFormattedPoi(pointsOfInterest: List<PointOfInterestEntity>): String {

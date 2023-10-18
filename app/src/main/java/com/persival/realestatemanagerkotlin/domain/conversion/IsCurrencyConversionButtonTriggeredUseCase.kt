@@ -7,8 +7,7 @@ import javax.inject.Singleton
 class IsCurrencyConversionButtonTriggeredUseCase @Inject constructor(
     private val sharedPreferencesRepository: SharedPreferencesRepository
 ) {
-
-    fun invoke(isActivated: Boolean) {
+    suspend fun invoke(isActivated: Boolean) {
         sharedPreferencesRepository.setCurrencyConversion(isActivated)
     }
 }

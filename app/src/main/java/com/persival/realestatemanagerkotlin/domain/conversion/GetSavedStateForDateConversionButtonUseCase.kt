@@ -7,6 +7,5 @@ import javax.inject.Singleton
 class GetSavedStateForDateConversionButtonUseCase @Inject constructor(
     private val sharedPreferencesRepository: SharedPreferencesRepository
 ) {
-
-    fun invoke() = sharedPreferencesRepository.getDateConversion()
+    suspend fun invoke() = sharedPreferencesRepository.getDateConversion()
 }

@@ -221,7 +221,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/location_hint"
-                android:inputType="none"
+                android:inputType="textPostalAddress"
                 android:padding="@dimen/default_large_margin" />
         </com.google.android.material.textfield.TextInputLayout>
 

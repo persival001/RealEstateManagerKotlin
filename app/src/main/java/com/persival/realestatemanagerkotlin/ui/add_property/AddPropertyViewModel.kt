@@ -124,7 +124,7 @@ class AddPropertyViewModel @Inject constructor(
 
     private fun isThePropertyForSale(saleDate: String?): Boolean = !(saleDate == null || saleDate == "")
 
-    fun getFormattedDate(date: Date): String {
+    suspend fun getFormattedDate(date: Date): String {
         val isFrenchDateEnabled = getSavedStateForDateConversionButtonUseCase.invoke()
         return if (isFrenchDateEnabled) {
             Utils.getTodayDateInFrench(date)
