@@ -94,6 +94,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             Glide.with(this)
                 .load(url)
                 .override(500, 500)
+                .error(R.drawable.baseline_signal_wifi_connected_no_internet_4_24)
                 .into(binding.mapImageView)
         }
 

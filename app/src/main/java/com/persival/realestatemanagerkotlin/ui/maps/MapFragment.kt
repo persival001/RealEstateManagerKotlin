@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -111,6 +112,13 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
                     .title(mapViewState.address)
                 val marker = googleMap?.addMarker(markerOptions)
                 marker?.tag = mapViewState.id
+            }
+        }
+
+        // Address must be entered with Google autocomplete
+        viewModel.hasNullValues.asLiveData().observe(viewLifecycleOwner) { hasNull ->
+            if (hasNull) {
+                Toast.makeText(context, getString(R.string.add_address_with_autocomplete), Toast.LENGTH_SHORT).show()
             }
         }
 

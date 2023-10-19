@@ -13,6 +13,7 @@ import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyI
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -29,19 +30,32 @@ MapViewModel @Inject constructor(
 
     val locationUpdates: LiveData<LocationEntity> = getLocationUseCase.invoke().asLiveData()
 
+    val hasNullValues = MutableStateFlow(false)
+
     val propertiesLatLngWithId: Flow<List<MapViewState>> = flow {
         getAllPropertiesWithPhotosAndPOIUseCase.invoke().collect { allProperties ->
-            val mapViewStateList = allProperties.map { property ->
-                val parts = property.property.latLng.split(",")
-                val latitude = parts[0].toDouble()
-                val longitude = parts[1].toDouble()
-                MapViewState(
-                    latLng = LatLng(latitude, longitude),
-                    id = property.property.id,
-                    address = property.property.address
-                )
+            var foundNull = false
+
+            val mapViewStateList = allProperties.mapNotNull { property ->
+                property.property.run {
+                    val parts = latLng.split(",")
+                    val latitude = parts.getOrNull(0)?.toDoubleOrNull()
+                    val longitude = parts.getOrNull(1)?.toDoubleOrNull()
+
+                    if (latitude != null && longitude != null) {
+                        MapViewState(
+                            latLng = LatLng(latitude, longitude),
+                            id = id,
+                            address = address
+                        )
+                    } else {
+                        foundNull = true
+                        null
+                    }
+                }
             }
 
+            hasNullValues.emit(foundNull)
             emit(mapViewStateList)
         }
     }

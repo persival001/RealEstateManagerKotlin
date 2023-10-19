@@ -132,5 +132,6 @@
     <string name="what_are_you_looking_for">What are you looking for ?</string>
     <string name="photo_required">At least one image is required</string>
     <string name="property_not_added">Error saving property</string>
+    <string name="add_address_with_autocomplete">Please edit the property and enter a valid address</string>
 
 </resources>

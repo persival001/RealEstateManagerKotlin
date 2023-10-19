@@ -36,6 +36,7 @@ import com.persival.realestatemanagerkotlin.BuildConfig.MAPS_API_KEY
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentAddPropertyBinding
 import com.persival.realestatemanagerkotlin.ui.add_picture_dialog.AddPictureDialogFragment
+import com.persival.realestatemanagerkotlin.utils.Utils
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -221,9 +222,10 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
     }
 
     private fun validateFields(): Boolean {
-        val editTextList = listOf(
+        val isInternetAvailable = Utils.isConnexionAvailable(requireContext())
+
+        val mandatoryEditTextList = listOf(
             binding.typeTextView,
-            binding.addressEditText,
             binding.areaEditText,
             binding.roomsEditText,
             binding.bathroomsEditText,
@@ -233,17 +235,31 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             binding.datePickerEditText
         )
 
-        // Check if all fields are filled and set error messages
-        val allFieldsFilled = editTextList.all { editText ->
+        // Check if all mandatory fields are filled and set error messages
+        val allMandatoryFieldsFilled = mandatoryEditTextList.all { editText ->
             val isFilled = editText.text?.isNotEmpty() == true
             editText.error = if (isFilled) null else getString(R.string.error_message)
             isFilled
         }
 
-        // Check if latLongString is valid
-        val isLatLongValid = !latLongString.isNullOrBlank()
-        if (!isLatLongValid) {
-            binding.addressEditText.error = getString(R.string.invalid_address_message)
+        var isOptionalFieldsValid = true
+
+        // Conditionally validate address and latLongString based on Internet availability
+        if (isInternetAvailable) {
+            val isLatLongValid = !latLongString.isNullOrBlank()
+            val isAddressFilled = binding.addressEditText.text?.isNotEmpty() == true
+
+            if (!isLatLongValid) {
+                binding.addressEditText.error = getString(R.string.invalid_address_message)
+            }
+
+            isOptionalFieldsValid = isLatLongValid && isAddressFilled
+
+        } else {
+            // If no Internet, allow manual address input and skip latLongString validation
+            val isAddressFilled = binding.addressEditText.text?.isNotEmpty() == true
+            binding.addressEditText.error = if (isAddressFilled) null else getString(R.string.error_message)
+            isOptionalFieldsValid = isAddressFilled
         }
 
         // Check if at least one photo is filled
@@ -251,7 +267,7 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             Toast.makeText(requireContext(), getString(R.string.photo_required), Toast.LENGTH_SHORT).show()
         }
 
-        return allFieldsFilled && isLatLongValid && areImagesPresent
+        return allMandatoryFieldsFilled && isOptionalFieldsValid && areImagesPresent
     }
 
     private fun setupDatePicker(vararg editTexts: TextInputEditText) {
