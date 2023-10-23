@@ -1,8 +1,8 @@
-package com.persival.realestatemanagerkotlin.ui.add_property
+package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
 
 import com.persival.realestatemanagerkotlin.utils.EquatableCallbackWithParam
 
-sealed class AddPropertyViewStateItem(
+sealed class AddOrModifyPropertyViewStateItem(
     val type: Type,
 ) {
     enum class Type {
@@ -16,7 +16,7 @@ sealed class AddPropertyViewStateItem(
         val description: String,
         val photoUrl: String,
         val onDeleteEvent: EquatableCallbackWithParam<Int>,
-    ) : AddPropertyViewStateItem(Type.PHOTO)
+    ) : AddOrModifyPropertyViewStateItem(Type.PHOTO)
 
-    object EmptyState : AddPropertyViewStateItem(Type.EMPTY_STATE)
+    object EmptyStateOrModify : AddOrModifyPropertyViewStateItem(Type.EMPTY_STATE)
 }

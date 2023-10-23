@@ -32,6 +32,7 @@ class PropertyListAdapter(
                 .into(binding.propertyPicture)
             binding.soldImageview.visibility = if (item.isSold) View.VISIBLE else View.GONE
             binding.soldTextview.visibility = if (item.isSold) View.VISIBLE else View.GONE
+            binding.warningImageview.visibility = if (item.latLng.isNullOrEmpty()) View.VISIBLE else View.GONE
 
             binding.root.isSelected = selectedPos == adapterPosition
 

@@ -127,6 +127,7 @@ class PropertiesViewModel @Inject constructor(
             id = propertyWithPhotosAndPOIEntity.property.id,
             type = propertyWithPhotosAndPOIEntity.property.type,
             address = propertyWithPhotosAndPOIEntity.property.address,
+            latLng = propertyWithPhotosAndPOIEntity.property.latLng,
             price = formattedPrice,
             rooms = propertyWithPhotosAndPOIEntity.property.rooms.toString(),
             surface = propertyWithPhotosAndPOIEntity.property.area.toString(),

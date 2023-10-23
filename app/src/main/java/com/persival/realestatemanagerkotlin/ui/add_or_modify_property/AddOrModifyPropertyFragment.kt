@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.ui.add_property
+package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -24,15 +24,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
-import com.persival.realestatemanagerkotlin.BuildConfig.MAPS_API_KEY
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentAddPropertyBinding
 import com.persival.realestatemanagerkotlin.ui.add_picture_dialog.AddPictureDialogFragment
@@ -46,23 +43,26 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 @AndroidEntryPoint
-class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
+class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
     companion object {
-        fun newInstance(): AddPropertyFragment {
-            return AddPropertyFragment()
-        }
+        const val ACTION_TYPE_KEY = "actionType"
+        const val ACTION_ADD = "add"
+        const val ACTION_MODIFY = "modify"
+
+        fun newInstance() = AddOrModifyPropertyFragment()
     }
 
     private val binding by viewBinding { FragmentAddPropertyBinding.bind(it) }
-    private val viewModel by viewModels<AddPropertyViewModel>()
+    private val viewModel by viewModels<AddOrModifyPropertyViewModel>()
 
     private var latLongString: String? = null
     private var currentPhotoUri: Uri? = null
     private var areImagesPresent = false
+    private var actionType: String? = null
 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    private lateinit var addPropertyListAdapter: AddPropertyListAdapter
+    private lateinit var addOrModifyPropertyListAdapter: AddOrModifyPropertyListAdapter
 
     private val openFileResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -88,8 +88,36 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
         }
 
+    @Suppress("DEPRECATION")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Action type is used to determine which actions must be performed
+        // depending on whether add or modify has been selected.
+        actionType = arguments?.getString(ACTION_TYPE_KEY)
+
+        when (actionType) {
+            ACTION_ADD -> {
+                Toast.makeText(requireContext(), "Selected: ADD", Toast.LENGTH_SHORT).show()
+            }
+
+            ACTION_MODIFY -> {
+                // Complete form with information's of property selected
+                Toast.makeText(requireContext(), "Selected: MODIFY", Toast.LENGTH_SHORT).show()
+                displaysPropertyInformation()
+                displaysPropertyPhotos()
+            }
+        }
+
+        // Internet connexion define if button or edit text is visible
+        val isInternetAvailable = Utils.isConnexionAvailable(requireContext())
+        if (isInternetAvailable) {
+            binding.addressButton.visibility = View.VISIBLE
+            binding.addressTextField.visibility = View.INVISIBLE
+        } else {
+            binding.addressButton.visibility = View.INVISIBLE
+            binding.addressTextField.visibility = View.VISIBLE
+        }
 
         // Initialize requestPermissionLauncher
         requestPermissionLauncher =
@@ -101,8 +129,8 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             }
 
         // Initialize adapter and set it for horizontal view
-        addPropertyListAdapter = AddPropertyListAdapter()
-        binding.addPhotoRecyclerView.adapter = addPropertyListAdapter
+        addOrModifyPropertyListAdapter = AddOrModifyPropertyListAdapter()
+        binding.addPhotoRecyclerView.adapter = addOrModifyPropertyListAdapter
         val horizontalLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.addPhotoRecyclerView.layoutManager = horizontalLayoutManager
 
@@ -112,36 +140,30 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         binding.typeTextView.setAdapter(adapter)
 
         // Google Places UI for address autocompletion
-        if (!Places.isInitialized()) {
-            Places.initialize(requireContext(), MAPS_API_KEY)
-        }
+        viewModel.initializePlaces(requireContext())
+
         val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
-        val autocompleteResultLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                when (result.resultCode) {
-                    Activity.RESULT_OK -> {
-                        val place = Autocomplete.getPlaceFromIntent(result.data!!)
-                        binding.addressEditText.setText(place.address)
-                        place.latLng?.let { latLng ->
-                            latLongString = "${latLng.latitude},${latLng.longitude}"
-                        }
-                    }
-
-                    AutocompleteActivity.RESULT_ERROR -> {
-                        val status = Autocomplete.getStatusFromIntent(result.data!!)
-                        Toast.makeText(requireContext(), status.statusMessage, Toast.LENGTH_LONG).show()
-                    }
-
-                    Activity.RESULT_CANCELED -> {
-                        binding.addressEditText.setText("")
-                    }
-                }
-            }
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
             .setTypeFilter(TypeFilter.ADDRESS)
             .setCountry("US")
             .build(requireContext())
-        binding.addressEditText.setOnClickListener {
+
+        viewModel.address.observe(viewLifecycleOwner) { newAddress ->
+            binding.addressButton.text = newAddress ?: getString(R.string.property_address)
+        }
+
+        viewModel.errorMessage.observe(viewLifecycleOwner) { message ->
+            if (message != null) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        val autocompleteResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                viewModel.handleActivityResult(result.resultCode, result.data)
+            }
+
+        binding.addressButton.setOnClickListener {
             autocompleteResultLauncher.launch(intent)
         }
 
@@ -161,6 +183,12 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         // Filled the recycle view with the list of added photos
         displaysAddedPropertyPhotos()
 
+        viewModel.latLong.observe(viewLifecycleOwner) { latLng ->
+            if (latLng != null) {
+                latLongString = latLng
+            }
+        }
+
         // Notify user when the property is successfully added in room database
         viewModel.propertyAddStatus.observe(viewLifecycleOwner) { newId ->
             if (newId != null && newId > 0) {
@@ -178,23 +206,36 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         // Get the information's of property added by the user
         binding.okButton.setOnClickListener {
             if (validateFields()) {
-                val addViewState = retrieveFormData()
-                viewModel::addNewProperty.invoke(addViewState)
+                val addViewState = retrieveFormData(isInternetAvailable)
+
+                when (actionType) {
+                    ACTION_ADD -> viewModel.addNewProperty(addViewState)
+                    ACTION_MODIFY -> viewModel.updateProperty(addViewState)
+                    else -> return@setOnClickListener
+                }
+
                 requireActivity().finish()
             }
         }
 
     }
 
+    // Display the photos added to the list
     private fun displaysAddedPropertyPhotos() {
         viewModel.addViewStateItemList.asLiveData().observe(viewLifecycleOwner) { viewStateItemList ->
-            addPropertyListAdapter.updateList(viewStateItemList)
+            addOrModifyPropertyListAdapter.updateList(viewStateItemList)
             areImagesPresent = viewStateItemList.isNotEmpty()
         }
     }
 
-    private fun retrieveFormData(): AddPropertyViewState {
+    private fun displaysPropertyPhotos() {
+        viewModel.viewStateItemList.asLiveData().observe(viewLifecycleOwner) { viewStateItemList ->
+            addOrModifyPropertyListAdapter.updateList(viewStateItemList)
+            areImagesPresent = viewStateItemList.isNotEmpty()
+        }
+    }
 
+    private fun retrieveFormData(isInternetAvailable: Boolean): AddOrModifyPropertyViewState {
         // Retrieve poi selected
         val selectedChips = listOf(
             binding.schoolChip,
@@ -205,9 +246,15 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             binding.restaurantChip
         ).filter { it.isChecked }.map { it.text.toString() }
 
-        return AddPropertyViewState(
+        val address = if (isInternetAvailable) {
+            binding.addressButton.text.toString()
+        } else {
+            binding.addressEditText.text.toString()
+        }
+
+        return AddOrModifyPropertyViewState(
             binding.typeTextView.text.toString(),
-            binding.addressEditText.text.toString(),
+            address,
             latLongString ?: "",
             binding.areaEditText.text.toString().toInt(),
             binding.roomsEditText.text.toString().toInt(),
@@ -242,15 +289,15 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
             isFilled
         }
 
-        var isOptionalFieldsValid = true
+        val isOptionalFieldsValid: Boolean
 
         // Conditionally validate address and latLongString based on Internet availability
         if (isInternetAvailable) {
             val isLatLongValid = !latLongString.isNullOrBlank()
-            val isAddressFilled = binding.addressEditText.text?.isNotEmpty() == true
+            val isAddressFilled = binding.addressButton.text?.isNotEmpty() == true
 
             if (!isLatLongValid) {
-                binding.addressEditText.error = getString(R.string.invalid_address_message)
+                binding.addressButton.error = getString(R.string.invalid_address_message)
             }
 
             isOptionalFieldsValid = isLatLongValid && isAddressFilled
@@ -268,6 +315,39 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
         }
 
         return allMandatoryFieldsFilled && isOptionalFieldsValid && areImagesPresent
+    }
+
+    // (MODIFY) Displays the property information to modify
+    private fun displaysPropertyInformation() {
+        viewModel.viewStateFlow.asLiveData().observe(viewLifecycleOwner) { modifyViewState ->
+
+            // Fill in the fields for the property
+            binding.typeTextView.setText(modifyViewState.type)
+            binding.datePickerToSellText.setText(modifyViewState.soldAt)
+            binding.datePickerEditText.setText(modifyViewState.availableFrom)
+            binding.priceEditText.setText(modifyViewState.price.toString())
+            binding.areaEditText.setText(modifyViewState.area.toString())
+            binding.roomsEditText.setText(modifyViewState.rooms.toString())
+            binding.bedroomsEditText.setText(modifyViewState.bedrooms.toString())
+            binding.bathroomsEditText.setText(modifyViewState.bathrooms.toString())
+            binding.descriptionEditText.setText(modifyViewState.description)
+            binding.addressEditText.setText(modifyViewState.address)
+            latLongString = modifyViewState.latLng
+
+            // Fill in the chips for the poi's
+            val chips = listOf(
+                binding.schoolChip,
+                binding.publicTransportChip,
+                binding.hospitalChip,
+                binding.shopChip,
+                binding.greenSpacesChip,
+                binding.restaurantChip
+            )
+            for (chip in chips) {
+                chip.isChecked = modifyViewState.pointsOfInterest.contains(chip.text, ignoreCase = true)
+            }
+
+        }
     }
 
     private fun setupDatePicker(vararg editTexts: TextInputEditText) {
@@ -339,7 +419,10 @@ class AddPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 Toast.makeText(context, getString(R.string.not_empty), Toast.LENGTH_SHORT).show()
                 return@setImageDescription
             }
-            viewModel.addImageAndDescription(uri.toString(), description)
+            when (actionType) {
+                ACTION_ADD -> viewModel.addImageAndDescription(uri.toString(), description)
+                ACTION_MODIFY -> viewModel.insertImageAndDescription(uri.toString(), description)
+            }
 
         }
     }

@@ -7,10 +7,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.commit
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.ActivityNavigationBinding
-import com.persival.realestatemanagerkotlin.ui.add_property.AddPropertyFragment
+import com.persival.realestatemanagerkotlin.ui.add_or_modify_property.AddOrModifyPropertyFragment
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
 import com.persival.realestatemanagerkotlin.ui.maps.MapFragment
-import com.persival.realestatemanagerkotlin.ui.modify_property.ModifyPropertyFragment
 import com.persival.realestatemanagerkotlin.ui.settings.SettingsFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +23,6 @@ class NavigationActivity : AppCompatActivity(), NavigationHandler {
         private const val SELECTED_ITEM = "selectedItem"
         private const val ADD_ITEM = "item_add"
         private const val MODIFY_ITEM = "item_modify"
-        private const val SEARCH_ITEM = "item_search"
         private const val MAP_ITEM = "item_map"
         private const val SETTINGS_ITEM = "item_settings"
     }
@@ -44,14 +42,22 @@ class NavigationActivity : AppCompatActivity(), NavigationHandler {
 
         when (intent.getStringExtra(SELECTED_ITEM)) {
             ADD_ITEM -> {
+                val bundle = Bundle()
+                bundle.putString(AddOrModifyPropertyFragment.ACTION_TYPE_KEY, AddOrModifyPropertyFragment.ACTION_ADD)
+                val fragment = AddOrModifyPropertyFragment()
+                fragment.arguments = bundle
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_menu_container, AddPropertyFragment())
+                    .replace(R.id.fragment_menu_container, fragment)
                     .commit()
             }
 
             MODIFY_ITEM -> {
+                val bundle = Bundle()
+                bundle.putString(AddOrModifyPropertyFragment.ACTION_TYPE_KEY, AddOrModifyPropertyFragment.ACTION_MODIFY)
+                val fragment = AddOrModifyPropertyFragment()
+                fragment.arguments = bundle
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_menu_container, ModifyPropertyFragment())
+                    .replace(R.id.fragment_menu_container, fragment)
                     .commit()
             }
 
@@ -69,7 +75,7 @@ class NavigationActivity : AppCompatActivity(), NavigationHandler {
 
             else -> {
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_menu_container, AddPropertyFragment())
+                    .replace(R.id.fragment_menu_container, AddOrModifyPropertyFragment())
                     .commit()
             }
         }

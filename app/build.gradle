@@ -79,15 +79,15 @@ dependencies {
     implementation 'com.google.android.material:material:1.10.0'
 
     // Maps
-    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
 
     // Places
     implementation 'com.google.android.libraries.places:places:3.2.0'
 
     //Firebase Firestore
-    implementation 'com.google.firebase:firebase-auth:22.1.2'
+    implementation 'com.google.firebase:firebase-auth:22.2.0'
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
-    implementation 'com.google.firebase:firebase-firestore-ktx:24.8.1'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.9.0'
 
     // Hilt and Hilt AndroidX
     implementation 'com.google.dagger:hilt-android:2.46.1'
@@ -99,9 +99,9 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.8.1"
 
     // Room
-    implementation "androidx.room:room-runtime:2.5.2"
+    implementation "androidx.room:room-runtime:2.6.0"
     kapt "androidx.room:room-compiler:2.5.2"
-    implementation "androidx.room:room-ktx:2.5.2"
+    implementation "androidx.room:room-ktx:2.6.0"
 
     // LiveData and Coroutine
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'

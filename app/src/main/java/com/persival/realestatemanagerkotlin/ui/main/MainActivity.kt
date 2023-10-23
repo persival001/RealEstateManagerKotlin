@@ -1,11 +1,6 @@
 package com.persival.realestatemanagerkotlin.ui.main
 
-import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -33,17 +28,12 @@ class MainActivity : AppCompatActivity(), NavigationHandler {
         private const val SELECTED_ITEM = "selectedItem"
         private const val ADD_ITEM = "item_add"
         private const val MODIFY_ITEM = "item_modify"
-        private const val SEARCH_ITEM = "item_search"
         private const val MAP_ITEM = "item_map"
         private const val SETTINGS_ITEM = "item_settings"
     }
 
     private val binding by viewBinding { ActivityMainBinding.inflate(it) }
     private val viewModel by viewModels<MainViewModel>()
-
-    private val connectivityManager by lazy {
-        getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    }
 
     //@Inject
     //lateinit var workerFactory: HiltWorkerFactory
@@ -74,15 +64,6 @@ class MainActivity : AppCompatActivity(), NavigationHandler {
         }
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
-
-        // Initialize ConnectivityReceiver
-        val networkRequest = NetworkRequest.Builder()
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
-            .build()
-
-        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
 
         // Initialize WorkManager
         //viewModel.initializeWorkManager()
@@ -122,23 +103,6 @@ class MainActivity : AppCompatActivity(), NavigationHandler {
         })
     }
 
-    // Initialize the network callback
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            super.onAvailable(network)
-            runOnUiThread {
-                Toast.makeText(this@MainActivity, getString(R.string.internet_connection), Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        override fun onLost(network: Network) {
-            super.onLost(network)
-            runOnUiThread {
-                Toast.makeText(this@MainActivity, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return true
@@ -147,14 +111,12 @@ class MainActivity : AppCompatActivity(), NavigationHandler {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
 
-            // Handle the back button click
             android.R.id.home -> {
                 supportFragmentManager.popBackStack()
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
                 true
             }
 
-            // Handle the toolbar menu items
             R.id.action_add -> {
                 val intent = Intent(this, NavigationActivity::class.java)
                 intent.putExtra(SELECTED_ITEM, ADD_ITEM)
@@ -217,7 +179,6 @@ class MainActivity : AppCompatActivity(), NavigationHandler {
 
     override fun onDestroy() {
         super.onDestroy()
-        connectivityManager.unregisterNetworkCallback(networkCallback)
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
     }
 

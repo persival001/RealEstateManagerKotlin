@@ -110,6 +110,18 @@
                     android:contentDescription="@string/sold_label"
                     android:src="@drawable/sold_sign" />
 
+                <ImageView
+                    android:id="@+id/warning_imageview"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="@dimen/default_margin"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/rounded_background"
+                    android:contentDescription="@string/warning_icon"
+                    android:src="@drawable/baseline_warning_24" />
+
                 <TextView
                     android:id="@+id/sold_textview"
                     android:layout_width="wrap_content"

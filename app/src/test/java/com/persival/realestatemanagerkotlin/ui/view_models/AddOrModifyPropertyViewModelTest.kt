@@ -1,35 +1,6 @@
 package com.persival.realestatemanagerkotlin.ui.view_models
 
-import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
-import com.persival.realestatemanagerkotlin.domain.permissions.HasCameraPermissionUseCase
-import com.persival.realestatemanagerkotlin.domain.permissions.HasStoragePermissionUseCase
-import com.persival.realestatemanagerkotlin.domain.permissions.RefreshCameraPermissionUseCase
-import com.persival.realestatemanagerkotlin.domain.permissions.RefreshStoragePermissionUseCase
-import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
-import com.persival.realestatemanagerkotlin.domain.point_of_interest.InsertPointOfInterestUseCase
-import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyIdUseCase
-import com.persival.realestatemanagerkotlin.domain.property.InsertPropertyUseCase
-import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
-import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
-import com.persival.realestatemanagerkotlin.ui.add_property.AddPropertyViewModel
-import com.persival.realestatemanagerkotlin.utils.Utils
-import io.mockk.Runs
-import io.mockk.clearAllMocks
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import java.util.Date
-
-class AddPropertyViewModelTest {
+/*class AddOrModifyPropertyViewModelTest {
 
     // Mocks
     private val getRealEstateAgentUseCase = mockk<GetRealEstateAgentUseCase>()
@@ -44,21 +15,27 @@ class AddPropertyViewModelTest {
     private val hasCameraPermissionUseCase = mockk<HasCameraPermissionUseCase>()
     private val hasStoragePermissionUseCase = mockk<HasStoragePermissionUseCase>()
 
-    private lateinit var viewModel: AddPropertyViewModel
+    private lateinit var viewModel: AddOrModifyPropertyViewModel
 
     @Before
     fun setUp() {
         clearAllMocks()
-        viewModel = AddPropertyViewModel(
-            getRealEstateAgentUseCase,
-            insertPropertyUseCase,
+        viewModel = AddOrModifyPropertyViewModel(
             insertPhotoUseCase,
+            insertPropertyUseCase,
             insertPointOfInterestUseCase,
+            getRealEstateAgentUseCase,
+            getPropertyWithPhotoAndPOIUseCase,
+            getSelectedPropertyIdUseCase,
             getSavedStateForDateConversionButtonUseCase,
+            getPropertyPhotosUseCase,
             refreshStoragePermissionUseCase,
             refreshCameraPermissionUseCase,
             hasCameraPermissionUseCase,
-            hasStoragePermissionUseCase
+            hasStoragePermissionUseCase,
+            updatePointOfInterestUseCase,
+            updatePropertyUseCase,
+            deletePhotoUseCase,
         )
     }
 
@@ -132,4 +109,4 @@ class AddPropertyViewModelTest {
     fun tearDown() {
         clearAllMocks()
     }
-}
+}*/

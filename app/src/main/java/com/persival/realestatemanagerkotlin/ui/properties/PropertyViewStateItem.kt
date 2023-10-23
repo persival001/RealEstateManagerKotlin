@@ -4,6 +4,7 @@ data class PropertyViewStateItem(
     val id: Long,
     val type: String,
     val address: String,
+    val latLng: String?,
     val price: String,
     val rooms: String,
     val surface: String,

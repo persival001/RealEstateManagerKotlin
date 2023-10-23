@@ -225,6 +225,20 @@
                 android:padding="@dimen/default_large_margin" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <Button
+            android:id="@+id/address_button"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/default_large_margin"
+            android:text="@string/property_address"
+            android:textSize="@dimen/default_text_size"
+            app:icon="@drawable/baseline_location_on_24"
+            app:layout_constraintBottom_toTopOf="@+id/description_textField"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bathrooms_textField" />
+
         <!-- Description of the property -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/description_textField"
