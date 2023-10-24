@@ -36,6 +36,7 @@ import com.persival.realestatemanagerkotlin.ui.add_picture_dialog.AddPictureDial
 import com.persival.realestatemanagerkotlin.utils.Utils
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
@@ -331,7 +332,7 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
             binding.bedroomsEditText.setText(modifyViewState.bedrooms.toString())
             binding.bathroomsEditText.setText(modifyViewState.bathrooms.toString())
             binding.descriptionEditText.setText(modifyViewState.description)
-            binding.addressEditText.setText(modifyViewState.address)
+            binding.addressButton.text = modifyViewState.address
             latLongString = modifyViewState.latLng
 
             // Fill in the chips for the poi's
@@ -356,12 +357,12 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
                 val datePicker = MaterialDatePicker.Builder.datePicker().build()
                 datePicker.addOnPositiveButtonClickListener { selection: Long? ->
                     val selectedDate = selection?.let { Date(it) }
-                    viewLifecycleOwner.lifecycleScope.launch {
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                         val formattedDate = selectedDate?.let { viewModel.getFormattedDate(it) }
                         editText.setText(formattedDate)
                     }
                 }
-
+                // Make sure to show datePicker on the Main Thread
                 datePicker.show(parentFragmentManager, "date_picker_tag")
             }
         }

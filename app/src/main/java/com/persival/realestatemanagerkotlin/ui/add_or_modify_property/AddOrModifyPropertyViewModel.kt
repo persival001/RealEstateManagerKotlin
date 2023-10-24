@@ -274,11 +274,15 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     }
 
     suspend fun getFormattedDate(date: Date): String {
-        val isFrenchDateEnabled = getSavedStateForDateConversionButtonUseCase.invoke()
-        return if (isFrenchDateEnabled) {
-            Utils.getTodayDateInFrench(date)
-        } else {
-            Utils.getTodayDate(date)
+        return try {
+            val isFrenchDateEnabled = getSavedStateForDateConversionButtonUseCase.invoke()
+            if (isFrenchDateEnabled) {
+                Utils.getTodayDateInFrench(date)
+            } else {
+                Utils.getTodayDate(date)
+            }
+        } catch (e: Exception) {
+            "Format date error"
         }
     }
 

@@ -41,12 +41,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun getStateOfDateConversion() {
-        viewModelScope.launch {
-            getSavedStateForDateConversionButtonUseCase.invoke()
-        }
-    }
-
     // Moved these methods outside of init
     fun isCurrencyConversionTriggered(isTriggered: Boolean) {
         viewModelScope.launch {

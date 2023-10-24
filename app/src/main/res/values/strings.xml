@@ -136,5 +136,8 @@
     <string name="add_address_with_autocomplete">Veuillez modifier le bien et entrer une adresse valide</string>
     <string name="property_address">Property address</string>
     <string name="warning_icon">Warning icon</string>
+    <string name="toBeCompleted_title">To be completed</string>
+    <string name="to_be_completed_title">To be completed</string>
+    <string name="to_modify_title">To modify</string>
 
 </resources>

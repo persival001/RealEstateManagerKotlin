@@ -25,7 +25,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     private val binding by viewBinding { FragmentDetailBinding.bind(it) }
     private val viewModel by viewModels<DetailViewModel>()
-    private var propertyPrice: Double = 0.0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -63,7 +62,6 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             binding.surfaceTextView.text = details.surface
             binding.locationTextView.text = details.address
             binding.poiTextView.text = details.pointOfInterest
-            propertyPrice = details.price.toDouble()
 
             val isSoldString = if (details.isSold) {
                 getString(
@@ -111,8 +109,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         // Loan simulator button
         binding.loanSimulatorButton.setOnClickListener {
-            val loanSimulatorDialog = LoanSimulatorDialogFragment.newInstance(propertyPrice)
-            loanSimulatorDialog.show(parentFragmentManager, "loanSimulatorDialogTag")
+            viewModel.details.value?.price?.toDoubleOrNull()?.let { price ->
+                val loanSimulatorDialog = LoanSimulatorDialogFragment.newInstance(price)
+                loanSimulatorDialog.show(parentFragmentManager, "loanSimulatorDialogTag")
+            }
         }
 
     }

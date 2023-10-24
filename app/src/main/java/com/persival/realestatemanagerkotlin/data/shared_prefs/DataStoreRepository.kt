@@ -10,6 +10,7 @@ import com.persival.realestatemanagerkotlin.domain.conversion.SharedPreferencesR
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,8 +31,13 @@ class DataStoreRepository @Inject constructor(
 
     // Fetch currency conversion setting
     override fun getCurrencyConversion(): Flow<Boolean> {
-        return dataStore.data.map { preferences ->
-            preferences[KEY_CURRENCY] ?: false
+        return try {
+            dataStore.data.map { preferences ->
+                preferences[KEY_CURRENCY] ?: false
+            }
+        } catch (e: Exception) {
+            // Handle exception and emit some default or error state
+            flowOf(false)
         }
     }
 
@@ -44,7 +50,12 @@ class DataStoreRepository @Inject constructor(
 
     // Fetch date conversion setting
     override suspend fun getDateConversion(): Boolean {
-        return dataStore.data.first { it.contains(KEY_DATE) }[KEY_DATE] ?: false
+        return try {
+            dataStore.data.first { it.contains(KEY_DATE) }[KEY_DATE] ?: false
+        } catch (e: Exception) {
+            // Handle exception
+            false
+        }
     }
 
     // Save date conversion setting

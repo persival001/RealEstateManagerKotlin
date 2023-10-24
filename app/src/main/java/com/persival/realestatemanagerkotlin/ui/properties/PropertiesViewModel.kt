@@ -140,37 +140,32 @@ class PropertiesViewModel @Inject constructor(
     }
 
     private fun getFormattedPrice(price: Int, isConversionEnabled: Boolean): String {
-        return if (isConversionEnabled) {
-            val euroValue = Utils.convertDollarToEuro(price)
-            formatPriceAsEuro(euroValue)
+        val (convertedPrice, locale) = if (isConversionEnabled) {
+            Pair(Utils.convertDollarToEuro(price), Locale.FRANCE)
         } else {
-            formatPriceAsDollar(price)
+            Pair(price, Locale.US)
         }
+
+        val currencyFormat = NumberFormat.getCurrencyInstance(locale)
+        currencyFormat.maximumFractionDigits = 0
+        return currencyFormat.format(convertedPrice)
     }
 
-    private fun formatPriceAsEuro(price: Int): String {
-        val euroFormat = NumberFormat.getCurrencyInstance(Locale.FRANCE)
-        euroFormat.maximumFractionDigits = 0
-        return euroFormat.format(price)
-    }
-
-    private fun formatPriceAsDollar(price: Int): String {
-        val dollarFormat = NumberFormat.getCurrencyInstance(Locale.US)
-        dollarFormat.maximumFractionDigits = 0
-        return dollarFormat.format(price)
-    }
-
-    fun updatePropertyPrices() {
+    private fun updatePropertyPrices() {
         viewModelScope.launch {
-            val isConversionEnabled = getSavedStateForCurrencyConversionButton.invoke().first()
-            val currentProperties = propertiesViewStateItem.value ?: return@launch
-            val updatedProperties = currentProperties.map {
-                val cleanedPrice = it.price.replace("\\D".toRegex(), "")
-                val originalPrice = cleanedPrice.toInt()
-                val formattedPrice = getFormattedPrice(originalPrice, isConversionEnabled)
-                it.copy(price = formattedPrice)
+            try {
+                val isConversionEnabled = getSavedStateForCurrencyConversionButton.invoke().first()
+                val currentProperties = propertiesViewStateItem.value ?: return@launch
+                val updatedProperties = currentProperties.map {
+                    val cleanedPrice = it.price.replace("\\D".toRegex(), "")
+                    val originalPrice = cleanedPrice.toIntOrNull() ?: 0
+                    val formattedPrice = getFormattedPrice(originalPrice, isConversionEnabled)
+                    it.copy(price = formattedPrice)
+                }
+                propertiesViewStateItem.value = updatedProperties
+            } catch (e: Exception) {
+                // Handle exception
             }
-            propertiesViewStateItem.value = updatedProperties
         }
     }
 
