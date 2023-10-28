@@ -39,7 +39,7 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
                 // Call viewModel method even if newText is empty or null
                 viewModel.combineFiltersWithProperties(
                     newText ?: "", areaSearch = false, roomSearch = false, priceSearch = false,
-                    soldSearch = false
+                    soldSearch = false, toModifySearch = false
                 )
                 return true
             }
@@ -56,6 +56,9 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
             updateFiltersAndSearch(binding.searchView.query.toString())
         }
         binding.soldChip.setOnCheckedChangeListener { _, _ ->
+            updateFiltersAndSearch(binding.searchView.query.toString())
+        }
+        binding.toModifyChip.setOnCheckedChangeListener { _, _ ->
             updateFiltersAndSearch(binding.searchView.query.toString())
         }
 
@@ -100,9 +103,10 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
         val roomSearch = binding.roomsChip.isChecked
         val priceSearch = binding.priceChip.isChecked
         val soldSearch = binding.soldChip.isChecked
+        val toModifiedSearch = binding.toModifyChip.isChecked
 
         // Combine all filter info and query text
-        viewModel.combineFiltersWithProperties(query, areaSearch, roomSearch, priceSearch, soldSearch)
+        viewModel.combineFiltersWithProperties(query, areaSearch, roomSearch, priceSearch, soldSearch, toModifiedSearch)
     }
 
     private fun onPropertySelected(id: Long?) {

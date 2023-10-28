@@ -32,11 +32,12 @@ class PropertiesViewModel @Inject constructor(
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
     val properties: LiveData<List<PropertyViewStateItem>> = propertiesViewStateItem
     private val propertyIdSelected = MutableLiveData<Long?>()
+    private var currentCurrency: String = "USD"
 
     init {
         combineFiltersWithProperties(
             "", areaSearch = false, roomSearch = false, priceSearch = false,
-            soldSearch = false
+            soldSearch = false, toModifySearch = false
         )
         observeCurrencyChanges()
     }
@@ -55,6 +56,7 @@ class PropertiesViewModel @Inject constructor(
         roomSearch: Boolean,
         priceSearch: Boolean,
         soldSearch: Boolean,
+        toModifySearch: Boolean,
     ) {
         viewModelScope.launch {
             val propertiesFlow = getAllPropertiesWithPhotosAndPOIUseCase.invoke()
@@ -63,7 +65,10 @@ class PropertiesViewModel @Inject constructor(
             propertiesFlow.map { properties ->
                 val finalProperties = if (searchQuery.isBlank()) {
                     // If searchQuery is blank, sort properties using sortProperties
-                    sortProperties(properties, areaSearch, roomSearch, priceSearch, soldSearch, isConversionEnabled)
+                    sortProperties(
+                        properties, areaSearch, roomSearch, priceSearch, soldSearch, toModifySearch,
+                        isConversionEnabled
+                    )
                 } else {
                     // Otherwise, apply the existing filtering logic
                     val filteredProperties = properties.filter { propertyWithPhotosAndPOI ->
@@ -95,6 +100,7 @@ class PropertiesViewModel @Inject constructor(
         roomSearch: Boolean,
         priceSearch: Boolean,
         soldSearch: Boolean,
+        toModifySearch: Boolean,
         isConversionEnabled: Boolean
     ): List<PropertyViewStateItem> {
 
@@ -110,6 +116,7 @@ class PropertiesViewModel @Inject constructor(
             areaSearch -> initialSorted.sortedBy { it.property.area }
             roomSearch -> initialSorted.sortedBy { it.property.rooms }
             priceSearch -> initialSorted.sortedBy { it.property.price }
+            toModifySearch -> initialSorted.sortedBy { it.property.latLng }
             else -> initialSorted
         }
 
@@ -139,13 +146,30 @@ class PropertiesViewModel @Inject constructor(
         )
     }
 
-    private fun getFormattedPrice(price: Int, isConversionEnabled: Boolean): String {
-        val (convertedPrice, locale) = if (isConversionEnabled) {
-            Pair(Utils.convertDollarToEuro(price), Locale.FRANCE)
-        } else {
-            Pair(price, Locale.US)
-        }
+    private fun calculatePriceAndLocale(currentPrice: Int, isConversionEnabled: Boolean): Pair<Int, Locale> {
+        return when {
+            isConversionEnabled && currentCurrency == "USD" -> {
+                currentCurrency = "EUR"
+                Utils.convertDollarToEuro(currentPrice) to Locale.FRANCE
+            }
 
+            isConversionEnabled && currentCurrency == "EUR" -> {
+                currentPrice to Locale.FRANCE
+            }
+
+            !isConversionEnabled && currentCurrency == "EUR" -> {
+                currentCurrency = "USD"
+                Utils.convertEuroToDollar(currentPrice) to Locale.US
+            }
+
+            else -> {
+                currentPrice to Locale.US
+            }
+        }
+    }
+
+    private fun getFormattedPrice(currentPrice: Int, isConversionEnabled: Boolean): String {
+        val (convertedPrice, locale) = calculatePriceAndLocale(currentPrice, isConversionEnabled)
         val currencyFormat = NumberFormat.getCurrencyInstance(locale)
         currencyFormat.maximumFractionDigits = 0
         return currencyFormat.format(convertedPrice)
