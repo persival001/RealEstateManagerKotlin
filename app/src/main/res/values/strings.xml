@@ -124,20 +124,21 @@
     <string name="add_description">Ajoutez une description à votre photo</string>
     <string name="description_of_picture">Front, Garden, Swimming pool…</string>
     <string name="add_a_description">Ajoutez une description</string>
-    <string name="notification_title">Property</string>
-    <string name="notification_text">Property added with success !</string>
-    <string name="searchbar_hint">Search information of property</string>
-    <string name="searchbar_description">Search informations of a property</string>
-    <string name="sold_title">Sold</string>
+    <string name="notification_title">Propriété</string>
+    <string name="notification_text">Propriété ajoutée avec succès !</string>
+    <string name="searchbar_hint">Entrez un critère de recherche</string>
+    <string name="searchbar_description">Entrez un critère de recherche</string>
+    <string name="sold_title">Vendu !</string>
     <string name="property_description">%1$s - %2$sm²</string>
-    <string name="what_are_you_looking_for">What are you looking for ?</string>
-    <string name="photo_required">At least one image is required</string>
-    <string name="property_not_added">Error saving property</string>
-    <string name="add_address_with_autocomplete">Veuillez modifier le bien et entrer une adresse valide</string>
-    <string name="property_address">Property address</string>
-    <string name="warning_icon">Warning icon</string>
-    <string name="toBeCompleted_title">To be completed</string>
-    <string name="to_be_completed_title">To be completed</string>
-    <string name="to_modify_title">To modify</string>
+    <string name="what_are_you_looking_for">Que recherchez-vous ?</string>
+    <string name="photo_required">Au moins une image requise</string>
+    <string name="property_not_added">Erreur ! Propriété non ajoutée</string>
+    <string name="add_address_with_autocomplete">Une ou plusieurs propriété ont une adresse invalide</string>
+    <string name="property_address">Adresse</string>
+    <string name="warning_icon">Icone Attention</string>
+    <string name="toBeCompleted_title">A completer</string>
+    <string name="to_be_completed_title">A completer</string>
+    <string name="to_modify_title">A modifier</string>
+    <string name="no_property_found">Pas de propriété trouvée</string>
 
 </resources>

@@ -48,7 +48,8 @@
                         android:drawablePadding="@dimen/default_micro_margin"
                         android:textColor="#000000"
                         android:textStyle="bold"
-                        app:drawableLeftCompat="@drawable/baseline_home_24" />
+                        app:drawableLeftCompat="@drawable/baseline_home_24"
+                        app:drawableTint="#000000" />
 
                     <TextView
                         android:id="@+id/bedrooms_textView"
@@ -58,7 +59,8 @@
                         android:drawablePadding="@dimen/default_micro_margin"
                         android:textColor="#000000"
                         android:textStyle="bold"
-                        app:drawableLeftCompat="@drawable/baseline_bed_24" />
+                        app:drawableLeftCompat="@drawable/baseline_bed_24"
+                        app:drawableTint="#000000" />
 
                     <TextView
                         android:id="@+id/bathrooms_textView"
@@ -68,7 +70,8 @@
                         android:drawablePadding="@dimen/default_micro_margin"
                         android:textColor="#000000"
                         android:textStyle="bold"
-                        app:drawableLeftCompat="@drawable/baseline_bathtub_24" />
+                        app:drawableLeftCompat="@drawable/baseline_bathtub_24"
+                        app:drawableTint="#000000" />
 
                 </LinearLayout>
 

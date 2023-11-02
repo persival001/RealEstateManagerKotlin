@@ -132,11 +132,12 @@
     <string name="what_are_you_looking_for">What are you looking for ?</string>
     <string name="photo_required">At least one image is required</string>
     <string name="property_not_added">Error saving property</string>
-    <string name="add_address_with_autocomplete">Please edit the property and enter a valid address</string>
+    <string name="add_address_with_autocomplete">One or more properties have an invalid address</string>
     <string name="property_address">Property address</string>
     <string name="warning_icon">Warning icon</string>
     <string name="toBeCompleted_title">To be completed</string>
     <string name="to_be_completed_title">To be completed</string>
     <string name="to_modify_title">To modify</string>
+    <string name="no_property_found">No property found</string>
 
 </resources>

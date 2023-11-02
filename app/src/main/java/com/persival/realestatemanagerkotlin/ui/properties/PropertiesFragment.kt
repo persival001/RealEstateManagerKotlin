@@ -92,6 +92,9 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
             } else {
                 binding.propertiesRecyclerView.visibility = View.VISIBLE
                 binding.emptyTextView.visibility = View.GONE
+                binding.propertiesRecyclerView.post {
+                    binding.propertiesRecyclerView.layoutManager?.scrollToPosition(0)
+                }
             }
         }
 
