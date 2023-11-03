@@ -75,6 +75,5 @@ object Utils {
             return activeNetworkInfo != null && activeNetworkInfo.isConnected
         }
     }
-
-
+    
 }

@@ -99,12 +99,11 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
 
         when (actionType) {
             ACTION_ADD -> {
-                Toast.makeText(requireContext(), "Selected: ADD", Toast.LENGTH_SHORT).show()
+                // Action if Add property is selected
             }
 
             ACTION_MODIFY -> {
                 // Complete form with information's of property selected
-                Toast.makeText(requireContext(), "Selected: MODIFY", Toast.LENGTH_SHORT).show()
                 displaysPropertyInformation()
                 displaysPropertyPhotos()
             }
