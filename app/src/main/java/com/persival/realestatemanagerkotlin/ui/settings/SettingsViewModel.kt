@@ -41,7 +41,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    // Moved these methods outside of init
     fun isCurrencyConversionTriggered(isTriggered: Boolean) {
         viewModelScope.launch {
             isCurrencyConversionButtonTriggeredUseCase.invoke(isTriggered)

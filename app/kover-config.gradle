@@ -10,8 +10,8 @@ koverReport {
                         "androidx.room.Database",
                 )
                 packages(
-                        "hilt_aggregated_deps", // Hilt: GeneratedInjectors (NOT annotated by DaggerGenerated)
-                        "com.persival.realestatemanagerkotlin.databinding", // ViewBinding
+                        "hilt_aggregated_deps",
+                        "com.persival.realestatemanagerkotlin.databinding",
                         // Gradle generated
                         "com.persival.realestatemanagerkotlin.BuildConfig",
                         // UI Utils

@@ -67,6 +67,8 @@ android {
 dependencies {
     implementation 'androidx.test:core-ktx:1.5.0'
     testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 
     // Desugaring
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
@@ -149,62 +151,4 @@ kapt {
 
 apply plugin: 'com.google.gms.google-services'
 
-koverReport {
-
-    androidReports("debug") {
-        // filters for all report types only of 'release' build type
-        filters {
-            excludes {
-                /*annotatedBy(
-                        "dagger.Module",
-                        "dagger.internal.DaggerGenerated",
-                        "androidx.room.Database",
-                )*/
-                /*packages(
-                        "hilt_aggregated_deps", // Hilt: GeneratedInjectors (NOT annotated by DaggerGenerated)
-                        "com.persival.realestatemanagerkotlin.databinding", // ViewBinding
-                        // Gradle generated
-                        "com.persival.realestatemanagerkotlin.BuildConfig",
-                        // UI Utils
-                        "com.persival.realestatemanagerkotlin.ui.utils",
-                )
-                classes(
-                        // Hilt
-                        "*_*Factory\$*",
-
-                        // Room
-                        "*_Impl",
-                        "*_Impl\$*",
-
-                        "*AppDatabase",
-                        "*AppDatabase\$*",
-
-                        "*BuildConfig",
-                        "*BuildConfig\$*",
-
-                        "*Dto",
-                        "*Dto\$*",
-
-                        "*Entity",
-                        "*Entity\$*",
-
-                        "*Response",
-                        "*Response\$*",
-
-                        "*MainApplication",
-                        "*MainApplication\$*",
-                        "*Fragment",
-                        "*Fragment\$*",
-                        "*Activity",
-                        "*Activity\$*",
-                        "*Adapter",
-                        "*Adapter\$*",
-                        "*ViewState",
-                        "*ViewState\$*",
-                        "*DiffCallback",
-                        "*DiffCallback\$*",
-                )*/
-            }
-        }
-    }
-}
+apply from: 'kover-config.gradle'
