@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'org.jetbrains.kotlinx.kover'
 }
 
 android {
@@ -59,13 +60,16 @@ android {
                 "-opt-in=kotlinx.coroutines.DelicateCoroutinesApi"
         ]
     }
+
+
 }
 
 dependencies {
     implementation 'androidx.test:core-ktx:1.5.0'
+    testImplementation 'junit:junit:4.12'
 
     // Desugaring
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -87,13 +91,13 @@ dependencies {
     //Firebase Firestore
     implementation 'com.google.firebase:firebase-auth:22.2.0'
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
-    implementation 'com.google.firebase:firebase-firestore-ktx:24.9.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.9.1'
 
     // Hilt and Hilt AndroidX
     implementation 'com.google.dagger:hilt-android:2.46.1'
     kapt 'com.google.dagger:hilt-android-compiler:2.46'
-    implementation 'androidx.hilt:hilt-work:1.0.0'
-    kapt 'androidx.hilt:hilt-compiler:1.0.0'
+    implementation 'androidx.hilt:hilt-work:1.1.0'
+    kapt 'androidx.hilt:hilt-compiler:1.1.0'
 
     // WorkManager
     implementation "androidx.work:work-runtime-ktx:2.8.1"
@@ -110,7 +114,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
     // Fragment
-    implementation 'androidx.fragment:fragment-ktx:1.6.1'
+    implementation 'androidx.fragment:fragment-ktx:1.6.2'
 
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.15.1'
@@ -133,6 +137,9 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.1" // JUnit 5
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.1"
 
+    // Kover
+    implementation "org.jetbrains.kotlinx:kover-gradle-plugin:0.7.4"
+
 }
 
 // Allow references to generated code
@@ -141,3 +148,63 @@ kapt {
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+koverReport {
+
+    androidReports("debug") {
+        // filters for all report types only of 'release' build type
+        filters {
+            excludes {
+                /*annotatedBy(
+                        "dagger.Module",
+                        "dagger.internal.DaggerGenerated",
+                        "androidx.room.Database",
+                )*/
+                /*packages(
+                        "hilt_aggregated_deps", // Hilt: GeneratedInjectors (NOT annotated by DaggerGenerated)
+                        "com.persival.realestatemanagerkotlin.databinding", // ViewBinding
+                        // Gradle generated
+                        "com.persival.realestatemanagerkotlin.BuildConfig",
+                        // UI Utils
+                        "com.persival.realestatemanagerkotlin.ui.utils",
+                )
+                classes(
+                        // Hilt
+                        "*_*Factory\$*",
+
+                        // Room
+                        "*_Impl",
+                        "*_Impl\$*",
+
+                        "*AppDatabase",
+                        "*AppDatabase\$*",
+
+                        "*BuildConfig",
+                        "*BuildConfig\$*",
+
+                        "*Dto",
+                        "*Dto\$*",
+
+                        "*Entity",
+                        "*Entity\$*",
+
+                        "*Response",
+                        "*Response\$*",
+
+                        "*MainApplication",
+                        "*MainApplication\$*",
+                        "*Fragment",
+                        "*Fragment\$*",
+                        "*Activity",
+                        "*Activity\$*",
+                        "*Adapter",
+                        "*Adapter\$*",
+                        "*ViewState",
+                        "*ViewState\$*",
+                        "*DiffCallback",
+                        "*DiffCallback\$*",
+                )*/
+            }
+        }
+    }
+}

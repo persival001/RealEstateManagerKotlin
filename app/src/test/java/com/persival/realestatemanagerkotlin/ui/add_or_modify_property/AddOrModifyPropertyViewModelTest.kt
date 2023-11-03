@@ -1,4 +1,4 @@
-package com.persival.realestatemanagerkotlin.ui.view_models
+package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
@@ -16,7 +16,6 @@ import com.persival.realestatemanagerkotlin.domain.property.InsertPropertyUseCas
 import com.persival.realestatemanagerkotlin.domain.property.UpdatePropertyUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
-import com.persival.realestatemanagerkotlin.ui.add_or_modify_property.AddOrModifyPropertyViewModel
 import com.persival.realestatemanagerkotlin.utils_for_tests.TestCoroutineRule
 import io.mockk.Runs
 import io.mockk.clearAllMocks
@@ -24,6 +23,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
+import io.mockk.justRun
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -142,7 +142,7 @@ class AddOrModifyPropertyViewModelTest {
     @Test
     fun `when refreshStoragePermission is called, should refresh storage permission`() {
         // Arrange
-        coEvery { refreshStoragePermissionUseCase.invoke() } just Runs
+        justRun { refreshStoragePermissionUseCase.invoke() }
 
         // Act
         viewModel.refreshStoragePermission()
