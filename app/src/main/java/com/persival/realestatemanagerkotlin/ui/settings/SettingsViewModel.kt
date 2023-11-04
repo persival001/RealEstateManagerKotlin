@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButton
+import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.IsCurrencyConversionButtonTriggeredUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.IsDateConversionButtonTriggeredUseCase
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val isCurrencyConversionButtonTriggeredUseCase: IsCurrencyConversionButtonTriggeredUseCase,
     private val isDateConversionButtonTriggeredUseCase: IsDateConversionButtonTriggeredUseCase,
-    private val getSavedStateForCurrencyConversionButton: GetSavedStateForCurrencyConversionButton,
+    private val getSavedStateForCurrencyConversionButtonUseCase: GetSavedStateForCurrencyConversionButtonUseCase,
     private val getSavedStateForDateConversionButtonUseCase: GetSavedStateForDateConversionButtonUseCase,
 ) : ViewModel() {
 
@@ -30,7 +30,7 @@ class SettingsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getSavedStateForCurrencyConversionButton.invoke().collect { value ->
+            getSavedStateForCurrencyConversionButtonUseCase.invoke().collect { value ->
                 _conversionButtonState.emit(value)
             }
         }

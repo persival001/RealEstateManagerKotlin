@@ -1,11 +1,10 @@
-package com.persival.realestatemanagerkotlin
+package com.persival.realestatemanagerkotlin.data.content_provider
 
 import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
-import com.persival.realestatemanagerkotlin.data.content_provider.PropertyProvider
 import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDao
 import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDao
 import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDao

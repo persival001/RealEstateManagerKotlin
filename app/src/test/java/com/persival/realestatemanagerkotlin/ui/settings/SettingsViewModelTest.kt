@@ -1,18 +1,17 @@
 package com.persival.realestatemanagerkotlin.ui.settings
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButton
+import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.IsCurrencyConversionButtonTriggeredUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.IsDateConversionButtonTriggeredUseCase
 import com.persival.realestatemanagerkotlin.utils_for_tests.TestCoroutineRule
-import io.mockk.Runs
-import io.mockk.clearMocks
 import io.mockk.coEvery
+import io.mockk.coJustRun
 import io.mockk.coVerify
-import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runCurrent
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,25 +26,24 @@ class SettingsViewModelTest {
 
     // Mocks
     private val isCurrencyConversionButtonTriggeredUseCase: IsCurrencyConversionButtonTriggeredUseCase = mockk()
-    private val isDateConversionButtonTriggeredUseCase: IsDateConversionButtonTriggeredUseCase = mockk(relaxed = true)
-    private val getSavedStateForCurrencyConversionButton: GetSavedStateForCurrencyConversionButton = mockk()
+    private val isDateConversionButtonTriggeredUseCase: IsDateConversionButtonTriggeredUseCase = mockk()
+    private val getSavedStateForCurrencyConversionButtonUseCase: GetSavedStateForCurrencyConversionButtonUseCase =
+        mockk()
     private val getSavedStateForDateConversionButtonUseCase: GetSavedStateForDateConversionButtonUseCase = mockk()
 
     private lateinit var viewModel: SettingsViewModel
 
     @Before
     fun setUp() {
-        // Initialisation des mocks
-        clearMocks(isCurrencyConversionButtonTriggeredUseCase, isDateConversionButtonTriggeredUseCase)
-        coEvery { isCurrencyConversionButtonTriggeredUseCase.invoke(true) } just Runs
-        coEvery { isDateConversionButtonTriggeredUseCase.invoke(true) } just Runs
-        coEvery { getSavedStateForCurrencyConversionButton.invoke() } returns flowOf(true)
+        coJustRun { isCurrencyConversionButtonTriggeredUseCase.invoke(any()) }
+        coJustRun { isDateConversionButtonTriggeredUseCase.invoke(any()) }
+        coEvery { getSavedStateForCurrencyConversionButtonUseCase.invoke() } returns flowOf(true)
         coEvery { getSavedStateForDateConversionButtonUseCase.invoke() } returns true
 
         viewModel = SettingsViewModel(
             isCurrencyConversionButtonTriggeredUseCase = isCurrencyConversionButtonTriggeredUseCase,
             isDateConversionButtonTriggeredUseCase = isDateConversionButtonTriggeredUseCase,
-            getSavedStateForCurrencyConversionButton = getSavedStateForCurrencyConversionButton,
+            getSavedStateForCurrencyConversionButtonUseCase = getSavedStateForCurrencyConversionButtonUseCase,
             getSavedStateForDateConversionButtonUseCase = getSavedStateForDateConversionButtonUseCase
         )
     }
@@ -53,7 +51,7 @@ class SettingsViewModelTest {
     @Test
     fun `When ViewModel is initialized, it gets the saved state for buttons`() = testCoroutineRule.runTest {
         // Then
-        coVerify { getSavedStateForCurrencyConversionButton.invoke() }
+        coVerify { getSavedStateForCurrencyConversionButtonUseCase.invoke() }
         coVerify { getSavedStateForDateConversionButtonUseCase.invoke() }
     }
 
@@ -65,9 +63,10 @@ class SettingsViewModelTest {
 
             // When
             viewModel.isCurrencyConversionTriggered(isTriggered)
+            runCurrent()
 
             // Then
-            coVerify { isCurrencyConversionButtonTriggeredUseCase.invoke(eq(true)) }
+            coVerify { isCurrencyConversionButtonTriggeredUseCase.invoke(true) }
         }
 
     @Test
@@ -78,6 +77,7 @@ class SettingsViewModelTest {
 
             // When
             viewModel.isDateConversionTriggered(isTriggered)
+            runCurrent()
 
             // Then
             coVerify { isDateConversionButtonTriggeredUseCase.invoke(true) }

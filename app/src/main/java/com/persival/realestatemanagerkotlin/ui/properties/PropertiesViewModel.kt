@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButton
+import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.database.SynchronizeDatabaseUseCase
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
@@ -26,7 +26,7 @@ class PropertiesViewModel @Inject constructor(
     private val getAllPropertiesWithPhotosAndPOIUseCase: GetAllPropertiesWithPhotosAndPOIUseCase,
     private val setSelectedPropertyIdUseCase: SetSelectedPropertyIdUseCase,
     private val synchronizeDatabaseUseCase: SynchronizeDatabaseUseCase,
-    private val getSavedStateForCurrencyConversionButton: GetSavedStateForCurrencyConversionButton,
+    private val getSavedStateForCurrencyConversionButtonUseCase: GetSavedStateForCurrencyConversionButtonUseCase,
 ) : ViewModel() {
 
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
@@ -43,7 +43,7 @@ class PropertiesViewModel @Inject constructor(
     }
 
     private fun observeCurrencyChanges() {
-        getSavedStateForCurrencyConversionButton.invoke()
+        getSavedStateForCurrencyConversionButtonUseCase.invoke()
             .onEach {
                 updatePropertyPrices()
             }
@@ -60,7 +60,7 @@ class PropertiesViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val propertiesFlow = getAllPropertiesWithPhotosAndPOIUseCase.invoke()
-            val isConversionEnabled = getSavedStateForCurrencyConversionButton.invoke().first()
+            val isConversionEnabled = getSavedStateForCurrencyConversionButtonUseCase.invoke().first()
 
             propertiesFlow.map { properties ->
                 val finalProperties = if (searchQuery.isBlank()) {
@@ -178,7 +178,7 @@ class PropertiesViewModel @Inject constructor(
     private fun updatePropertyPrices() {
         viewModelScope.launch {
             try {
-                val isConversionEnabled = getSavedStateForCurrencyConversionButton.invoke().first()
+                val isConversionEnabled = getSavedStateForCurrencyConversionButtonUseCase.invoke().first()
                 val currentProperties = propertiesViewStateItem.value ?: return@launch
                 val updatedProperties = currentProperties.map {
                     val cleanedPrice = it.price.replace("\\D".toRegex(), "")
