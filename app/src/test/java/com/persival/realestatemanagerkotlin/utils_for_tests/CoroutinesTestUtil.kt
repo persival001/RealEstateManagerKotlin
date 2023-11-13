@@ -1,5 +1,7 @@
 package com.persival.realestatemanagerkotlin.utils_for_tests
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import io.mockk.Call
 import io.mockk.MockKAdditionalAnswerScope
 import io.mockk.MockKAnswerScope
@@ -8,7 +10,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.onStart
-import org.assertj.core.api.Assertions.assertThat
 import kotlin.coroutines.coroutineContext
 
 fun <T> MockKStubScope<Unit, T>.ensuresDispatcher(

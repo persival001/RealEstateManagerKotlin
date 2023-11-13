@@ -33,6 +33,40 @@ interface PropertyDao {
     fun getAllProperties(): Flow<List<PropertyWithPhotosAndPoisDto>>
 
     @Transaction
+    @Query(
+        """
+        SELECT * FROM property
+        WHERE (:type IS NULL OR type = :type) 
+        AND (:minPrice IS NULL OR price >= :minPrice)
+        AND (:maxPrice IS NULL OR price <= :maxPrice)
+        AND (:minArea IS NULL OR area >= :minArea)
+        AND (:maxArea IS NULL OR area <= :maxArea)
+        AND (:minRooms IS NULL OR rooms >= :minRooms)
+        AND (:maxRooms IS NULL OR rooms <= :maxRooms)
+        AND (:isSold IS NULL OR isSold = :isSold)
+        AND (:latLng IS NULL OR latLng = :latLng)
+        AND (:entryDate IS NULL OR entryDate = :entryDate)
+        AND (:poi IS NULL OR EXISTS (
+            SELECT * FROM point_of_interest 
+            WHERE point_of_interest.propertyId = property.id 
+            AND point_of_interest.poi = :poi))
+        """
+    )
+    fun getSearchedPropertiesWithPOIs(
+        type: String?,
+        minPrice: Int?,
+        maxPrice: Int?,
+        minArea: Int?,
+        maxArea: Int?,
+        minRooms: Int?,
+        maxRooms: Int?,
+        isSold: Boolean?,
+        latLng: String?,
+        entryDate: String?,
+        poi: String?
+    ): Flow<List<PropertyWithPhotosAndPoisDto>>
+
+    @Transaction
     @Query("SELECT * FROM property WHERE id == :propertyId")
     fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPoisDto>
 

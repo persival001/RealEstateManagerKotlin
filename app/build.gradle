@@ -47,11 +47,12 @@ android {
         buildConfig true
         viewBinding true
     }
-
     packagingOptions {
-        exclude 'META-INF/LICENSE.md'
-        exclude 'META-INF/LICENSE-notice.md'
+        resources {
+            excludes += ['META-INF/LICENSE.md', 'META-INF/LICENSE-notice.md']
+        }
     }
+
 
     kotlinOptions {
         jvmTarget = '17'
@@ -74,7 +75,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
@@ -93,7 +94,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx:24.9.1'
 
     // Hilt and Hilt AndroidX
-    implementation 'com.google.dagger:hilt-android:2.46.1'
+    implementation 'com.google.dagger:hilt-android:2.48'
     kapt 'com.google.dagger:hilt-android-compiler:2.46'
     implementation 'androidx.hilt:hilt-work:1.1.0'
     kapt 'androidx.hilt:hilt-compiler:1.1.0'
@@ -103,14 +104,14 @@ dependencies {
 
     // Room
     implementation "androidx.room:room-runtime:2.6.0"
-    kapt "androidx.room:room-compiler:2.5.2"
+    kapt "androidx.room:room-compiler:2.6.0"
     implementation "androidx.room:room-ktx:2.6.0"
 
     // LiveData and Coroutine
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 
     // Fragment
     implementation 'androidx.fragment:fragment-ktx:1.6.2'
@@ -132,9 +133,8 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-nop:2.0.9'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
     testImplementation "org.mockito:mockito-core:3.11.2"
-    testImplementation "org.assertj:assertj-core:3.20.2"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.1" // JUnit 5
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.1"
+    testImplementation "com.willowtreeapps.assertk:assertk-jvm:0.25"
+    testImplementation 'com.google.dagger:hilt-android-testing:2.42'
 
     // Kover
     implementation "org.jetbrains.kotlinx:kover-gradle-plugin:0.7.4"

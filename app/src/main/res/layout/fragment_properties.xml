@@ -5,16 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:iconifiedByDefault="false"
-        android:queryHint="@string/what_are_you_looking_for"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/search_divider"
         android:layout_width="match_parent"
@@ -22,64 +12,40 @@
         android:layout_marginBottom="@dimen/default_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_view" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroup"
+    <Button
+        android:id="@+id/filter_button"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_margin"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Filter"
+        app:icon="@drawable/baseline_filter_list_24"
+        app:layout_constraintEnd_toStartOf="@+id/position_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_divider"
-        app:singleSelection="true">
+        app:layout_constraintTop_toBottomOf="@+id/search_divider" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/priceChip"
-            style="@style/Widget.Material3.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/price_title" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/areaChip"
-            style="@style/Widget.Material3.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/area_title" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/roomsChip"
-            style="@style/Widget.Material3.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/rooms" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/soldChip"
-            style="@style/Widget.Material3.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sold_title" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/toModifyChip"
-            style="@style/Widget.Material3.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/to_modify_title" />
-
-    </com.google.android.material.chip.ChipGroup>
+    <Button
+        android:id="@+id/position_button"
+        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:text="Position"
+        app:icon="@drawable/baseline_location_on_24"
+        app:layout_constraintStart_toEndOf="@+id/filter_button"
+        app:layout_constraintTop_toBottomOf="@+id/search_divider" />
 
     <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/chip_divider"
+        android:id="@+id/buttons_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_margin"
         android:layout_marginBottom="@dimen/default_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/filter_button" />
 
     <!-- Recycler View -->
     <androidx.recyclerview.widget.RecyclerView
@@ -90,7 +56,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chip_divider"
+        app:layout_constraintTop_toBottomOf="@+id/buttons_divider"
         tools:listitem="@layout/item_property" />
 
     <!-- Text if RV is empty -->
@@ -103,6 +69,6 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chip_divider" />
+        app:layout_constraintTop_toBottomOf="@+id/buttons_divider" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

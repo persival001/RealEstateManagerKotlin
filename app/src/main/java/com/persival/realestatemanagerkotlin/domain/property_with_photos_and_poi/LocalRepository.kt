@@ -21,6 +21,20 @@ interface LocalRepository {
 
     fun getPropertyPhotos(propertyId: Long): Flow<List<PhotoEntity>>
 
+    fun getSearchedPropertiesWithPOIs(
+        type: String?,
+        minPrice: Int?,
+        maxPrice: Int?,
+        minArea: Int?,
+        maxArea: Int?,
+        minRooms: Int?,
+        maxRooms: Int?,
+        isSold: Boolean?,
+        latLng: String?,
+        entryDate: String?,
+        poi: String?
+    ): Flow<List<PropertyWithPhotosAndPOIEntity>>
+
     suspend fun updateProperty(propertyEntity: PropertyEntity): Int
 
     suspend fun updatePhoto(photoEntity: PhotoEntity): Int

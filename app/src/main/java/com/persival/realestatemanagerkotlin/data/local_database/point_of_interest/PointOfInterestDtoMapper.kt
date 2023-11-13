@@ -16,7 +16,7 @@ class PointOfInterestDtoMapper @Inject constructor() {
 
     fun mapFromDomainModel(domainModel: PointOfInterestEntity): PointOfInterestDto {
         return PointOfInterestDto(
-            id = domainModel.id ?: 0L,
+            id = domainModel.id,
             propertyId = domainModel.propertyId,
             poi = domainModel.poi,
         )

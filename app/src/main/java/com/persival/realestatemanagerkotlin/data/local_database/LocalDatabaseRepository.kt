@@ -95,6 +95,38 @@ class LocalDatabaseRepository @Inject constructor(
             }
             .flowOn(coroutineDispatcherProvider.io)
 
+    override fun getSearchedPropertiesWithPOIs(
+        type: String?,
+        minPrice: Int?,
+        maxPrice: Int?,
+        minArea: Int?,
+        maxArea: Int?,
+        minRooms: Int?,
+        maxRooms: Int?,
+        isSold: Boolean?,
+        latLng: String?,
+        entryDate: String?,
+        poi: String?
+    ): Flow<List<PropertyWithPhotosAndPOIEntity>> =
+        propertyDao
+            .getSearchedPropertiesWithPOIs(
+                type = type,
+                minPrice = minPrice,
+                maxPrice = maxPrice,
+                minArea = minArea,
+                maxArea = maxArea,
+                minRooms = minRooms,
+                maxRooms = maxRooms,
+                isSold = isSold,
+                latLng = latLng,
+                entryDate = entryDate,
+                poi = poi
+            )
+            .map { list ->
+                list.map { propertyWithPhotosAndPoisDtoMapper.mapToEntity(it) }
+            }
+            .flowOn(coroutineDispatcherProvider.io)
+
     // Update
     override suspend fun updateProperty(propertyEntity: PropertyEntity): Int =
         propertyDao.update(propertyDtoMapper.mapFromDomainModel(propertyEntity))

@@ -140,5 +140,21 @@
     <string name="to_be_completed_title">A completer</string>
     <string name="to_modify_title">A modifier</string>
     <string name="no_property_found">Pas de propriété trouvée</string>
+    <string name="search_for_a_property">Search for a property</string>
+    <string name="type">Type</string>
+    <string name="distance">Distance</string>
+    <string name="distance_from_your_location">Distance from your location</string>
+    <string name="min">min</string>
+    <string name="max">max</string>
+    <string name="area">Area</string>
+    <string name="near_the_property">Near the property</string>
+    <string name="placed_on_the_market_since">Placed on the market since</string>
+    <string name="_1_months">-1 months</string>
+    <string name="_6_months">-6 months</string>
+    <string name="plus_6_months">+6 months</string>
+    <string name="property_for_sale_or_sold">Property for sale or sold</string>
+    <string name="for_sale">For Sale</string>
+    <string name="sold_only">Sold</string>
+    <string name="clear">Clear</string>
 
 </resources>

@@ -2,7 +2,6 @@ package com.persival.realestatemanagerkotlin.ui.properties
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -10,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentPropertiesBinding
 import com.persival.realestatemanagerkotlin.ui.detail.DetailFragment
+import com.persival.realestatemanagerkotlin.ui.search.SearchFragment
 import com.persival.realestatemanagerkotlin.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,39 +27,12 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
         super.onViewCreated(view, savedInstanceState)
 
         // Synchronize firebase and room
-        viewModel.synchronizeDatabase()
+        //viewModel.synchronizeDatabase()
 
-        // Set the listener to capture user query input
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // Call viewModel method even if newText is empty or null
-                viewModel.combineFiltersWithProperties(
-                    newText ?: "", areaSearch = false, roomSearch = false, priceSearch = false,
-                    soldSearch = false, toModifySearch = false
-                )
-                return true
-            }
-        })
-
-        // Initialize chip listeners
-        binding.areaChip.setOnCheckedChangeListener { _, _ ->
-            updateFiltersAndSearch(binding.searchView.query.toString())
-        }
-        binding.roomsChip.setOnCheckedChangeListener { _, _ ->
-            updateFiltersAndSearch(binding.searchView.query.toString())
-        }
-        binding.priceChip.setOnCheckedChangeListener { _, _ ->
-            updateFiltersAndSearch(binding.searchView.query.toString())
-        }
-        binding.soldChip.setOnCheckedChangeListener { _, _ ->
-            updateFiltersAndSearch(binding.searchView.query.toString())
-        }
-        binding.toModifyChip.setOnCheckedChangeListener { _, _ ->
-            updateFiltersAndSearch(binding.searchView.query.toString())
+        // Button "filter" click listener
+        binding.filterButton.setOnClickListener {
+            val searchFragment = SearchFragment.newInstance()
+            searchFragment.show(requireActivity().supportFragmentManager, searchFragment.tag)
         }
 
         // Initializes PropertyListAdapter to handle property selection
@@ -98,18 +71,6 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
             }
         }
 
-    }
-
-    // Update the ViewModel based on the text and chip states
-    private fun updateFiltersAndSearch(query: String) {
-        val areaSearch = binding.areaChip.isChecked
-        val roomSearch = binding.roomsChip.isChecked
-        val priceSearch = binding.priceChip.isChecked
-        val soldSearch = binding.soldChip.isChecked
-        val toModifiedSearch = binding.toModifyChip.isChecked
-
-        // Combine all filter info and query text
-        viewModel.combineFiltersWithProperties(query, areaSearch, roomSearch, priceSearch, soldSearch, toModifiedSearch)
     }
 
     private fun onPropertySelected(id: Long?) {

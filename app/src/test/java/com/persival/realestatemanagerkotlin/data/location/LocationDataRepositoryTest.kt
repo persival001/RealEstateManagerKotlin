@@ -102,7 +102,7 @@ class LocationDataRepositoryTest {
 
         // Act & Assert
         val job = launch {
-            locationDataRepository.getLocationFlow().collect { locationEntity ->
+            locationDataRepository.getLocationFlow().collect { _ ->
                 fail("Should not emit any location updates")
             }
         }

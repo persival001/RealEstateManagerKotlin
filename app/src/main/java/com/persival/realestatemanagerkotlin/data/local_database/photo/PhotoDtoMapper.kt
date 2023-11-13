@@ -16,7 +16,7 @@ class PhotoDtoMapper @Inject constructor() {
 
     fun mapFromDomainModel(domainModel: PhotoEntity): PhotoDto {
         return PhotoDto(
-            id = domainModel.id ?: 0L,
+            id = domainModel.id,
             propertyId = domainModel.propertyId,
             description = domainModel.description,
             photoUrl = domainModel.photoUrl,

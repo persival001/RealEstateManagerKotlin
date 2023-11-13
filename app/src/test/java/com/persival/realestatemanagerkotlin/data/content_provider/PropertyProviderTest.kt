@@ -34,7 +34,7 @@ class PropertyProviderTest {
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
-        contentResolver = mockk(relaxed = true)
+        contentResolver = mockk()
 
         mockPropertyDao = mockk()
         mockPhotoDao = mockk()
@@ -46,7 +46,7 @@ class PropertyProviderTest {
             pointOfInterestDao = mockPointOfInterestDao
         }
 
-        val fakeCursor: Cursor = mockk(relaxed = true)
+        val fakeCursor: Cursor = mockk()
         every { mockPropertyDao.getAllPropertiesAsCursor() } returns fakeCursor
         every { fakeCursor.setNotificationUri(any(), any()) } just Runs
     }
@@ -55,7 +55,7 @@ class PropertyProviderTest {
     // It also verifies that the correct methods are called on the mocked objects.
     @Test
     fun `query should return correct Cursor based on URI`() {
-        val fakeCursor: Cursor = mockk(relaxed = true)
+        val fakeCursor: Cursor = mockk()
         every {
             fakeCursor.setNotificationUri(
                 any(),
