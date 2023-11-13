@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.persival.realestatemanagerkotlin.R
@@ -31,42 +32,52 @@ class SearchFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupChips()
-        setupButtons()
-        observeViewModel()
-    }
+        // Initialize the type of property array
+        val items = resources.getStringArray(R.array.property_items)
+        val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, items)
+        binding.typeTextView.setAdapter(adapter)
 
-    private fun setupChips() {
-        binding.schoolChip.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                // Logique pour schoolChip sélectionné
-            }
-        }
-
-        // Répétez pour les autres chips
-    }
-
-    private fun setupButtons() {
-        binding.okButton.setOnClickListener {
-            // Logique pour le bouton OK
-            val minPrice = binding.priceMinEditText.text.toString()
-            // Récupérez les autres valeurs ici et appelez le ViewModel
-            //viewModel.searchProperties(minPrice /*, autres paramètres*/)
-        }
-
+        // Reinitialize the list
         binding.clearButton.setOnClickListener {
-            // Logique pour le bouton Effacer
-            clearForm()
+            // Clear the form
         }
-    }
 
-    private fun observeViewModel() {
-        //viewModel.properties.observe(viewLifecycleOwner) { properties ->
-        // Mettre à jour l'interface utilisateur avec les propriétés
-        //}
-    }
+        // Get the information's of property added by the user
+        binding.okButton.setOnClickListener {
+            // Check if the form is valid
+            requireActivity().finish()
+        }
 
-    private fun clearForm() {
-        // Code pour réinitialiser le formulaire
+        // Retrieve chip selected for poi
+        val selectedPoisChips = listOf(
+            binding.schoolChip,
+            binding.publicTransportChip,
+            binding.hospitalChip,
+            binding.shopChip,
+            binding.greenSpacesChip,
+            binding.restaurantChip
+        ).filter { it.isChecked }.map { it.text.toString() }
+
+        // Retrieve chip selected for time of sale
+        binding.weekChip
+        binding.monthChip
+        binding.yearChip
+
+
+        val mandatoryEditTextList = listOf(
+            binding.typeTextView,
+            binding.priceMinEditText,
+            binding.priceMaxEditText,
+            binding.areaMinEditText,
+            binding.areaMaxEditText,
+        )
+
+        // Check if all mandatory fields are filled and set error messages
+        val allMandatoryFieldsFilled = mandatoryEditTextList.all { editText ->
+            val isFilled = editText.text?.isNotEmpty() == true
+            editText.error = if (isFilled) null else getString(R.string.error_message)
+            isFilled
+        }
     }
 }
+
