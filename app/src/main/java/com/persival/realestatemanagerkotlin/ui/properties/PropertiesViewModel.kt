@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButtonUseCase
-import com.persival.realestatemanagerkotlin.domain.database.SynchronizeDatabaseUseCase
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
@@ -26,7 +25,6 @@ import javax.inject.Inject
 class PropertiesViewModel @Inject constructor(
     private val getAllPropertiesWithPhotosAndPOIUseCase: GetAllPropertiesWithPhotosAndPOIUseCase,
     private val setSelectedPropertyIdUseCase: SetSelectedPropertyIdUseCase,
-    private val synchronizeDatabaseUseCase: SynchronizeDatabaseUseCase,
     private val getSavedStateForCurrencyConversionButtonUseCase: GetSavedStateForCurrencyConversionButtonUseCase,
     private val getActiveSearchFilterUseCase: GetActiveSearchFilterUseCase,
     private val getSearchedPropertiesUseCase: GetSearchedPropertiesUseCase,
@@ -50,7 +48,7 @@ class PropertiesViewModel @Inject constructor(
         viewModelScope.launch {
             val isConversionEnabled = getSavedStateForCurrencyConversionButtonUseCase.invoke().first()
             val currentFilter = getActiveSearchFilterUseCase.invoke().first()
-            
+
             val propertiesFlow = currentFilter?.let {
                 getSearchedPropertiesUseCase.invoke(it)
             } ?: getAllPropertiesWithPhotosAndPOIUseCase.invoke()
@@ -62,28 +60,6 @@ class PropertiesViewModel @Inject constructor(
                 propertiesViewStateItem.value = viewStateItems
             }
         }
-    }
-
-    private fun transformToViewState(
-        propertyWithPhotosAndPOIEntity: PropertyWithPhotosAndPOIEntity,
-        isConversionEnabled: Boolean
-    ): PropertyViewStateItem {
-        val formattedPrice = getFormattedPrice(propertyWithPhotosAndPOIEntity.property.price, isConversionEnabled)
-
-        return PropertyViewStateItem(
-            id = propertyWithPhotosAndPOIEntity.property.id,
-            type = propertyWithPhotosAndPOIEntity.property.type,
-            address = propertyWithPhotosAndPOIEntity.property.address,
-            latLng = propertyWithPhotosAndPOIEntity.property.latLng,
-            price = formattedPrice,
-            rooms = propertyWithPhotosAndPOIEntity.property.rooms.toString(),
-            surface = propertyWithPhotosAndPOIEntity.property.area.toString(),
-            bathrooms = propertyWithPhotosAndPOIEntity.property.bathrooms.toString(),
-            bedrooms = propertyWithPhotosAndPOIEntity.property.bedrooms.toString(),
-            poi = getFormattedPoi(propertyWithPhotosAndPOIEntity.pointsOfInterest),
-            pictureUri = propertyWithPhotosAndPOIEntity.photos.firstOrNull()?.photoUrl ?: "",
-            isSold = propertyWithPhotosAndPOIEntity.property.isSold
-        )
     }
 
     private fun calculatePriceAndLocale(currentPrice: Int, isConversionEnabled: Boolean): Pair<Int, Locale> {
@@ -140,6 +116,28 @@ class PropertiesViewModel @Inject constructor(
     fun updateSelectedPropertyId(id: Long?) {
         setSelectedPropertyIdUseCase(id)
         propertyIdSelected.value = id
+    }
+
+    private fun transformToViewState(
+        propertyWithPhotosAndPOIEntity: PropertyWithPhotosAndPOIEntity,
+        isConversionEnabled: Boolean
+    ): PropertyViewStateItem {
+        val formattedPrice = getFormattedPrice(propertyWithPhotosAndPOIEntity.property.price, isConversionEnabled)
+
+        return PropertyViewStateItem(
+            id = propertyWithPhotosAndPOIEntity.property.id,
+            type = propertyWithPhotosAndPOIEntity.property.type,
+            address = propertyWithPhotosAndPOIEntity.property.address,
+            latLng = propertyWithPhotosAndPOIEntity.property.latLng,
+            price = formattedPrice,
+            rooms = propertyWithPhotosAndPOIEntity.property.rooms.toString(),
+            surface = propertyWithPhotosAndPOIEntity.property.area.toString(),
+            bathrooms = propertyWithPhotosAndPOIEntity.property.bathrooms.toString(),
+            bedrooms = propertyWithPhotosAndPOIEntity.property.bedrooms.toString(),
+            poi = getFormattedPoi(propertyWithPhotosAndPOIEntity.pointsOfInterest),
+            pictureUri = propertyWithPhotosAndPOIEntity.photos.firstOrNull()?.photoUrl ?: "",
+            isSold = propertyWithPhotosAndPOIEntity.property.isSold
+        )
     }
 
     /*fun synchronizeDatabase() {
