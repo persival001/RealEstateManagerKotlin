@@ -10,6 +10,8 @@ import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInte
 import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.domain.search.GetActiveSearchFilterUseCase
+import com.persival.realestatemanagerkotlin.domain.search.GetSearchedPropertiesUseCase
 import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
@@ -26,6 +28,8 @@ class PropertiesViewModel @Inject constructor(
     private val setSelectedPropertyIdUseCase: SetSelectedPropertyIdUseCase,
     private val synchronizeDatabaseUseCase: SynchronizeDatabaseUseCase,
     private val getSavedStateForCurrencyConversionButtonUseCase: GetSavedStateForCurrencyConversionButtonUseCase,
+    private val getActiveSearchFilterUseCase: GetActiveSearchFilterUseCase,
+    private val getSearchedPropertiesUseCase: GetSearchedPropertiesUseCase,
 ) : ViewModel() {
 
     private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
@@ -45,13 +49,18 @@ class PropertiesViewModel @Inject constructor(
     private fun displayProperties() {
         viewModelScope.launch {
             val isConversionEnabled = getSavedStateForCurrencyConversionButtonUseCase.invoke().first()
-            getAllPropertiesWithPhotosAndPOIUseCase.invoke()
-                .collect { propertiesList ->
-                    val viewStateItems = propertiesList.map { property ->
-                        transformToViewState(property, isConversionEnabled)
-                    }
-                    propertiesViewStateItem.value = viewStateItems
+            val currentFilter = getActiveSearchFilterUseCase.invoke().first()
+            
+            val propertiesFlow = currentFilter?.let {
+                getSearchedPropertiesUseCase.invoke(it)
+            } ?: getAllPropertiesWithPhotosAndPOIUseCase.invoke()
+
+            propertiesFlow.collect { propertiesList ->
+                val viewStateItems = propertiesList.map { property ->
+                    transformToViewState(property, isConversionEnabled)
                 }
+                propertiesViewStateItem.value = viewStateItems
+            }
         }
     }
 

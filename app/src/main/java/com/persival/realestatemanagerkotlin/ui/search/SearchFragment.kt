@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.persival.realestatemanagerkotlin.R
@@ -39,45 +40,65 @@ class SearchFragment : BottomSheetDialogFragment() {
 
         // Reinitialize the list
         binding.clearButton.setOnClickListener {
-            // Clear the form
+            binding.typeTextView.setText("")
+            binding.priceMinEditText.setText("")
+            binding.priceMaxEditText.setText("")
+            binding.areaMinEditText.setText("")
+            binding.areaMaxEditText.setText("")
         }
 
         // Get the information's of property added by the user
         binding.okButton.setOnClickListener {
-            // Check if the form is valid
-            requireActivity().finish()
+
+            // Retrieve selected chip for poi
+            val selectedPoisChips = listOf(
+                binding.schoolChip,
+                binding.publicTransportChip,
+                binding.hospitalChip,
+                binding.shopChip,
+                binding.greenSpacesChip,
+                binding.restaurantChip
+            ).filter { it.isChecked }.map { it.text.toString() }
+
+            // Retrieve chip selected for time of sale
+            val week = binding.weekChip
+            val month = binding.monthChip
+            val year = binding.yearChip
+
+            val mandatoryEditTextList = listOf(
+                binding.typeTextView,
+                binding.priceMinEditText,
+                binding.priceMaxEditText,
+                binding.areaMinEditText,
+                binding.areaMaxEditText,
+            )
+
+            // Check if all mandatory fields are filled and set error messages
+            val allMandatoryFieldsFilled = mandatoryEditTextList.all { editText ->
+                val isFilled = editText.text?.isNotEmpty() == true
+                editText.error = if (isFilled) null else getString(R.string.error_message)
+                isFilled
+            }
+
+            if (allMandatoryFieldsFilled) {
+                // Get all information's
+                val type = binding.typeTextView.text.toString()
+                val minPrice = binding.priceMinEditText.text.toString().toIntOrNull()
+                val maxPrice = binding.priceMaxEditText.text.toString().toIntOrNull()
+                val minArea = binding.areaMinEditText.text.toString().toIntOrNull()
+                val maxArea = binding.areaMaxEditText.text.toString().toIntOrNull()
+
+                viewModel.setSearchCriteria(type, minPrice, maxPrice, minArea, maxArea)
+                dismiss()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_message),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
-        // Retrieve chip selected for poi
-        val selectedPoisChips = listOf(
-            binding.schoolChip,
-            binding.publicTransportChip,
-            binding.hospitalChip,
-            binding.shopChip,
-            binding.greenSpacesChip,
-            binding.restaurantChip
-        ).filter { it.isChecked }.map { it.text.toString() }
-
-        // Retrieve chip selected for time of sale
-        binding.weekChip
-        binding.monthChip
-        binding.yearChip
-
-
-        val mandatoryEditTextList = listOf(
-            binding.typeTextView,
-            binding.priceMinEditText,
-            binding.priceMaxEditText,
-            binding.areaMinEditText,
-            binding.areaMaxEditText,
-        )
-
-        // Check if all mandatory fields are filled and set error messages
-        val allMandatoryFieldsFilled = mandatoryEditTextList.all { editText ->
-            val isFilled = editText.text?.isNotEmpty() == true
-            editText.error = if (isFilled) null else getString(R.string.error_message)
-            isFilled
-        }
     }
 }
 
