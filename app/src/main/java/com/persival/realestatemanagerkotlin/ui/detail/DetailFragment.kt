@@ -101,7 +101,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             parentFragmentManager.commit {
                 replace(
                     this@DetailFragment.id,
-                    MapFragment.newInstance()
+                    MapFragment.newInstance(mapImageClicked = true)
                 )
                 addToBackStack(null)
             }

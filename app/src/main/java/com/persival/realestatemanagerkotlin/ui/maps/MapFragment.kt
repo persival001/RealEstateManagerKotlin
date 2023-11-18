@@ -33,7 +33,16 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     companion object {
-        fun newInstance() = MapFragment()
+        private const val ARG_MAP_IMAGE_CLICKED = "mapImageClicked"
+
+        fun newInstance(mapImageClicked: Boolean): MapFragment {
+            val args = Bundle().apply {
+                putBoolean(ARG_MAP_IMAGE_CLICKED, mapImageClicked)
+            }
+            return MapFragment().apply {
+                arguments = args
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,6 +50,14 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
+
+        val mapImageClicked = arguments?.getBoolean(ARG_MAP_IMAGE_CLICKED) ?: false
+        if (mapImageClicked) {
+            viewModel.getSelectedPropertyLatLng.observe(viewLifecycleOwner) { latLng ->
+                val zoomLevel = 15f
+                googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
+            }
+        }
 
         // Check GPS activation
         viewModel.isGpsActivated().asLiveData().observe(viewLifecycleOwner) { gps ->
@@ -53,26 +70,28 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
         }
 
         // Add marker for user position
-        viewModel.locationUpdates.observe(viewLifecycleOwner) { location ->
-            location?.let {
-                val latLng = LatLng(it.latitude, it.longitude)
+        if (!mapImageClicked) {
+            viewModel.locationUpdates.observe(viewLifecycleOwner) { location ->
+                location?.let {
+                    val latLng = LatLng(it.latitude, it.longitude)
 
-                val userMarkerOptions = MarkerOptions()
-                    .position(latLng)
-                    .title(getString(R.string.your_position))
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                googleMap?.addMarker(userMarkerOptions)
+                    val userMarkerOptions = MarkerOptions()
+                        .position(latLng)
+                        .title(getString(R.string.your_position))
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    googleMap?.addMarker(userMarkerOptions)
 
-                // Move the camera to the current location
-                googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12f))
+                    // Move the camera to the current location
+                    googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12f))
 
-                // Add a circle around the current location
-                val circleOptions = CircleOptions()
-                    .center(latLng)
-                    .radius(5000.0)
-                    .strokeColor(Color.BLUE)
-                    .fillColor(0x110000FF)
-                googleMap?.addCircle(circleOptions)
+                    // Add a circle around the current location
+                    val circleOptions = CircleOptions()
+                        .center(latLng)
+                        .radius(5000.0)
+                        .strokeColor(Color.BLUE)
+                        .fillColor(0x110000FF)
+                    googleMap?.addCircle(circleOptions)
+                }
             }
         }
 
@@ -84,20 +103,6 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
                 }
             }
 
-    }
-
-    override fun onResume() {
-        // Refresh GPS activation and location permission
-        viewModel.refreshGpsActivation()
-        viewModel.refreshLocationPermission()
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-        super.onResume()
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -132,7 +137,20 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
             true
         }
 
+    }
 
+    override fun onResume() {
+        // Refresh GPS activation and location permission
+        viewModel.refreshGpsActivation()
+        viewModel.refreshLocationPermission()
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+        super.onResume()
     }
 
 }
