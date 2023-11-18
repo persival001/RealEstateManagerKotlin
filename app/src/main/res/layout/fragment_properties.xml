@@ -5,37 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/search_divider"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/default_margin"
+        android:layout_margin="@dimen/default_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:singleSelection="true">
 
-    <Button
-        android:id="@+id/filter_button"
-        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin"
-        android:text="Filter"
-        app:icon="@drawable/baseline_filter_list_24"
-        app:layout_constraintEnd_toStartOf="@+id/position_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_divider" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/filterChip"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter" />
 
-    <Button
-        android:id="@+id/position_button"
-        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_margin"
-        android:text="Position"
-        app:icon="@drawable/baseline_location_on_24"
-        app:layout_constraintStart_toEndOf="@+id/filter_button"
-        app:layout_constraintTop_toBottomOf="@+id/search_divider" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/noFilterChip"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all_properties" />
+
+    </com.google.android.material.chip.ChipGroup>
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/buttons_divider"
@@ -45,7 +39,7 @@
         android:layout_marginBottom="@dimen/default_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/filter_button" />
+        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
 
     <!-- Recycler View -->
     <androidx.recyclerview.widget.RecyclerView

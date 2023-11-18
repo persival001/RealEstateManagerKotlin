@@ -5,8 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.viewModels
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.databinding.FragmentSearchBinding
@@ -40,6 +41,7 @@ class SearchFragment : BottomSheetDialogFragment() {
 
         // Reinitialize the list
         binding.clearButton.setOnClickListener {
+            viewModel.onResetFilter()
             binding.typeTextView.setText("")
             binding.priceMinEditText.setText("")
             binding.priceMaxEditText.setText("")
@@ -65,40 +67,30 @@ class SearchFragment : BottomSheetDialogFragment() {
             val month = binding.monthChip
             val year = binding.yearChip
 
-            val mandatoryEditTextList = listOf(
-                binding.typeTextView,
-                binding.priceMinEditText,
-                binding.priceMaxEditText,
-                binding.areaMinEditText,
-                binding.areaMaxEditText,
-            )
+            // Get all information's
+            val type = binding.typeTextView.text.toString()
+            val minPrice = binding.priceMinEditText.text.toString().toIntOrNull()
+            val maxPrice = binding.priceMaxEditText.text.toString().toIntOrNull()
+            val minArea = binding.areaMinEditText.text.toString().toIntOrNull()
+            val maxArea = binding.areaMaxEditText.text.toString().toIntOrNull()
 
-            // Check if all mandatory fields are filled and set error messages
-            val allMandatoryFieldsFilled = mandatoryEditTextList.all { editText ->
-                val isFilled = editText.text?.isNotEmpty() == true
-                editText.error = if (isFilled) null else getString(R.string.error_message)
-                isFilled
-            }
-
-            if (allMandatoryFieldsFilled) {
-                // Get all information's
-                val type = binding.typeTextView.text.toString()
-                val minPrice = binding.priceMinEditText.text.toString().toIntOrNull()
-                val maxPrice = binding.priceMaxEditText.text.toString().toIntOrNull()
-                val minArea = binding.areaMinEditText.text.toString().toIntOrNull()
-                val maxArea = binding.areaMaxEditText.text.toString().toIntOrNull()
-
-                viewModel.setSearchCriteria(type, minPrice, maxPrice, minArea, maxArea)
-                dismiss()
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_message),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            viewModel.setSearchCriteria(type, minPrice, maxPrice, minArea, maxArea)
+            dismiss()
         }
 
     }
+
+    override fun onStart() {
+        super.onStart()
+        val dialog = dialog as? BottomSheetDialog
+        dialog?.let {
+            val bottomSheet = it.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.let { sheet ->
+                val behavior = BottomSheetBehavior.from(sheet)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+    }
+
 }
 

@@ -37,7 +37,27 @@ class SearchViewModel @Inject constructor(
             entryDate = entryDate,
             poi = poi
         )
-        setSearchedPropertiesUseCase.invoke(searchEntity)
+        if (searchEntity == SearchEntity(
+                "",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            )
+        ) {
+            setSearchedPropertiesUseCase.invoke(null)
+        } else
+            setSearchedPropertiesUseCase.invoke(searchEntity)
+    }
+
+    fun onResetFilter() {
+        setSearchedPropertiesUseCase.invoke(null)
     }
 
 }

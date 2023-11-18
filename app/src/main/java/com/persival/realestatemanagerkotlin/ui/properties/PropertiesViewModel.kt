@@ -1,9 +1,10 @@
 package com.persival.realestatemanagerkotlin.ui.properties
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.asLiveData
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
@@ -11,12 +12,10 @@ import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
 import com.persival.realestatemanagerkotlin.domain.search.GetActiveSearchFilterUseCase
 import com.persival.realestatemanagerkotlin.domain.search.GetSearchedPropertiesUseCase
+import com.persival.realestatemanagerkotlin.domain.search.SetSearchedPropertiesUseCase
 import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flatMapLatest
 import java.text.NumberFormat
 import java.util.Locale
 import javax.inject.Inject
@@ -25,97 +24,32 @@ import javax.inject.Inject
 class PropertiesViewModel @Inject constructor(
     private val getAllPropertiesWithPhotosAndPOIUseCase: GetAllPropertiesWithPhotosAndPOIUseCase,
     private val setSelectedPropertyIdUseCase: SetSelectedPropertyIdUseCase,
-    private val getSavedStateForCurrencyConversionButtonUseCase: GetSavedStateForCurrencyConversionButtonUseCase,
+    getSavedStateForCurrencyConversionButtonUseCase: GetSavedStateForCurrencyConversionButtonUseCase,
     private val getActiveSearchFilterUseCase: GetActiveSearchFilterUseCase,
     private val getSearchedPropertiesUseCase: GetSearchedPropertiesUseCase,
+    private val setSearchedPropertiesUseCase: SetSearchedPropertiesUseCase,
 ) : ViewModel() {
 
-    private val propertiesViewStateItem = MutableLiveData<List<PropertyViewStateItem>>()
-    val properties: LiveData<List<PropertyViewStateItem>> = propertiesViewStateItem
     private val propertyIdSelected = MutableLiveData<Long?>()
-    private var currentCurrency: String = "USD"
+    private val isConversionEnabledLiveData: LiveData<Boolean> =
+        getSavedStateForCurrencyConversionButtonUseCase.invoke().asLiveData()
 
-    init {
-        getSavedStateForCurrencyConversionButtonUseCase.invoke()
-            .onEach {
-                updatePropertyPrices()
-            }
-            .launchIn(viewModelScope)
-        displayProperties()
-    }
+    val properties: LiveData<List<PropertyViewStateItem>> = MediatorLiveData<List<PropertyViewStateItem>>().apply {
+        var currentProperties: List<PropertyWithPhotosAndPOIEntity> = emptyList()
+        var isConversionEnabled = false
 
-    private fun displayProperties() {
-        viewModelScope.launch {
-            val isConversionEnabled = getSavedStateForCurrencyConversionButtonUseCase.invoke().first()
-            val currentFilter = getActiveSearchFilterUseCase.invoke().first()
-
-            val propertiesFlow = currentFilter?.let {
-                getSearchedPropertiesUseCase.invoke(it)
-            } ?: getAllPropertiesWithPhotosAndPOIUseCase.invoke()
-
-            propertiesFlow.collect { propertiesList ->
-                val viewStateItems = propertiesList.map { property ->
-                    transformToViewState(property, isConversionEnabled)
-                }
-                propertiesViewStateItem.value = viewStateItems
-            }
+        addSource(isConversionEnabledLiveData) { enabled ->
+            isConversionEnabled = enabled
+            value = currentProperties.map { transformToViewState(it, isConversionEnabled) }
         }
-    }
 
-    private fun calculatePriceAndLocale(currentPrice: Int, isConversionEnabled: Boolean): Pair<Int, Locale> {
-        return when {
-            isConversionEnabled && currentCurrency == "USD" -> {
-                currentCurrency = "EUR"
-                Utils.convertDollarToEuro(currentPrice) to Locale.FRANCE
-            }
-
-            isConversionEnabled && currentCurrency == "EUR" -> {
-                currentPrice to Locale.FRANCE
-            }
-
-            !isConversionEnabled && currentCurrency == "EUR" -> {
-                currentCurrency = "USD"
-                Utils.convertEuroToDollar(currentPrice) to Locale.US
-            }
-
-            else -> {
-                currentPrice to Locale.US
-            }
+        addSource(getActiveSearchFilterUseCase.invoke().flatMapLatest { filter ->
+            filter?.let { getSearchedPropertiesUseCase.invoke(it) }
+                ?: getAllPropertiesWithPhotosAndPOIUseCase.invoke()
+        }.asLiveData()) { propertiesList ->
+            currentProperties = propertiesList
+            value = propertiesList.map { transformToViewState(it, isConversionEnabled) }
         }
-    }
-
-    private fun getFormattedPrice(currentPrice: Int, isConversionEnabled: Boolean): String {
-        val (convertedPrice, locale) = calculatePriceAndLocale(currentPrice, isConversionEnabled)
-        val currencyFormat = NumberFormat.getCurrencyInstance(locale)
-        currencyFormat.maximumFractionDigits = 0
-        return currencyFormat.format(convertedPrice)
-    }
-
-    private fun updatePropertyPrices() {
-        viewModelScope.launch {
-            try {
-                val isConversionEnabled = getSavedStateForCurrencyConversionButtonUseCase.invoke().first()
-                val currentProperties = propertiesViewStateItem.value ?: return@launch
-                val updatedProperties = currentProperties.map {
-                    val cleanedPrice = it.price.replace("\\D".toRegex(), "")
-                    val originalPrice = cleanedPrice.toIntOrNull() ?: 0
-                    val formattedPrice = getFormattedPrice(originalPrice, isConversionEnabled)
-                    it.copy(price = formattedPrice)
-                }
-                propertiesViewStateItem.value = updatedProperties
-            } catch (e: Exception) {
-                // Handle exception
-            }
-        }
-    }
-
-    private fun getFormattedPoi(pointsOfInterest: List<PointOfInterestEntity>): String {
-        return pointsOfInterest.joinToString(separator = ", ") { it.poi }
-    }
-
-    fun updateSelectedPropertyId(id: Long?) {
-        setSelectedPropertyIdUseCase(id)
-        propertyIdSelected.value = id
     }
 
     private fun transformToViewState(
@@ -140,8 +74,32 @@ class PropertiesViewModel @Inject constructor(
         )
     }
 
-    /*fun synchronizeDatabase() {
-        synchronizeDatabaseUseCase.invoke()
-    }*/
+    private fun calculatePriceAndLocale(currentPrice: Int, isConversionEnabled: Boolean): Pair<Int, Locale> {
+        return if (isConversionEnabled) {
+            Utils.convertDollarToEuro(currentPrice) to Locale.FRANCE
+        } else {
+            currentPrice to Locale.US
+        }
+    }
+
+    private fun getFormattedPrice(currentPrice: Int, isConversionEnabled: Boolean): String {
+        val (convertedPrice, locale) = calculatePriceAndLocale(currentPrice, isConversionEnabled)
+        val currencyFormat = NumberFormat.getCurrencyInstance(locale)
+        currencyFormat.maximumFractionDigits = 0
+        return currencyFormat.format(convertedPrice)
+    }
+
+    private fun getFormattedPoi(pointsOfInterest: List<PointOfInterestEntity>): String {
+        return pointsOfInterest.joinToString(separator = ", ") { it.poi }
+    }
+
+    fun updateSelectedPropertyId(id: Long?) {
+        setSelectedPropertyIdUseCase(id)
+        propertyIdSelected.value = id
+    }
+
+    fun onResetFilter() {
+        setSearchedPropertiesUseCase.invoke(null)
+    }
 
 }

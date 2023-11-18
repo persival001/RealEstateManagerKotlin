@@ -72,6 +72,7 @@ class LocalDatabaseRepository @Inject constructor(
         propertyDao
             .getAllProperties()
             .map { list ->
+                Log.d("FILTRE_ALL", list.toString())
                 list.map { propertyWithPhotosAndPoisDtoMapper.mapToEntity(it) }
             }
             .flowOn(coroutineDispatcherProvider.io)
@@ -123,6 +124,7 @@ class LocalDatabaseRepository @Inject constructor(
                 poi = poi
             )
             .map { list ->
+                Log.d("FILTRE_SEARCH", list.toString())
                 list.map { propertyWithPhotosAndPoisDtoMapper.mapToEntity(it) }
             }
             .flowOn(coroutineDispatcherProvider.io)

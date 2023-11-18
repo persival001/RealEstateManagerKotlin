@@ -7,7 +7,7 @@ import javax.inject.Singleton
 class SetSearchedPropertiesUseCase @Inject constructor(
     private val searchRepository: SearchRepository,
 ) {
-    fun invoke(searchEntity: SearchEntity) {
+    fun invoke(searchEntity: SearchEntity?) {
         searchRepository.setFilter(searchEntity)
     }
 }

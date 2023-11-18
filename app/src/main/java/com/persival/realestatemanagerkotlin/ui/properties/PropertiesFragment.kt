@@ -26,13 +26,15 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Synchronize firebase and room
-        //viewModel.synchronizeDatabase()
-
-        // Button "filter" click listener
-        binding.filterButton.setOnClickListener {
+        // Chip "filter" click listener
+        binding.filterChip.setOnClickListener {
             val searchFragment = SearchFragment.newInstance()
             searchFragment.show(requireActivity().supportFragmentManager, searchFragment.tag)
+        }
+
+        // Chip "no filter" click listener
+        binding.noFilterChip.setOnClickListener {
+            viewModel.onResetFilter()
         }
 
         // Initializes PropertyListAdapter to handle property selection

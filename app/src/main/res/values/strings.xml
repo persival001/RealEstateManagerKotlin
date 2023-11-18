@@ -156,5 +156,7 @@
     <string name="for_sale">For Sale</string>
     <string name="sold_only">Sold</string>
     <string name="clear">Clear</string>
+    <string name="filter">Filter</string>
+    <string name="all_properties">All properties</string>
 
 </resources>
