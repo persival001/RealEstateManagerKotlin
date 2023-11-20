@@ -70,6 +70,7 @@
                 android:id="@+id/type_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/type_description"
                 android:hint="@string/type_of_property_hint"
                 android:inputType="none"
                 app:simpleItems="@array/property_items" />
@@ -84,46 +85,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/type_textField" />
 
-        <!-- Location of property -->
-        <TextView
-            android:id="@+id/location_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_margin"
-            android:text="@string/distance"
-            android:textSize="@dimen/default_text_size"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/propertyDivider" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/location_textField"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:hint="@string/distance_from_your_location"
-            app:endIconMode="clear_text"
-            app:layout_constraintEnd_toEndOf="@+id/guideline"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/location_textView">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/location_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/locationDivider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_large_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/location_textField" />
-
         <!-- Price of property -->
         <TextView
             android:id="@+id/price_textView"
@@ -133,7 +94,7 @@
             android:text="@string/price_title"
             android:textSize="@dimen/default_text_size"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/locationDivider" />
+            app:layout_constraintTop_toBottomOf="@+id/propertyDivider" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/price_min_textField"
@@ -151,7 +112,7 @@
                 android:id="@+id/price_min_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -171,7 +132,7 @@
                 android:id="@+id/price_max_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -211,7 +172,7 @@
                 android:id="@+id/area_min_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -231,7 +192,7 @@
                 android:id="@+id/area_max_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -342,21 +303,21 @@
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/_1_months" />
+                android:text="@string/less_than_one_month" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/monthChip"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/_6_months" />
+                android:text="@string/less_than_six_month" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/yearChip"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/plus_6_months" />
+                android:text="@string/more_than_six_month" />
 
         </com.google.android.material.chip.ChipGroup>
 
@@ -387,13 +348,15 @@
             android:layout_margin="@dimen/default_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sold_textView">
+            app:layout_constraintTop_toBottomOf="@+id/sold_textView"
+            app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/forSaleChip"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="@string/for_sale" />
 
             <com.google.android.material.chip.Chip

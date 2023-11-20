@@ -148,13 +148,14 @@
     <string name="area">Area</string>
     <string name="near_the_property">Near the property</string>
     <string name="placed_on_the_market_since">Placed on the market since</string>
-    <string name="_1_months">-1 months</string>
-    <string name="_6_months">-6 months</string>
-    <string name="plus_6_months">+6 months</string>
+    <string name="less_than_one_month">&lt;1 month</string>
+    <string name="less_than_six_month">&lt;6 months</string>
+    <string name="more_than_six_month">&gt;6 months</string>
     <string name="property_for_sale_or_sold">Property for sale or sold</string>
     <string name="for_sale">For Sale</string>
     <string name="sold_only">Sold</string>
     <string name="clear">Clear</string>
     <string name="filter">Filter</string>
+    <string name="all_properties">All properties</string>
 
 </resources>

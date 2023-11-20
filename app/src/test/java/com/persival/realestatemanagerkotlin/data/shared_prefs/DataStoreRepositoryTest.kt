@@ -2,21 +2,25 @@ package com.persival.realestatemanagerkotlin.data.shared_prefs
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.MutablePreferences
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import com.persival.realestatemanagerkotlin.utils_for_tests.TestCoroutineRule
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import junit.framework.TestCase.assertTrue
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 
 class DataStoreRepositoryTest {
 
@@ -94,7 +98,7 @@ class DataStoreRepositoryTest {
     @Test
     fun getCurrencyConversion_ReturnsFalseByDefault() = testCoroutineRule.runTest {
         // Assert the default value when preferences are empty
-        assertFalse(dataStoreRepository.getCurrencyConversion().first())
+        assertFalse(dataStoreRepository.isEuroConversionEnabled().first())
     }
 
     @Test
@@ -119,7 +123,7 @@ class DataStoreRepositoryTest {
         dataStoreRepository.setCurrencyConversion(testValue)
 
         // Assert - Confirm that the emitted value is the test value
-        val emittedValue = dataStoreRepository.getCurrencyConversion().first()
+        val emittedValue = dataStoreRepository.isEuroConversionEnabled().first()
         assertEquals(testValue, emittedValue)
     }
 

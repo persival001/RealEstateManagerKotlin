@@ -5,8 +5,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetSavedStateForCurrencyConversionButtonUseCase @Inject constructor(
+class IsEuroConversionEnabledUseCase @Inject constructor(
     private val sharedPreferencesRepository: SharedPreferencesRepository
 ) {
-    fun invoke(): Flow<Boolean> = sharedPreferencesRepository.getCurrencyConversion()
+    fun invoke(): Flow<Boolean> = sharedPreferencesRepository.isEuroConversionEnabled()
 }

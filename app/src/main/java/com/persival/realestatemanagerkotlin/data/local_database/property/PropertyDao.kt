@@ -41,10 +41,7 @@ interface PropertyDao {
         AND (:maxPrice IS NULL OR price <= :maxPrice)
         AND (:minArea IS NULL OR area >= :minArea)
         AND (:maxArea IS NULL OR area <= :maxArea)
-        AND (:minRooms IS NULL OR rooms >= :minRooms)
-        AND (:maxRooms IS NULL OR rooms <= :maxRooms)
         AND (:isSold IS NULL OR isSold = :isSold)
-        AND (:latLng IS NULL OR latLng = :latLng)
         AND (:entryDate IS NULL OR entryDate = :entryDate)
         AND (:poi IS NULL OR EXISTS (
             SELECT * FROM point_of_interest 
@@ -58,10 +55,7 @@ interface PropertyDao {
         maxPrice: Int?,
         minArea: Int?,
         maxArea: Int?,
-        minRooms: Int?,
-        maxRooms: Int?,
         isSold: Boolean?,
-        latLng: String?,
         entryDate: String?,
         poi: String?
     ): Flow<List<PropertyWithPhotosAndPoisDto>>

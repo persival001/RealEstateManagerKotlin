@@ -62,19 +62,29 @@ class SearchFragment : BottomSheetDialogFragment() {
                 binding.restaurantChip
             ).filter { it.isChecked }.map { it.text.toString() }
 
-            // Retrieve chip selected for time of sale
-            val week = binding.weekChip
-            val month = binding.monthChip
-            val year = binding.yearChip
-
             // Get all information's
-            val type = binding.typeTextView.text.toString()
+            val type = binding.typeTextView.text?.toString() ?: ""
             val minPrice = binding.priceMinEditText.text.toString().toIntOrNull()
             val maxPrice = binding.priceMaxEditText.text.toString().toIntOrNull()
             val minArea = binding.areaMinEditText.text.toString().toIntOrNull()
             val maxArea = binding.areaMaxEditText.text.toString().toIntOrNull()
+            val isSold = binding.soldChip.isChecked
+            val week = binding.weekChip.isChecked
+            val month = binding.monthChip.isChecked
+            val year = binding.yearChip.isChecked
 
-            viewModel.setSearchCriteria(type, minPrice, maxPrice, minArea, maxArea)
+            viewModel.setSearchCriteria(
+                type,
+                minPrice,
+                maxPrice,
+                minArea,
+                maxArea,
+                isSold,
+                week,
+                month,
+                year,
+                selectedPoisChips,
+            )
             dismiss()
         }
 

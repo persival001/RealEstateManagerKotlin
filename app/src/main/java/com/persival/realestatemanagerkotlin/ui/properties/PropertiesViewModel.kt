@@ -1,11 +1,10 @@
 package com.persival.realestatemanagerkotlin.ui.properties
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButtonUseCase
+import androidx.lifecycle.liveData
+import com.persival.realestatemanagerkotlin.domain.conversion.IsEuroConversionEnabledUseCase
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
@@ -15,6 +14,8 @@ import com.persival.realestatemanagerkotlin.domain.search.GetSearchedPropertiesU
 import com.persival.realestatemanagerkotlin.domain.search.SetSearchedPropertiesUseCase
 import com.persival.realestatemanagerkotlin.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import java.text.NumberFormat
 import java.util.Locale
@@ -24,32 +25,26 @@ import javax.inject.Inject
 class PropertiesViewModel @Inject constructor(
     private val getAllPropertiesWithPhotosAndPOIUseCase: GetAllPropertiesWithPhotosAndPOIUseCase,
     private val setSelectedPropertyIdUseCase: SetSelectedPropertyIdUseCase,
-    getSavedStateForCurrencyConversionButtonUseCase: GetSavedStateForCurrencyConversionButtonUseCase,
+    isEuroConversionEnabledUseCase: IsEuroConversionEnabledUseCase,
     private val getActiveSearchFilterUseCase: GetActiveSearchFilterUseCase,
     private val getSearchedPropertiesUseCase: GetSearchedPropertiesUseCase,
     private val setSearchedPropertiesUseCase: SetSearchedPropertiesUseCase,
 ) : ViewModel() {
 
     private val propertyIdSelected = MutableLiveData<Long?>()
-    private val isConversionEnabledLiveData: LiveData<Boolean> =
-        getSavedStateForCurrencyConversionButtonUseCase.invoke().asLiveData()
 
-    val properties: LiveData<List<PropertyViewStateItem>> = MediatorLiveData<List<PropertyViewStateItem>>().apply {
-        var currentProperties: List<PropertyWithPhotosAndPOIEntity> = emptyList()
-        var isConversionEnabled = false
-
-        addSource(isConversionEnabledLiveData) { enabled ->
-            isConversionEnabled = enabled
-            value = currentProperties.map { transformToViewState(it, isConversionEnabled) }
-        }
-
-        addSource(getActiveSearchFilterUseCase.invoke().flatMapLatest { filter ->
-            filter?.let { getSearchedPropertiesUseCase.invoke(it) }
-                ?: getAllPropertiesWithPhotosAndPOIUseCase.invoke()
-        }.asLiveData()) { propertiesList ->
-            currentProperties = propertiesList
-            value = propertiesList.map { transformToViewState(it, isConversionEnabled) }
-        }
+    val properties: LiveData<List<PropertyViewStateItem>> = liveData {
+        combine(
+            isEuroConversionEnabledUseCase.invoke(),
+            getActiveSearchFilterUseCase.invoke().flatMapLatest { filter ->
+                filter?.let { getSearchedPropertiesUseCase.invoke(it) }
+                    ?: getAllPropertiesWithPhotosAndPOIUseCase.invoke()
+            },
+        ) { isConversionEnabled, propertiesList ->
+            propertiesList.map { propertyWithPhotosAndPOIEntity ->
+                transformToViewState(propertyWithPhotosAndPOIEntity, isConversionEnabled)
+            }
+        }.collectLatest { emit(it) }
     }
 
     private fun transformToViewState(

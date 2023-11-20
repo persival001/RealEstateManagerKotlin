@@ -72,7 +72,6 @@ class LocalDatabaseRepository @Inject constructor(
         propertyDao
             .getAllProperties()
             .map { list ->
-                Log.d("FILTRE_ALL", list.toString())
                 list.map { propertyWithPhotosAndPoisDtoMapper.mapToEntity(it) }
             }
             .flowOn(coroutineDispatcherProvider.io)
@@ -102,10 +101,7 @@ class LocalDatabaseRepository @Inject constructor(
         maxPrice: Int?,
         minArea: Int?,
         maxArea: Int?,
-        minRooms: Int?,
-        maxRooms: Int?,
         isSold: Boolean?,
-        latLng: String?,
         entryDate: String?,
         poi: String?
     ): Flow<List<PropertyWithPhotosAndPOIEntity>> =
@@ -116,15 +112,11 @@ class LocalDatabaseRepository @Inject constructor(
                 maxPrice = maxPrice,
                 minArea = minArea,
                 maxArea = maxArea,
-                minRooms = minRooms,
-                maxRooms = maxRooms,
                 isSold = isSold,
-                latLng = latLng,
                 entryDate = entryDate,
                 poi = poi
             )
             .map { list ->
-                Log.d("FILTRE_SEARCH", list.toString())
                 list.map { propertyWithPhotosAndPoisDtoMapper.mapToEntity(it) }
             }
             .flowOn(coroutineDispatcherProvider.io)

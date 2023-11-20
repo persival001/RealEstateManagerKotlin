@@ -1,10 +1,10 @@
 package com.persival.realestatemanagerkotlin.ui.settings
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.IsCurrencyConversionButtonTriggeredUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.IsDateConversionButtonTriggeredUseCase
+import com.persival.realestatemanagerkotlin.domain.conversion.IsEuroConversionEnabledUseCase
 import com.persival.realestatemanagerkotlin.utils_for_tests.TestCoroutineRule
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -27,7 +27,7 @@ class SettingsViewModelTest {
     // Mocks
     private val isCurrencyConversionButtonTriggeredUseCase: IsCurrencyConversionButtonTriggeredUseCase = mockk()
     private val isDateConversionButtonTriggeredUseCase: IsDateConversionButtonTriggeredUseCase = mockk()
-    private val getSavedStateForCurrencyConversionButtonUseCase: GetSavedStateForCurrencyConversionButtonUseCase =
+    private val isEuroConversionEnabledUseCase: IsEuroConversionEnabledUseCase =
         mockk()
     private val getSavedStateForDateConversionButtonUseCase: GetSavedStateForDateConversionButtonUseCase = mockk()
 
@@ -37,13 +37,13 @@ class SettingsViewModelTest {
     fun setUp() {
         coJustRun { isCurrencyConversionButtonTriggeredUseCase.invoke(any()) }
         coJustRun { isDateConversionButtonTriggeredUseCase.invoke(any()) }
-        coEvery { getSavedStateForCurrencyConversionButtonUseCase.invoke() } returns flowOf(true)
+        coEvery { isEuroConversionEnabledUseCase.invoke() } returns flowOf(true)
         coEvery { getSavedStateForDateConversionButtonUseCase.invoke() } returns true
 
         viewModel = SettingsViewModel(
             isCurrencyConversionButtonTriggeredUseCase = isCurrencyConversionButtonTriggeredUseCase,
             isDateConversionButtonTriggeredUseCase = isDateConversionButtonTriggeredUseCase,
-            getSavedStateForCurrencyConversionButtonUseCase = getSavedStateForCurrencyConversionButtonUseCase,
+            isEuroConversionEnabledUseCase = isEuroConversionEnabledUseCase,
             getSavedStateForDateConversionButtonUseCase = getSavedStateForDateConversionButtonUseCase
         )
     }
@@ -51,7 +51,7 @@ class SettingsViewModelTest {
     @Test
     fun `When ViewModel is initialized, it gets the saved state for buttons`() = testCoroutineRule.runTest {
         // Then
-        coVerify { getSavedStateForCurrencyConversionButtonUseCase.invoke() }
+        coVerify { isEuroConversionEnabledUseCase.invoke() }
         coVerify { getSavedStateForDateConversionButtonUseCase.invoke() }
     }
 

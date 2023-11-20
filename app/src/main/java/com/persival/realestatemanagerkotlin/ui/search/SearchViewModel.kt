@@ -17,43 +17,36 @@ class SearchViewModel @Inject constructor(
         maxPrice: Int? = null,
         minArea: Int? = null,
         maxArea: Int? = null,
-        minRooms: Int? = null,
-        maxRooms: Int? = null,
-        isSold: Boolean? = null,
-        latLng: String? = null,
-        entryDate: String? = null,
-        poi: String? = null
+        isSold: Boolean,
+        week: Boolean,
+        month: Boolean,
+        year: Boolean,
+        poi: List<String>
     ) {
         val searchEntity = SearchEntity(
-            type = type,
+            type = if (type.isNullOrEmpty()) null else type,
             minPrice = minPrice,
             maxPrice = maxPrice,
             minArea = minArea,
             maxArea = maxArea,
-            minRooms = minRooms,
-            maxRooms = maxRooms,
             isSold = isSold,
-            latLng = latLng,
-            entryDate = entryDate,
-            poi = poi
+            entryDate = chipSelectedForSearchedDate(week, month, year),
+            poi = null
         )
-        if (searchEntity == SearchEntity(
-                "",
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-            )
-        ) {
-            setSearchedPropertiesUseCase.invoke(null)
-        } else
-            setSearchedPropertiesUseCase.invoke(searchEntity)
+        setSearchedPropertiesUseCase.invoke(searchEntity)
+    }
+
+    private fun chipSelectedForSearchedDate(week: Boolean, month: Boolean, year: Boolean): String? {
+        return when {
+            week -> 1.toString()
+            month -> 2.toString()
+            year -> 3.toString()
+            else -> null
+        }
+    }
+
+    private fun chipSelectedForPoi(poi: List<String>): List<String> {
+        return poi.filter { it != "None" }
     }
 
     fun onResetFilter() {

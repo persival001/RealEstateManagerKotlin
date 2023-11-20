@@ -30,7 +30,7 @@ class DataStoreRepository @Inject constructor(
     }
 
     // Fetch currency conversion setting
-    override fun getCurrencyConversion(): Flow<Boolean> {
+    override fun isEuroConversionEnabled(): Flow<Boolean> {
         return try {
             dataStore.data.map { preferences ->
                 preferences[KEY_CURRENCY] ?: false

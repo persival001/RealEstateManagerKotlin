@@ -27,10 +27,7 @@ interface LocalRepository {
         maxPrice: Int?,
         minArea: Int?,
         maxArea: Int?,
-        minRooms: Int?,
-        maxRooms: Int?,
         isSold: Boolean?,
-        latLng: String?,
         entryDate: String?,
         poi: String?
     ): Flow<List<PropertyWithPhotosAndPOIEntity>>

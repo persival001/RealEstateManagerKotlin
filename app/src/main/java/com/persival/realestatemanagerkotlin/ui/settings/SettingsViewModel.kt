@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForCurrencyConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.GetSavedStateForDateConversionButtonUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.IsCurrencyConversionButtonTriggeredUseCase
 import com.persival.realestatemanagerkotlin.domain.conversion.IsDateConversionButtonTriggeredUseCase
+import com.persival.realestatemanagerkotlin.domain.conversion.IsEuroConversionEnabledUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val isCurrencyConversionButtonTriggeredUseCase: IsCurrencyConversionButtonTriggeredUseCase,
     private val isDateConversionButtonTriggeredUseCase: IsDateConversionButtonTriggeredUseCase,
-    private val getSavedStateForCurrencyConversionButtonUseCase: GetSavedStateForCurrencyConversionButtonUseCase,
+    private val isEuroConversionEnabledUseCase: IsEuroConversionEnabledUseCase,
     private val getSavedStateForDateConversionButtonUseCase: GetSavedStateForDateConversionButtonUseCase,
 ) : ViewModel() {
 
@@ -30,7 +30,7 @@ class SettingsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getSavedStateForCurrencyConversionButtonUseCase.invoke().collect { value ->
+            isEuroConversionEnabledUseCase.invoke().collect { value ->
                 _conversionButtonState.emit(value)
             }
         }

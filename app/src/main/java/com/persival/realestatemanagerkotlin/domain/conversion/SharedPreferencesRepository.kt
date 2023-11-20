@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SharedPreferencesRepository {
 
-    fun getCurrencyConversion(): Flow<Boolean>
+    fun isEuroConversionEnabled(): Flow<Boolean>
 
     suspend fun getDateConversion(): Boolean
 
