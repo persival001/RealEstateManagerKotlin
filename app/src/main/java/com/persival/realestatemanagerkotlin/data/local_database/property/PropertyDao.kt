@@ -35,19 +35,19 @@ interface PropertyDao {
     @Transaction
     @Query(
         """
-        SELECT * FROM property
-        WHERE (:type IS NULL OR type = :type) 
-        AND (:minPrice IS NULL OR price >= :minPrice)
-        AND (:maxPrice IS NULL OR price <= :maxPrice)
-        AND (:minArea IS NULL OR area >= :minArea)
-        AND (:maxArea IS NULL OR area <= :maxArea)
-        AND (:isSold IS NULL OR isSold = :isSold)
-        AND (:entryDate IS NULL OR entryDate = :entryDate)
-        AND (:poi IS NULL OR EXISTS (
-            SELECT * FROM point_of_interest 
-            WHERE point_of_interest.propertyId = property.id 
-            AND point_of_interest.poi = :poi))
-        """
+    SELECT * FROM property
+    WHERE (:type IS NULL OR type = :type) 
+    AND (:minPrice IS NULL OR price >= :minPrice)
+    AND (:maxPrice IS NULL OR price <= :maxPrice)
+    AND (:minArea IS NULL OR area >= :minArea)
+    AND (:maxArea IS NULL OR area <= :maxArea)
+    AND (:isSold IS NULL OR isSold = :isSold)
+    AND (:entryDate IS NULL OR (entryDate >= :entryDate AND entryDate <= date('now')))
+    AND (:poi IS NULL OR EXISTS (
+        SELECT * FROM point_of_interest 
+        WHERE point_of_interest.propertyId = property.id 
+        AND point_of_interest.poi = :poi))
+    """
     )
     fun getSearchedPropertiesWithPOIs(
         type: String?,

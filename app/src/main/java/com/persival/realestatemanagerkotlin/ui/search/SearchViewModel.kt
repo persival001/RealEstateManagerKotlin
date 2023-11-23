@@ -18,9 +18,7 @@ class SearchViewModel @Inject constructor(
         minArea: Int? = null,
         maxArea: Int? = null,
         isSold: Boolean,
-        week: Boolean,
-        month: Boolean,
-        year: Boolean,
+        entryDate: String,
         poi: List<String>
     ) {
         val searchEntity = SearchEntity(
@@ -30,19 +28,10 @@ class SearchViewModel @Inject constructor(
             minArea = minArea,
             maxArea = maxArea,
             isSold = isSold,
-            entryDate = chipSelectedForSearchedDate(week, month, year),
+            entryDate = entryDate,
             poi = null
         )
         setSearchedPropertiesUseCase.invoke(searchEntity)
-    }
-
-    private fun chipSelectedForSearchedDate(week: Boolean, month: Boolean, year: Boolean): String? {
-        return when {
-            week -> 1.toString()
-            month -> 2.toString()
-            year -> 3.toString()
-            else -> null
-        }
     }
 
     private fun chipSelectedForPoi(poi: List<String>): List<String> {
@@ -52,5 +41,17 @@ class SearchViewModel @Inject constructor(
     fun onResetFilter() {
         setSearchedPropertiesUseCase.invoke(null)
     }
+
+    /* private fun mapSearchViewStateToSearchEntity(searchViewState: SearchViewState): SearchEntity =
+         SearchEntity(
+             type = searchViewState.type,
+             minPrice = searchViewState.minPrice,
+             maxPrice = searchViewState.maxPrice,
+             minArea = searchViewState.minArea,
+             maxArea = searchViewState.maxArea,
+             isSold = searchViewState.isSold,
+             entryDate = searchViewState.entryDate,
+             poi = chipSelectedForPoi(searchViewState.poi)
+         )*/
 
 }

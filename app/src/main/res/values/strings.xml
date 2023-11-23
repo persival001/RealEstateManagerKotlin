@@ -151,7 +151,7 @@
     <string name="placed_on_the_market_since">Placé sur le marché depuis</string>
     <string name="less_than_one_month">&lt;1 month</string>
     <string name="less_than_six_month">&lt;6 months</string>
-    <string name="more_than_six_month">&gt;6 months</string>
+    <string name="more_than_six_month">&lt;1 year</string>
     <string name="property_for_sale_or_sold">Propriétées vendues ou à vendre</string>
     <string name="for_sale">A Vendre</string>
     <string name="sold_only">Vendues</string>

@@ -98,7 +98,7 @@ class LocalDatabaseRepositoryTest {
             description = "Belle maison en centre-ville",
             price = 250000,
             isSold = false,
-            entryDate = "2023-01-01",
+            entryDate = "2023-01-01",,
             saleDate = null,
             agentName = "John Doe"
         )

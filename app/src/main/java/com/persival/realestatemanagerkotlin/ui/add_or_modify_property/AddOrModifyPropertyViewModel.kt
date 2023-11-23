@@ -166,7 +166,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
         val propertyId = getSelectedPropertyIdUseCase().value
         if (propertyId != null && propertyId > 0) {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { propertyWithPhotosAndPOIEntity ->
-                emit(mapEntityToViewState(propertyWithPhotosAndPOIEntity))
+                emit(mapPropertyEntityToPropertyViewState(propertyWithPhotosAndPOIEntity))
             }
         }
     }
@@ -176,8 +176,10 @@ class AddOrModifyPropertyViewModel @Inject constructor(
         val agentName = getRealEstateAgentUseCase.invoke()?.name
         if (agentName != null && propertyId != null) {
             viewModelScope.launch {
-                val propertyEntity = mapToPropertyEntity(modifyPropertyViewState, agentName, propertyId)
-                val pointOfInterestEntities = mapToPointOfInterestEntity(modifyPropertyViewState, propertyId)
+                val propertyEntity =
+                    mapPropertyViewStateToPropertyEntity(modifyPropertyViewState, agentName, propertyId)
+                val pointOfInterestEntities =
+                    mapPropertyViewStateToPointOfInterestEntity(modifyPropertyViewState, propertyId)
 
                 // Update the property
                 updatePropertyUseCase.invoke(propertyEntity)
@@ -207,7 +209,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
 
     private fun isThePropertyForSale(saleDate: String?): Boolean = !(saleDate == null || saleDate == "")
 
-    private fun mapToPointOfInterestEntity(
+    private fun mapPropertyViewStateToPointOfInterestEntity(
         modifyPropertyViewState: AddOrModifyPropertyViewState,
         propertyId: Long
     ): List<PointOfInterestEntity> {
@@ -219,7 +221,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
         }
     }
 
-    private fun mapToPropertyEntity(
+    private fun mapPropertyViewStateToPropertyEntity(
         modifyPropertyViewState: AddOrModifyPropertyViewState,
         agentName: String,
         propertyId: Long
@@ -242,7 +244,9 @@ class AddOrModifyPropertyViewModel @Inject constructor(
         )
     }
 
-    private fun mapEntityToViewState(entity: PropertyWithPhotosAndPOIEntity): AddOrModifyPropertyViewState {
+    private fun mapPropertyEntityToPropertyViewState(
+        entity: PropertyWithPhotosAndPOIEntity
+    ): AddOrModifyPropertyViewState {
         return AddOrModifyPropertyViewState(
             type = entity.property.type,
             address = entity.property.address,

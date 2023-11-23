@@ -69,9 +69,6 @@ class SearchFragment : BottomSheetDialogFragment() {
             val minArea = binding.areaMinEditText.text.toString().toIntOrNull()
             val maxArea = binding.areaMaxEditText.text.toString().toIntOrNull()
             val isSold = binding.soldChip.isChecked
-            val week = binding.weekChip.isChecked
-            val month = binding.monthChip.isChecked
-            val year = binding.yearChip.isChecked
 
             viewModel.setSearchCriteria(
                 type,
@@ -80,9 +77,7 @@ class SearchFragment : BottomSheetDialogFragment() {
                 minArea,
                 maxArea,
                 isSold,
-                week,
-                month,
-                year,
+                "2023-10-24",
                 selectedPoisChips,
             )
             dismiss()
@@ -102,5 +97,17 @@ class SearchFragment : BottomSheetDialogFragment() {
         }
     }
 
+
+    private fun getAgeOfPropertyRange(checkedChipId: Int): AgeOfPropertyState? =
+        when (checkedChipId) {
+            R.id.lessThanAMonthChip -> AgeOfPropertyState.LESS_THAN_A_MONTH
+            R.id.lessThanSixMonthChip -> AgeOfPropertyState.LESS_THAN_SIX_MONTH
+            R.id.lessThanAYearChip -> AgeOfPropertyState.LESS_THAN_A_YEAR
+            else -> null
+
+        }
+
 }
+
+
 

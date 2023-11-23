@@ -299,21 +299,21 @@
             app:layout_constraintTop_toBottomOf="@+id/since_textView">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/weekChip"
+                android:id="@+id/lessThanAMonthChip"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/less_than_one_month" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/monthChip"
+                android:id="@+id/lessThanSixMonthChip"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/less_than_six_month" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/yearChip"
+                android:id="@+id/lessThanAYearChip"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -356,7 +356,6 @@
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="@string/for_sale" />
 
             <com.google.android.material.chip.Chip
