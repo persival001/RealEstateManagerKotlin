@@ -77,7 +77,7 @@ class SearchFragment : BottomSheetDialogFragment() {
                 minArea,
                 maxArea,
                 isSold,
-                "2023-10-24",
+                binding.sinceChipGroup.checkedChipId,
                 selectedPoisChips,
             )
             dismiss()
@@ -96,16 +96,6 @@ class SearchFragment : BottomSheetDialogFragment() {
             }
         }
     }
-
-
-    private fun getAgeOfPropertyRange(checkedChipId: Int): AgeOfPropertyState? =
-        when (checkedChipId) {
-            R.id.lessThanAMonthChip -> AgeOfPropertyState.LESS_THAN_A_MONTH
-            R.id.lessThanSixMonthChip -> AgeOfPropertyState.LESS_THAN_SIX_MONTH
-            R.id.lessThanAYearChip -> AgeOfPropertyState.LESS_THAN_A_YEAR
-            else -> null
-
-        }
 
 }
 

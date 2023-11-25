@@ -7,7 +7,7 @@ data class SearchViewState(
     val minArea: Int?,
     val maxArea: Int?,
     val isSold: Boolean,
-    val ageOfPropertyState: AgeOfPropertyState?,
+    val timeFilter: String?,
     val poi: List<String>
 )
 

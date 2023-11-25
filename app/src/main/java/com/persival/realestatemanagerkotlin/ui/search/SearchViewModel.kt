@@ -1,6 +1,7 @@
 package com.persival.realestatemanagerkotlin.ui.search
 
 import androidx.lifecycle.ViewModel
+import com.persival.realestatemanagerkotlin.R
 import com.persival.realestatemanagerkotlin.domain.search.SearchEntity
 import com.persival.realestatemanagerkotlin.domain.search.SetSearchedPropertiesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,7 @@ class SearchViewModel @Inject constructor(
         minArea: Int? = null,
         maxArea: Int? = null,
         isSold: Boolean,
-        entryDate: String,
+        checkedChipId: Int,
         poi: List<String>
     ) {
         val searchEntity = SearchEntity(
@@ -28,7 +29,7 @@ class SearchViewModel @Inject constructor(
             minArea = minArea,
             maxArea = maxArea,
             isSold = isSold,
-            entryDate = entryDate,
+            entryDate = getAgeOfPropertyRange(checkedChipId),
             poi = null
         )
         setSearchedPropertiesUseCase.invoke(searchEntity)
@@ -41,6 +42,14 @@ class SearchViewModel @Inject constructor(
     fun onResetFilter() {
         setSearchedPropertiesUseCase.invoke(null)
     }
+
+    private fun getAgeOfPropertyRange(checkedChipId: Int): String? =
+        when (checkedChipId) {
+            R.id.lessThanAMonthChip -> "-1 month"
+            R.id.lessThanSixMonthChip -> "-6 month"
+            R.id.lessThanAYearChip -> "-1 year"
+            else -> null
+        }
 
     /* private fun mapSearchViewStateToSearchEntity(searchViewState: SearchViewState): SearchEntity =
          SearchEntity(

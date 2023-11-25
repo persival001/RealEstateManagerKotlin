@@ -113,7 +113,7 @@ class LocalDatabaseRepository @Inject constructor(
                 minArea = minArea,
                 maxArea = maxArea,
                 isSold = isSold,
-                entryDate = entryDate,
+                timeFilter = entryDate,
                 poi = poi
             )
             .map { list ->
