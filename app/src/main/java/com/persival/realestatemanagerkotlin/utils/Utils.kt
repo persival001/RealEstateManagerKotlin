@@ -33,13 +33,13 @@ object Utils {
      */
     // This function format date in us
     fun getTodayDate(date: Date): String {
-        val dateFormat: DateFormat = SimpleDateFormat("yyyy/MM/dd")
+        val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd")
         return dateFormat.format(date)
     }
 
     // This new function format date in french
     fun getTodayDateInFrench(date: Date): String {
-        val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val dateFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy")
         return dateFormat.format(date)
     }
 
@@ -75,5 +75,5 @@ object Utils {
             return activeNetworkInfo != null && activeNetworkInfo.isConnected
         }
     }
-    
+
 }

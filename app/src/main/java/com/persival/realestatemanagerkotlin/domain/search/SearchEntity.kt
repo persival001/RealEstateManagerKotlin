@@ -7,6 +7,6 @@ data class SearchEntity(
     val minArea: Int?,
     val maxArea: Int?,
     val isSold: Boolean?,
-    val entryDate: String?,
+    val timeFilter: String?,
     val poi: String?
 )

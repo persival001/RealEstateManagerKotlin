@@ -102,7 +102,7 @@ class LocalDatabaseRepository @Inject constructor(
         minArea: Int?,
         maxArea: Int?,
         isSold: Boolean?,
-        entryDate: String?,
+        timeFilter: String?,
         poi: String?
     ): Flow<List<PropertyWithPhotosAndPOIEntity>> =
         propertyDao
@@ -113,7 +113,7 @@ class LocalDatabaseRepository @Inject constructor(
                 minArea = minArea,
                 maxArea = maxArea,
                 isSold = isSold,
-                timeFilter = entryDate,
+                timeFilter = timeFilter,
                 poi = poi
             )
             .map { list ->

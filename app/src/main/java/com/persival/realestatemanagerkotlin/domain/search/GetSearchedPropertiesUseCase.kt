@@ -18,7 +18,7 @@ class GetSearchedPropertiesUseCase @Inject constructor(
             minArea = params.minArea,
             maxArea = params.maxArea,
             isSold = params.isSold,
-            entryDate = params.entryDate,
+            timeFilter = params.timeFilter,
             poi = params.poi
         )
 

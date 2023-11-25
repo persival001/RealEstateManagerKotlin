@@ -28,7 +28,7 @@ interface LocalRepository {
         minArea: Int?,
         maxArea: Int?,
         isSold: Boolean?,
-        entryDate: String?,
+        timeFilter: String?,
         poi: String?
     ): Flow<List<PropertyWithPhotosAndPOIEntity>>
 

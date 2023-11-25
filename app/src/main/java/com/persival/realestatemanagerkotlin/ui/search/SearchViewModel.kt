@@ -29,7 +29,7 @@ class SearchViewModel @Inject constructor(
             minArea = minArea,
             maxArea = maxArea,
             isSold = isSold,
-            entryDate = getAgeOfPropertyRange(checkedChipId),
+            timeFilter = getAgeOfPropertyRange(checkedChipId),
             poi = null
         )
         setSearchedPropertiesUseCase.invoke(searchEntity)
@@ -45,9 +45,9 @@ class SearchViewModel @Inject constructor(
 
     private fun getAgeOfPropertyRange(checkedChipId: Int): String? =
         when (checkedChipId) {
-            R.id.lessThanAMonthChip -> "-1 month"
-            R.id.lessThanSixMonthChip -> "-6 month"
-            R.id.lessThanAYearChip -> "-1 year"
+            R.id.lessThanAMonthChip -> AgeOfPropertyState.LESS_THAN_A_MONTH.timeFilter
+            R.id.lessThanSixMonthChip -> AgeOfPropertyState.LESS_THAN_SIX_MONTHS.timeFilter
+            R.id.lessThanAYearChip -> AgeOfPropertyState.LESS_THAN_A_YEAR.timeFilter
             else -> null
         }
 
