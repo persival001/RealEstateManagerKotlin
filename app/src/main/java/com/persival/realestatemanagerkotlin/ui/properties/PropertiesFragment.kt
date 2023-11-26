@@ -28,12 +28,21 @@ class PropertiesFragment : Fragment(R.layout.fragment_properties) {
 
         // Chip "filter" click listener
         binding.filterChip.setOnClickListener {
+            if (!binding.filterChip.isChecked) {
+                binding.filterChip.isChecked = true
+                binding.noFilterChip.isChecked = false
+            }
             val searchFragment = SearchFragment.newInstance()
             searchFragment.show(requireActivity().supportFragmentManager, searchFragment.tag)
         }
 
         // Chip "no filter" click listener
         binding.noFilterChip.setOnClickListener {
+            if (!binding.noFilterChip.isChecked) {
+                binding.noFilterChip.isChecked = true
+                binding.filterChip.isChecked = false
+            }
+
             viewModel.onResetFilter()
         }
 
