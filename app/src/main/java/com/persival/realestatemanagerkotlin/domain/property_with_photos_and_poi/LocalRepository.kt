@@ -29,7 +29,7 @@ interface LocalRepository {
         maxArea: Int?,
         isSold: Boolean?,
         timeFilter: String?,
-        poi: String?
+        poi: List<String>?
     ): Flow<List<PropertyWithPhotosAndPOIEntity>>
 
     suspend fun updateProperty(propertyEntity: PropertyEntity): Int

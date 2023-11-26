@@ -18,9 +18,9 @@ class SearchViewModel @Inject constructor(
         maxPrice: Int? = null,
         minArea: Int? = null,
         maxArea: Int? = null,
-        isSold: Boolean,
+        isSold: Boolean? = null,
         checkedChipId: Int,
-        poi: List<String>
+        poi: List<String>? = null
     ) {
         val searchEntity = SearchEntity(
             type = if (type.isNullOrEmpty()) null else type,
@@ -30,13 +30,9 @@ class SearchViewModel @Inject constructor(
             maxArea = maxArea,
             isSold = isSold,
             timeFilter = getAgeOfPropertyRange(checkedChipId),
-            poi = null
+            poi = poi
         )
         setSearchedPropertiesUseCase.invoke(searchEntity)
-    }
-
-    private fun chipSelectedForPoi(poi: List<String>): List<String> {
-        return poi.filter { it != "None" }
     }
 
     fun onResetFilter() {
@@ -50,17 +46,5 @@ class SearchViewModel @Inject constructor(
             R.id.lessThanAYearChip -> AgeOfPropertyState.LESS_THAN_A_YEAR.timeFilter
             else -> null
         }
-
-    /* private fun mapSearchViewStateToSearchEntity(searchViewState: SearchViewState): SearchEntity =
-         SearchEntity(
-             type = searchViewState.type,
-             minPrice = searchViewState.minPrice,
-             maxPrice = searchViewState.maxPrice,
-             minArea = searchViewState.minArea,
-             maxArea = searchViewState.maxArea,
-             isSold = searchViewState.isSold,
-             entryDate = searchViewState.entryDate,
-             poi = chipSelectedForPoi(searchViewState.poi)
-         )*/
 
 }

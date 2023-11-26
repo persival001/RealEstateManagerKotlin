@@ -8,5 +8,5 @@ data class SearchEntity(
     val maxArea: Int?,
     val isSold: Boolean?,
     val timeFilter: String?,
-    val poi: String?
+    val poi: List<String>?
 )

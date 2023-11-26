@@ -46,7 +46,7 @@ AND (:timeFilter IS NULL OR entryDate >= date('now', :timeFilter))
 AND (:poi IS NULL OR EXISTS (
     SELECT * FROM point_of_interest 
     WHERE point_of_interest.propertyId = property.id 
-    AND point_of_interest.poi = :poi))
+    AND point_of_interest.poi IN (:poi)))
 """
     )
     fun getSearchedPropertiesWithPOIs(
@@ -57,7 +57,7 @@ AND (:poi IS NULL OR EXISTS (
         maxArea: Int?,
         isSold: Boolean?,
         timeFilter: String?,
-        poi: String?
+        poi: List<String>?
     ): Flow<List<PropertyWithPhotosAndPoisDto>>
 
     @Transaction

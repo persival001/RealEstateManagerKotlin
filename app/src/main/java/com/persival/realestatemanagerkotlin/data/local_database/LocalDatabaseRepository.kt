@@ -103,7 +103,7 @@ class LocalDatabaseRepository @Inject constructor(
         maxArea: Int?,
         isSold: Boolean?,
         timeFilter: String?,
-        poi: String?
+        poi: List<String>?
     ): Flow<List<PropertyWithPhotosAndPOIEntity>> =
         propertyDao
             .getSearchedPropertiesWithPOIs(
