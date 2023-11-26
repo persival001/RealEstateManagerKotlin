@@ -35,7 +35,7 @@ class InsertPropertyUseCaseTest {
             description = "Belle maison en centre-ville",
             price = 250000,
             isSold = false,
-            entryDate = "2023-01-01",,
+            entryDate = "-1 month",
             saleDate = null,
             agentName = "John Doe"
         )
@@ -61,7 +61,7 @@ class InsertPropertyUseCaseTest {
             description = "Belle maison en centre-ville",
             price = 250000,
             isSold = false,
-            entryDate = "2023-01-01",,
+            entryDate = "-1 month",
             saleDate = null,
             agentName = "John Doe"
         )
