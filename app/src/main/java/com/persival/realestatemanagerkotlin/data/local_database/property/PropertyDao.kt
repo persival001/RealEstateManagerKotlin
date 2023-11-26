@@ -43,10 +43,14 @@ AND (:minArea IS NULL OR area >= :minArea)
 AND (:maxArea IS NULL OR area <= :maxArea)
 AND (:isSold IS NULL OR isSold = :isSold)
 AND (:timeFilter IS NULL OR entryDate >= date('now', :timeFilter))
-AND (:poi IS NULL OR EXISTS (
-    SELECT * FROM point_of_interest 
+AND (NOT EXISTS (
+    SELECT 1 FROM point_of_interest 
     WHERE point_of_interest.propertyId = property.id 
-    AND point_of_interest.poi IN (:poi)))
+) OR EXISTS (
+    SELECT 1 FROM point_of_interest 
+    WHERE point_of_interest.propertyId = property.id 
+    AND point_of_interest.poi IN (:poi)
+))
 """
     )
     fun getSearchedPropertiesWithPOIs(

@@ -30,7 +30,7 @@ class SearchViewModel @Inject constructor(
             maxArea = maxArea,
             isSold = isSold,
             timeFilter = getAgeOfPropertyRange(checkedChipId),
-            poi = poi
+            poi = if (poi.isNullOrEmpty()) null else poi
         )
         setSearchedPropertiesUseCase.invoke(searchEntity)
     }
