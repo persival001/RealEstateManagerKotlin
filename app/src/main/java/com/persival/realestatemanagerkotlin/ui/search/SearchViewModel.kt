@@ -13,14 +13,14 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun setSearchCriteria(
-        type: String? = null,
-        minPrice: Int? = null,
-        maxPrice: Int? = null,
-        minArea: Int? = null,
-        maxArea: Int? = null,
-        isSold: Boolean? = null,
+        type: String?,
+        minPrice: Int?,
+        maxPrice: Int?,
+        minArea: Int?,
+        maxArea: Int?,
+        isSold: Boolean?,
         checkedChipId: Int,
-        poi: List<String>? = null
+        poi: List<String>?
     ) {
         val searchEntity = SearchEntity(
             type = if (type.isNullOrEmpty()) null else type,

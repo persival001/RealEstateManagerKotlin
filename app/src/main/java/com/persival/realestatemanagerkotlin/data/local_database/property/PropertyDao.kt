@@ -35,7 +35,7 @@ interface PropertyDao {
     @Transaction
     @Query(
         """
-SELECT * FROM property
+            SELECT * FROM property
 WHERE (:type IS NULL OR type = :type) 
 AND (:minPrice IS NULL OR price >= :minPrice)
 AND (:maxPrice IS NULL OR price <= :maxPrice)
@@ -43,10 +43,7 @@ AND (:minArea IS NULL OR area >= :minArea)
 AND (:maxArea IS NULL OR area <= :maxArea)
 AND (:isSold IS NULL OR isSold = :isSold)
 AND (:timeFilter IS NULL OR entryDate >= date('now', :timeFilter))
-AND (NOT EXISTS (
-    SELECT 1 FROM point_of_interest 
-    WHERE point_of_interest.propertyId = property.id 
-) OR EXISTS (
+AND ((:poi IS NULL OR :poi = '') OR EXISTS (
     SELECT 1 FROM point_of_interest 
     WHERE point_of_interest.propertyId = property.id 
     AND point_of_interest.poi IN (:poi)

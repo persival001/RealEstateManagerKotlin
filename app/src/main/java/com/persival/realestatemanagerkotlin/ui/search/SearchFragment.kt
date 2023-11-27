@@ -63,12 +63,16 @@ class SearchFragment : BottomSheetDialogFragment() {
             ).filter { it.isChecked }.map { it.text.toString() }
 
             // Get all information's
-            val type = binding.typeTextView.text?.toString() ?: ""
+            val type = binding.typeTextView.text?.toString()
             val minPrice = binding.priceMinEditText.text.toString().toIntOrNull()
             val maxPrice = binding.priceMaxEditText.text.toString().toIntOrNull()
             val minArea = binding.areaMinEditText.text.toString().toIntOrNull()
             val maxArea = binding.areaMaxEditText.text.toString().toIntOrNull()
-            val isSold = binding.soldChip.isChecked
+            val isSold = when {
+                binding.soldChip.isChecked -> true
+                binding.forSaleChip.isChecked -> false
+                else -> null
+            }
 
             viewModel.setSearchCriteria(
                 type,

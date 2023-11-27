@@ -40,14 +40,15 @@ class UtilsTest {
     fun testGetTodayDate() {
         val date = Date(120, 0, 1)
         val formattedDate = Utils.getTodayDate(date)
-        assertEquals("2020/01/01", formattedDate)
+        assertEquals("2020-01-01", formattedDate)
     }
+
 
     @Test
     fun testGetTodayDateInFrench() {
         val date = Date(120, 0, 1)
         val formattedDate = Utils.getTodayDateInFrench(date)
-        assertEquals("01/01/2020", formattedDate)
+        assertEquals("01-01-2020", formattedDate)
     }
 
     @Test
