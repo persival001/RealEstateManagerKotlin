@@ -20,7 +20,7 @@ class SearchViewModel @Inject constructor(
         maxArea: Int?,
         isSold: Boolean?,
         checkedChipId: Int,
-        poi: List<String>?
+        poi: List<String>
     ) {
         val searchEntity = SearchEntity(
             type = if (type.isNullOrEmpty()) null else type,
@@ -30,7 +30,7 @@ class SearchViewModel @Inject constructor(
             maxArea = maxArea,
             isSold = isSold,
             timeFilter = getAgeOfPropertyRange(checkedChipId),
-            poi = if (poi.isNullOrEmpty()) null else poi
+            poi = poi
         )
         setSearchedPropertiesUseCase.invoke(searchEntity)
     }

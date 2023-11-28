@@ -43,10 +43,15 @@ AND (:minArea IS NULL OR area >= :minArea)
 AND (:maxArea IS NULL OR area <= :maxArea)
 AND (:isSold IS NULL OR isSold = :isSold)
 AND (:timeFilter IS NULL OR entryDate >= date('now', :timeFilter))
-AND ((:poi IS NULL OR :poi = '') OR EXISTS (
+AND ((:poiSchool IS NULL) OR EXISTS (
     SELECT 1 FROM point_of_interest 
     WHERE point_of_interest.propertyId = property.id 
-    AND point_of_interest.poi IN (:poi)
+    AND point_of_interest.poi IN (:poiSchool)
+))
+AND ((:poiRestaurant IS NULL) OR EXISTS (
+    SELECT 1 FROM point_of_interest 
+    WHERE point_of_interest.propertyId = property.id 
+    AND point_of_interest.poi IN (:poiRestaurant)
 ))
 """
     )
@@ -58,7 +63,8 @@ AND ((:poi IS NULL OR :poi = '') OR EXISTS (
         maxArea: Int?,
         isSold: Boolean?,
         timeFilter: String?,
-        poi: List<String>?
+        poiSchool: String?,
+        poiRestaurant: String?,
     ): Flow<List<PropertyWithPhotosAndPoisDto>>
 
     @Transaction

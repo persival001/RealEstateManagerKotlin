@@ -19,7 +19,8 @@ class GetSearchedPropertiesUseCase @Inject constructor(
             maxArea = params.maxArea,
             isSold = params.isSold,
             timeFilter = params.timeFilter,
-            poi = params.poi
+            poiSchool = if (params.poi.contains("School")) "School" else null,
+            poiRestaurant = if (params.poi.contains("Restaurant")) "Restaurant" else null,
         )
 
 }

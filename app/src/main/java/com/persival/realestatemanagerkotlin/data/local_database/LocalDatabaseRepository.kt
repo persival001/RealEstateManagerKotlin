@@ -103,7 +103,8 @@ class LocalDatabaseRepository @Inject constructor(
         maxArea: Int?,
         isSold: Boolean?,
         timeFilter: String?,
-        poi: List<String>?
+        poiSchool: String?,
+        poiRestaurant: String?
     ): Flow<List<PropertyWithPhotosAndPOIEntity>> =
         propertyDao
             .getSearchedPropertiesWithPOIs(
@@ -114,7 +115,8 @@ class LocalDatabaseRepository @Inject constructor(
                 maxArea = maxArea,
                 isSold = isSold,
                 timeFilter = timeFilter,
-                poi = poi
+                poiSchool = poiSchool,
+                poiRestaurant = poiRestaurant
             )
             .map { list ->
                 list.map { propertyWithPhotosAndPoisDtoMapper.mapToEntity(it) }
