@@ -30,8 +30,13 @@ interface LocalRepository {
         isSold: Boolean?,
         timeFilter: String?,
         poiSchool: String?,
-        poiRestaurant: String?
-    ): Flow<List<PropertyWithPhotosAndPOIEntity>>
+        poiRestaurant: String?,
+        poiPublicTransport: String?,
+        poiHospital: String?,
+        poiStore: String?,
+        poiGreenSpaces: String?,
+
+        ): Flow<List<PropertyWithPhotosAndPOIEntity>>
 
     suspend fun updateProperty(propertyEntity: PropertyEntity): Int
 

@@ -53,8 +53,29 @@ AND ((:poiRestaurant IS NULL) OR EXISTS (
     WHERE point_of_interest.propertyId = property.id 
     AND point_of_interest.poi IN (:poiRestaurant)
 ))
+AND ((:poiPublicTransport IS NULL) OR EXISTS (
+    SELECT 1 FROM point_of_interest 
+    WHERE point_of_interest.propertyId = property.id 
+    AND point_of_interest.poi IN (:poiPublicTransport)
+))
+AND ((:poiHospital IS NULL) OR EXISTS (
+    SELECT 1 FROM point_of_interest 
+    WHERE point_of_interest.propertyId = property.id 
+    AND point_of_interest.poi IN (:poiHospital)
+))
+AND ((:poiStore IS NULL) OR EXISTS (
+    SELECT 1 FROM point_of_interest 
+    WHERE point_of_interest.propertyId = property.id 
+    AND point_of_interest.poi IN (:poiStore)
+))
+AND ((:poiGreenSpaces IS NULL) OR EXISTS (
+    SELECT 1 FROM point_of_interest 
+    WHERE point_of_interest.propertyId = property.id 
+    AND point_of_interest.poi IN (:poiGreenSpaces)
+))
 """
     )
+
     fun getSearchedPropertiesWithPOIs(
         type: String?,
         minPrice: Int?,
@@ -65,6 +86,10 @@ AND ((:poiRestaurant IS NULL) OR EXISTS (
         timeFilter: String?,
         poiSchool: String?,
         poiRestaurant: String?,
+        poiPublicTransport: String?,
+        poiHospital: String?,
+        poiStore: String?,
+        poiGreenSpaces: String?,
     ): Flow<List<PropertyWithPhotosAndPoisDto>>
 
     @Transaction

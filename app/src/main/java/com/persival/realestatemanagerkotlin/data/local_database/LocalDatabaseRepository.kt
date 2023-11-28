@@ -104,7 +104,11 @@ class LocalDatabaseRepository @Inject constructor(
         isSold: Boolean?,
         timeFilter: String?,
         poiSchool: String?,
-        poiRestaurant: String?
+        poiRestaurant: String?,
+        poiPublicTransport: String?,
+        poiHospital: String?,
+        poiStore: String?,
+        poiGreenSpaces: String?,
     ): Flow<List<PropertyWithPhotosAndPOIEntity>> =
         propertyDao
             .getSearchedPropertiesWithPOIs(
@@ -116,7 +120,11 @@ class LocalDatabaseRepository @Inject constructor(
                 isSold = isSold,
                 timeFilter = timeFilter,
                 poiSchool = poiSchool,
-                poiRestaurant = poiRestaurant
+                poiRestaurant = poiRestaurant,
+                poiPublicTransport = poiPublicTransport,
+                poiHospital = poiHospital,
+                poiStore = poiStore,
+                poiGreenSpaces = poiGreenSpaces,
             )
             .map { list ->
                 list.map { propertyWithPhotosAndPoisDtoMapper.mapToEntity(it) }

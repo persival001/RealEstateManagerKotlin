@@ -21,6 +21,10 @@ class GetSearchedPropertiesUseCase @Inject constructor(
             timeFilter = params.timeFilter,
             poiSchool = if (params.poi.contains("School")) "School" else null,
             poiRestaurant = if (params.poi.contains("Restaurant")) "Restaurant" else null,
+            poiPublicTransport = if (params.poi.contains("Public transport")) "Public transport" else null,
+            poiHospital = if (params.poi.contains("Hospital")) "Hospital" else null,
+            poiStore = if (params.poi.contains("Store")) "Store" else null,
+            poiGreenSpaces = if (params.poi.contains("Green spaces")) "Green spaces" else null,
         )
 
 }
