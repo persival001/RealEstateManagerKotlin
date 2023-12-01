@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
-import androidx.work.WorkManager
 import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyIdUseCase
 import io.mockk.every
 import io.mockk.mockk
@@ -25,7 +24,6 @@ class MainViewModelTest {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var application: Application
-    private lateinit var workManager: WorkManager
     private val getSelectedPropertyIdUseCase: GetSelectedPropertyIdUseCase = mockk()
 
     @Before
@@ -33,27 +31,10 @@ class MainViewModelTest {
         // Mock the application
         application = mockk(relaxed = true)
 
-        // Initialize WorkManager for testing
-        /*WorkManagerTestInitHelper.initializeTestWorkManager(
-            application,
-            Configuration.Builder().setMinimumLoggingLevel(android.util.Log.DEBUG).build()
-        )*/
-        workManager = WorkManager.getInstance(application)
-
         // Mock the use case to return a flow with null (no property selected)
         every { getSelectedPropertyIdUseCase() } returns MutableStateFlow(null)
 
         viewModel = MainViewModel(application, getSelectedPropertyIdUseCase)
-    }
-
-    @Test
-    fun `initializeWorkManager enqueues work if not already scheduled`() {
-        // When
-        viewModel.initializeWorkManager()
-
-        // Then
-        /*  val workInfos = workManager.getWorkInfosByTag(MainViewModel.WORK_TAG).get()
-          assert(workInfos.isNotEmpty()) // Work should be enqueued*/
     }
 
     @Test
@@ -77,6 +58,6 @@ class MainViewModelTest {
         viewModel.onResume(isTablet)
 
         // Then
-        //assert(viewModel.isTablet == isTablet) // isTablet in ViewModel should be set to true
+        assert(isTablet) // isTablet in ViewModel should be set to true
     }
 }

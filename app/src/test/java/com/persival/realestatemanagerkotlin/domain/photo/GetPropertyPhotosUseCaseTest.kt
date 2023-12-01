@@ -27,7 +27,8 @@ class GetPropertyPhotosUseCaseTest {
 
     @Test
     fun `invoke returns property photos flow from repository`() = runTest {
-        val testFlow: Flow<List<PhotoEntity>> = flowOf(listOf(mockk<PhotoEntity>()))
+        val mockPhotoEntity = mockk<PhotoEntity>()
+        val testFlow: Flow<List<PhotoEntity>> = flowOf(listOf(mockPhotoEntity))
 
         every { localRepository.getPropertyPhotos(any()) } returns testFlow
 
@@ -36,7 +37,7 @@ class GetPropertyPhotosUseCaseTest {
         val photosList = result.toList()
 
         assertThat(photosList).isNotNull()
-        assertThat(photosList).isEqualTo(listOf(listOf(mockk<PhotoEntity>())))
+        assertThat(photosList).isEqualTo(listOf(listOf(mockPhotoEntity)))
 
         verify { localRepository.getPropertyPhotos(1L) }
     }

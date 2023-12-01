@@ -6,60 +6,41 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.core.content.ContextCompat
-import androidx.test.core.app.ApplicationProvider
 import com.persival.realestatemanagerkotlin.utils_for_tests.TestCoroutineRule
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import io.mockk.unmockkAll
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import junit.framework.Assert.assertFalse
+import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.flow.first
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.Is.`is`
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-@ExperimentalCoroutinesApi
-@HiltAndroidTest
+@RunWith(RobolectricTestRunner::class)
 class PermissionDataRepositoryTest {
 
-    @get:Rule(order = 1)
-    var hiltRule = HiltAndroidRule(this)
+    @get:Rule
+    val testCoroutineRule = TestCoroutineRule()
 
-    @get:Rule(order = 2)
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    // Replace with your TestCoroutineRule
-    @get:Rule(order = 3)
-    var testCoroutineRule = TestCoroutineRule()
-
-    @Inject
-    lateinit var permissionDataRepository: PermissionDataRepository
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var context: Context
-    private lateinit var locationManager: LocationManager
+    private lateinit var permissionDataRepository: PermissionDataRepository
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this)
-        context = ApplicationProvider.getApplicationContext()
-        locationManager = mockk()
-
-        hiltRule.inject()
-
-        mockkStatic(ContextCompat::class)
-
-        every { context.getSystemService(Context.LOCATION_SERVICE) } returns locationManager
+        context = mockk()
+        permissionDataRepository = PermissionDataRepository(context)
     }
 
     @Test
-    fun `isLocationPermission returns true when permission is granted`() = testCoroutineRule.runTest {
+    fun `refreshLocationPermission updates locationPermissionFlow based on permission status`() {
         every {
             ContextCompat.checkSelfPermission(
                 context, Manifest.permission.ACCESS_FINE_LOCATION
@@ -68,20 +49,39 @@ class PermissionDataRepositoryTest {
 
         permissionDataRepository.refreshLocationPermission()
 
-        assertThat(permissionDataRepository.isLocationPermission().first(), `is`(true))
+        runBlocking {
+            assertTrue(permissionDataRepository.isLocationPermission().first())
+        }
+
+        every {
+            ContextCompat.checkSelfPermission(
+                context, Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        } returns PackageManager.PERMISSION_DENIED
+
+        permissionDataRepository.refreshLocationPermission()
+
+        runBlocking {
+            assertFalse(permissionDataRepository.isLocationPermission().first())
+        }
     }
 
     @Test
-    fun `isGpsActivated returns true when GPS is enabled`() = testCoroutineRule.runTest {
-        every { locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) } returns true
+    fun `refreshCameraPermission updates cameraPermissionFlow correctly`() {
+        // Test pour la permission accordée
+        every {
+            ContextCompat.checkSelfPermission(
+                context, Manifest.permission.CAMERA
+            )
+        } returns PackageManager.PERMISSION_GRANTED
 
-        permissionDataRepository.refreshGpsActivation()
+        permissionDataRepository.refreshCameraPermission()
 
-        assertThat(permissionDataRepository.isGpsActivated().first(), `is`(true))
-    }
+        runBlocking {
+            assertTrue(permissionDataRepository.isCameraPermission().first())
+        }
 
-    @Test
-    fun `isCameraPermission returns false when permission is denied`() = testCoroutineRule.runTest {
+        // Test pour la permission refusée
         every {
             ContextCompat.checkSelfPermission(
                 context, Manifest.permission.CAMERA
@@ -90,7 +90,31 @@ class PermissionDataRepositoryTest {
 
         permissionDataRepository.refreshCameraPermission()
 
-        assertThat(permissionDataRepository.isCameraPermission().first(), `is`(false))
+        runBlocking {
+            assertFalse(permissionDataRepository.isCameraPermission().first())
+        }
+    }
+
+    @Test
+    fun `refreshGpsActivation updates isGpsActivatedLiveData correctly`() {
+        val locationManager = mockk<LocationManager>()
+        every { context.getSystemService(Context.LOCATION_SERVICE) } returns locationManager
+
+        // GPS is activated
+        every { locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) } returns true
+        permissionDataRepository.refreshGpsActivation()
+
+        runBlocking {
+            assertTrue(permissionDataRepository.isGpsActivated().first())
+        }
+
+        // GPS is deactivated
+        every { locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) } returns false
+        permissionDataRepository.refreshGpsActivation()
+
+        runBlocking {
+            assertFalse(permissionDataRepository.isGpsActivated().first())
+        }
     }
 
     @After

@@ -19,12 +19,16 @@ class GetSearchedPropertiesUseCase @Inject constructor(
             maxArea = params.maxArea,
             isSold = params.isSold,
             timeFilter = params.timeFilter,
-            poiSchool = if (params.poi.contains("School")) "School" else null,
-            poiRestaurant = if (params.poi.contains("Restaurant")) "Restaurant" else null,
-            poiPublicTransport = if (params.poi.contains("Public transport")) "Public transport" else null,
-            poiHospital = if (params.poi.contains("Hospital")) "Hospital" else null,
-            poiStore = if (params.poi.contains("Store")) "Store" else null,
-            poiGreenSpaces = if (params.poi.contains("Green spaces")) "Green spaces" else null,
+            poiSchool = params.getPoiTypeIfPresent(PointOfInterestType.SCHOOL),
+            poiRestaurant = params.getPoiTypeIfPresent(PointOfInterestType.RESTAURANT),
+            poiPublicTransport = params.getPoiTypeIfPresent(PointOfInterestType.PUBLIC_TRANSPORT),
+            poiHospital = params.getPoiTypeIfPresent(PointOfInterestType.HOSPITAL),
+            poiStore = params.getPoiTypeIfPresent(PointOfInterestType.STORE),
+            poiGreenSpaces = params.getPoiTypeIfPresent(PointOfInterestType.GREEN_SPACES),
         )
+
+    private fun SearchEntity.getPoiTypeIfPresent(poiType: PointOfInterestType): String? {
+        return if (this.poi.contains(poiType.type)) poiType.type else null
+    }
 
 }

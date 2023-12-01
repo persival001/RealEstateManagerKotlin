@@ -11,6 +11,7 @@ import com.persival.realestatemanagerkotlin.domain.conversion.IsEuroConversionEn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,9 +37,10 @@ class SettingsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val state = getSavedStateForDateConversionButtonUseCase.invoke()
+            val state = getSavedStateForDateConversionButtonUseCase.invoke().first()
             _dateButtonState.postValue(state)
         }
+
     }
 
     fun isCurrencyConversionTriggered(isTriggered: Boolean) {

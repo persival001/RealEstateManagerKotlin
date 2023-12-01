@@ -100,8 +100,8 @@ class AddOrModifyPropertyViewModelTest {
         testCoroutineRule.runTest {
             // Arrange
             val mockDate = calendar.time
-            val expectedFormattedDate = "2023/11/02"
-            coEvery { getSavedStateForDateConversionButtonUseCase.invoke() } returns false
+            val expectedFormattedDate = "2023-11-02"
+            coEvery { getSavedStateForDateConversionButtonUseCase.invoke() } returns flowOf(false)
 
             // Act
             val result = viewModel.getFormattedDate(mockDate)
@@ -115,8 +115,8 @@ class AddOrModifyPropertyViewModelTest {
         testCoroutineRule.runTest {
             // Arrange
             val mockDate = calendar.time
-            val expectedFormattedDate = "02/11/2023"
-            coEvery { getSavedStateForDateConversionButtonUseCase.invoke() } returns true
+            val expectedFormattedDate = "02-11-2023"
+            coEvery { getSavedStateForDateConversionButtonUseCase.invoke() } returns flowOf(true)
 
             // Act
             val result = viewModel.getFormattedDate(mockDate)

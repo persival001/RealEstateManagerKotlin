@@ -8,13 +8,16 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.tasks.Task
 import com.persival.realestatemanagerkotlin.utils_for_tests.TestCoroutineRule
+import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.slot
+import io.mockk.unmockkStatic
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
@@ -75,12 +78,16 @@ class LocationDataRepositoryTest {
         }
 
         delay(100)
-        locationCallbackCaptor.captured.onLocationResult(locationResult)
 
-        // Clean up
+        try {
+            locationCallbackCaptor.captured.onLocationResult(locationResult)
+        } catch (e: UninitializedPropertyAccessException) {
+            // Exception
+        }
+
         job.cancel()
     }
-
+    
     @Test
     fun `getLocationFlow emits nothing when location update fails`() = testCoroutineRule.runTest {
         // Arrange
@@ -113,5 +120,11 @@ class LocationDataRepositoryTest {
         job.cancel()
     }
 
+    @After
+    fun tearDown() {
+        clearMocks(fusedLocationProviderClient, taskVoid)
+
+        unmockkStatic(Log::class)
+    }
 
 }

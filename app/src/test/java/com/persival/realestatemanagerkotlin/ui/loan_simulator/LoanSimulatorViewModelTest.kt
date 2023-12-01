@@ -30,7 +30,7 @@ class LoanSimulatorViewModelTest {
         val propertyPrice = 120000.0
 
         // Mocking the observer
-        val observer: Observer<LoanCalculationState> = mockk()
+        val observer: Observer<LoanCalculationState> = mockk(relaxUnitFun = true)
         viewModel.loanState.observeForever(observer)
 
         // When
@@ -57,7 +57,7 @@ class LoanSimulatorViewModelTest {
         val propertyPrice = 120000.0
 
         // Mocking the observer
-        val observer: Observer<LoanCalculationState> = mockk()
+        val observer: Observer<LoanCalculationState> = mockk(relaxUnitFun = true)
         viewModel.loanState.observeForever(observer)
 
         // When

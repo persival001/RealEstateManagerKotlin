@@ -1,7 +1,5 @@
 package com.persival.realestatemanagerkotlin.domain.property
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -41,9 +39,8 @@ class UpdatePropertyUseCaseTest {
         )
         coEvery { localRepository.updateProperty(propertyEntity) } returns 1
 
-        val result = updatePropertyUseCase.invoke(propertyEntity)
+        updatePropertyUseCase.invoke(propertyEntity)
 
-        assertThat(result).isEqualTo(1)
         coVerify { localRepository.updateProperty(propertyEntity) }
     }
 

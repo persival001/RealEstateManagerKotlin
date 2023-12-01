@@ -89,9 +89,9 @@
     <string name="date_old_title">Plus ancien</string>
     <string name="date_recent_title">Plus recent</string>
     <string name="poi_school">Ecole</string>
-    <string name="poi_public_transports">Transports publiques</string>
+    <string name="poi_public_transports">Transports public</string>
     <string name="poi_hospital">Hopital</string>
-    <string name="poi_shop">Magasins</string>
+    <string name="poi_shop">Magasin</string>
     <string name="poi_green_spaces">Espaces verts</string>
     <string name="poi_restaurant">Restaurant</string>
     <string name="type_empty">Entrez un type</string>

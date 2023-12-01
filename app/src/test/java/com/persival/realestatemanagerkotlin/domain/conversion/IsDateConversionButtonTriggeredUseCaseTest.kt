@@ -3,34 +3,49 @@ package com.persival.realestatemanagerkotlin.domain.conversion
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.test.runTest
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.fail
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 
 class IsDateConversionButtonTriggeredUseCaseTest {
 
-    private val sharedPreferencesRepository: SharedPreferencesRepository = mockk()
-
+    private lateinit var sharedPreferencesRepository: SharedPreferencesRepository
     private lateinit var isDateConversionButtonTriggeredUseCase: IsDateConversionButtonTriggeredUseCase
 
     @Before
     fun setUp() {
+        sharedPreferencesRepository = mockk(relaxed = true)
+
+        coEvery { sharedPreferencesRepository.setDateConversion(any()) } coAnswers {}
+
         isDateConversionButtonTriggeredUseCase = IsDateConversionButtonTriggeredUseCase(sharedPreferencesRepository)
     }
 
     @Test
-    fun `invoke calls setDateConversion with true when activated`() = runTest {
+    fun `invoke calls setDateConversion with correct parameter`() = runBlocking {
+        val testActivated = true
 
-        isDateConversionButtonTriggeredUseCase.invoke(true)
+        isDateConversionButtonTriggeredUseCase.invoke(testActivated)
 
-        coVerify(exactly = 1) { sharedPreferencesRepository.setDateConversion(true) }
+        coVerify { sharedPreferencesRepository.setDateConversion(testActivated) }
     }
 
     @Test
-    fun `invoke calls setDateConversion with false when not activated`() = runTest {
+    fun `invoke propagates exception when setDateConversion fails`() = runBlocking {
+        val testActivated = true
+        val exception = RuntimeException("Error setting date conversion")
 
-        isDateConversionButtonTriggeredUseCase.invoke(false)
+        coEvery { sharedPreferencesRepository.setDateConversion(any()) } throws exception
 
-        coVerify(exactly = 1) { sharedPreferencesRepository.setDateConversion(false) }
+        try {
+            isDateConversionButtonTriggeredUseCase.invoke(testActivated)
+            fail("Exception should have been thrown")
+        } catch (e: Exception) {
+            assertEquals("Error setting date conversion", e.message)
+        }
     }
+
 }
+

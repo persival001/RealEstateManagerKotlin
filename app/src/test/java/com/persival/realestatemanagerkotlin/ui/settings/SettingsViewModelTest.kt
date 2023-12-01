@@ -38,7 +38,7 @@ class SettingsViewModelTest {
         coJustRun { isCurrencyConversionButtonTriggeredUseCase.invoke(any()) }
         coJustRun { isDateConversionButtonTriggeredUseCase.invoke(any()) }
         coEvery { isEuroConversionEnabledUseCase.invoke() } returns flowOf(true)
-        coEvery { getSavedStateForDateConversionButtonUseCase.invoke() } returns true
+        coEvery { getSavedStateForDateConversionButtonUseCase.invoke() } returns flowOf(true)
 
         viewModel = SettingsViewModel(
             isCurrencyConversionButtonTriggeredUseCase = isCurrencyConversionButtonTriggeredUseCase,

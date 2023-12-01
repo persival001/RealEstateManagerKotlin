@@ -1,23 +1,35 @@
 package com.persival.realestatemanagerkotlin.domain.search
 
+import io.mockk.every
 import io.mockk.mockk
+import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Test
 
 class GetActiveSearchFilterUseCaseTest {
 
-    private val searchRepository = mockk<SearchRepository>()
-    private val getActiveSearchFilterUseCase = GetActiveSearchFilterUseCase(searchRepository)
+    private lateinit var searchRepository: SearchRepository
+    private lateinit var getActiveSearchFilterUseCase: GetActiveSearchFilterUseCase
 
-    /* @Test
-     fun `invoke returns current search filter`() = runTest {
-         // Arrange
-         val expectedSearchFilter = SearchEntity(...) // Remplacer avec les données de test appropriées
-         val stateFlow = MutableStateFlow(expectedSearchFilter)
-         every { searchRepository.selectedFilter } returns stateFlow
+    @Before
+    fun setUp() {
+        searchRepository = mockk()
+        getActiveSearchFilterUseCase = GetActiveSearchFilterUseCase(searchRepository)
+    }
 
-         // Act
-         val result = getActiveSearchFilterUseCase.invoke().first()
+    @Test
+    fun `invoke returns StateFlow of SearchEntity from repository`() = runTest {
+        val expectedFlow: StateFlow<SearchEntity?> = flowOf(mockk<SearchEntity>()).stateIn(this)
 
-         // Assert
-         assertThat(result).isEqualTo(expectedSearchFilter)
-     }*/
+        every { searchRepository.selectedFilter } returns expectedFlow
+
+        val result = getActiveSearchFilterUseCase.invoke()
+
+        assertEquals(expectedFlow, result)
+    }
 }
+

@@ -1,23 +1,29 @@
 package com.persival.realestatemanagerkotlin.domain.search
 
 import io.mockk.mockk
+import io.mockk.verify
+import org.junit.Before
+import org.junit.Test
 
 class SetSearchedPropertiesUseCaseTest {
 
-    private val searchRepository = mockk<SearchRepository>()
-    private val setSearchedPropertiesUseCase = SetSearchedPropertiesUseCase(searchRepository)
+    private lateinit var searchRepository: SearchRepository
+    private lateinit var setSearchedPropertiesUseCase: SetSearchedPropertiesUseCase
 
-    /*@Test
+    @Before
+    fun setUp() {
+        searchRepository = mockk(relaxed = true)
+
+        setSearchedPropertiesUseCase = SetSearchedPropertiesUseCase(searchRepository)
+    }
+
+    @Test
     fun `invoke calls setFilter with correct search entity`() {
-        // Arrange
-        val searchEntity = SearchEntity(...) // Créez une instance de SearchEntity avec des données de test
+        val searchEntity = mockk<SearchEntity>(relaxed = true)
 
-        every { searchRepository.setFilter(searchEntity) } just runs
-
-        // Act
         setSearchedPropertiesUseCase.invoke(searchEntity)
 
-        // Assert
         verify { searchRepository.setFilter(searchEntity) }
-    }*/
+    }
 }
+

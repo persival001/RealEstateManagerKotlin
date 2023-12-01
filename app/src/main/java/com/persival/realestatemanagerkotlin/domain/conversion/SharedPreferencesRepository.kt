@@ -6,7 +6,7 @@ interface SharedPreferencesRepository {
 
     fun isEuroConversionEnabled(): Flow<Boolean>
 
-    suspend fun getDateConversion(): Boolean
+    fun isDateConversion(): Flow<Boolean>
 
     suspend fun setCurrencyConversion(isActivated: Boolean)
 

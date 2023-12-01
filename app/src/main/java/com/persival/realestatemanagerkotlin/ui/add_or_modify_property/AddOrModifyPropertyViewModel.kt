@@ -37,6 +37,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -279,7 +280,8 @@ class AddOrModifyPropertyViewModel @Inject constructor(
 
     suspend fun getFormattedDate(date: Date): String {
         return try {
-            val isFrenchDateEnabled = getSavedStateForDateConversionButtonUseCase.invoke()
+            val isFrenchDateEnabled = getSavedStateForDateConversionButtonUseCase.invoke().first()
+
             if (isFrenchDateEnabled) {
                 Utils.getTodayDateInFrench(date)
             } else {
@@ -289,6 +291,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
             "Format date error"
         }
     }
+
 
     fun initializePlaces(context: Context) {
         if (!Places.isInitialized()) {
