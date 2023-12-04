@@ -10,11 +10,11 @@ import com.persival.realestatemanagerkotlin.utils_for_tests.TestCoroutineRule
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -68,7 +68,7 @@ class PermissionDataRepositoryTest {
 
     @Test
     fun `refreshCameraPermission updates cameraPermissionFlow correctly`() {
-        // Test pour la permission accordée
+        // Test permission granted
         every {
             ContextCompat.checkSelfPermission(
                 context, Manifest.permission.CAMERA
@@ -81,7 +81,7 @@ class PermissionDataRepositoryTest {
             assertTrue(permissionDataRepository.isCameraPermission().first())
         }
 
-        // Test pour la permission refusée
+        // Test permission refused
         every {
             ContextCompat.checkSelfPermission(
                 context, Manifest.permission.CAMERA
