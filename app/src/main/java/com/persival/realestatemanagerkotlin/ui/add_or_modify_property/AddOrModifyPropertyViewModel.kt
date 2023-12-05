@@ -3,7 +3,6 @@ package com.persival.realestatemanagerkotlin.ui.add_or_modify_property
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -88,7 +87,6 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     fun addNewProperty(addOrModifyPropertyViewState: AddOrModifyPropertyViewState) {
         viewModelScope.launch {
             val agentEntity = getRealEstateAgentUseCase.invoke()
-            Log.d("ViewModelDebug", "ADD_PROPERTY_CALLED")
 
             if (agentEntity != null) {
                 val propertyEntity = PropertyEntity(
@@ -291,7 +289,6 @@ class AddOrModifyPropertyViewModel @Inject constructor(
             "Format date error"
         }
     }
-
 
     fun initializePlaces(context: Context) {
         if (!Places.isInitialized()) {

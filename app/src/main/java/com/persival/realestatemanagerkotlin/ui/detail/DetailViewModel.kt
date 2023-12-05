@@ -8,6 +8,7 @@ import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInte
 import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,6 +26,8 @@ class DetailViewModel @Inject constructor(
     private val detailItemLiveData = MutableLiveData<List<DetailViewStateItem>>()
     val detailItem: LiveData<List<DetailViewStateItem>> = detailItemLiveData
 
+    val isLatLngExistLiveData: MutableLiveData<Boolean> = MutableLiveData()
+
     fun fetchAndLoadDetailsForSelectedProperty() {
         val id = getSelectedPropertyIdUseCase().value
         selectedIdLiveData.value = id
@@ -36,6 +39,7 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun loadDetails(propertyId: Long) {
+        verifyLatLngExistence()
         viewModelScope.launch {
             getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { details ->
 
@@ -57,6 +61,19 @@ class DetailViewModel @Inject constructor(
                 )
 
                 detailLiveData.value = viewState
+            }
+        }
+    }
+
+    private fun verifyLatLngExistence() {
+        viewModelScope.launch {
+            val propertyId = getSelectedPropertyIdUseCase().value
+            val propertyWithPhotosAndPOIEntity =
+                propertyId?.let { getPropertyWithPhotoAndPOIUseCase.invoke(it).first() }
+            val latLng = propertyWithPhotosAndPOIEntity?.property?.latLng
+
+            if (latLng != null) {
+                isLatLngExistLiveData.value = latLng.isNotEmpty()
             }
         }
     }

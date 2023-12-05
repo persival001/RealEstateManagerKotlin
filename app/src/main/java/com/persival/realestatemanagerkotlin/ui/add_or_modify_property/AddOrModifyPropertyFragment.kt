@@ -42,6 +42,7 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
@@ -143,9 +144,12 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         viewModel.initializePlaces(requireContext())
 
         val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
+        val locale = Locale.getDefault()
+        val countryCode = locale.country
+
         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
             .setTypeFilter(TypeFilter.ADDRESS)
-            .setCountry("US")
+            .setCountry(countryCode)
             .build(requireContext())
 
         viewModel.address.observe(viewLifecycleOwner) { newAddress ->
@@ -183,6 +187,7 @@ class AddOrModifyPropertyFragment : Fragment(R.layout.fragment_add_property) {
         // Filled the recycle view with the list of added photos
         displaysAddedPropertyPhotos()
 
+        // Define the LatLng
         viewModel.latLong.observe(viewLifecycleOwner) { latLng ->
             if (latLng != null) {
                 latLongString = latLng

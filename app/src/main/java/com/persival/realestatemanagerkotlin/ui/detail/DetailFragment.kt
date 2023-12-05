@@ -2,6 +2,7 @@ package com.persival.realestatemanagerkotlin.ui.detail
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -25,6 +26,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     private val binding by viewBinding { FragmentDetailBinding.bind(it) }
     private val viewModel by viewModels<DetailViewModel>()
+
+    private var isLatLngExist: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -97,13 +100,18 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         }
 
         // Open the map fragment if clicked
+        viewModel.isLatLngExistLiveData.observe(viewLifecycleOwner) { latLngExist ->
+            isLatLngExist = latLngExist
+        }
+
         binding.mapImageView.setOnClickListener {
-            parentFragmentManager.commit {
-                replace(
-                    this@DetailFragment.id,
-                    MapFragment.newInstance(mapImageClicked = true)
-                )
-                addToBackStack(null)
+            if (isLatLngExist) {
+                parentFragmentManager.commit {
+                    replace(this@DetailFragment.id, MapFragment.newInstance(mapImageClicked = true))
+                    addToBackStack(null)
+                }
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.invalid_address_message), Toast.LENGTH_SHORT).show()
             }
         }
 
