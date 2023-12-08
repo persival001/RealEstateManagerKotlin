@@ -1,0 +1,183 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > MainViewModel</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.persival.realestatemanagerkotlin.ui.main</a>
+</div>
+
+<h1>Coverage Summary for Class: MainViewModel (com.persival.realestatemanagerkotlin.ui.main)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MainViewModel</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    29,4%
+  </span>
+  <span class="absValue">
+    (5/17)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">MainViewModel$Companion</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (6/18)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.persival.realestatemanagerkotlin.ui.main
+&nbsp;
+&nbsp;import android.app.Application
+&nbsp;import androidx.lifecycle.ViewModel
+&nbsp;import androidx.work.Constraints
+&nbsp;import androidx.work.NetworkType
+&nbsp;import androidx.work.PeriodicWorkRequestBuilder
+&nbsp;import androidx.work.WorkInfo
+&nbsp;import androidx.work.WorkManager
+&nbsp;import com.persival.realestatemanagerkotlin.data.synchronize_database.SynchronizeWorker
+&nbsp;import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyIdUseCase
+&nbsp;import dagger.hilt.android.lifecycle.HiltViewModel
+&nbsp;import java.util.concurrent.TimeUnit
+&nbsp;import javax.inject.Inject
+&nbsp;
+&nbsp;@HiltViewModel
+&nbsp;class MainViewModel @Inject constructor(
+<b class="fc">&nbsp;    private val application: Application,</b>
+<b class="fc">&nbsp;    private val getSelectedPropertyIdUseCase: GetSelectedPropertyIdUseCase,</b>
+<b class="fc">&nbsp;) : ViewModel() {</b>
+&nbsp;
+<b class="fc">&nbsp;    companion object {</b>
+&nbsp;        private const val WORK_TAG = &quot;SYNCHRONIZE_WORK&quot;
+&nbsp;    }
+&nbsp;
+&nbsp;    private var isTablet: Boolean = false
+&nbsp;
+<b class="fc">&nbsp;    fun getPropertyId() = getSelectedPropertyIdUseCase()</b>
+&nbsp;
+&nbsp;    fun initializeWorkManager() {
+&nbsp;        // Verify if the work is already running
+<b class="nc">&nbsp;        val workInfos = WorkManager.getInstance(application).getWorkInfosByTag(WORK_TAG).get() ?: return</b>
+<b class="nc">&nbsp;        val shouldEnqueue = workInfos.none {</b>
+<b class="nc">&nbsp;            it.state == WorkInfo.State.CANCELLED || it.state == WorkInfo.State.FAILED</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (shouldEnqueue) {</b>
+<b class="nc">&nbsp;            WorkManager.getInstance(application).enqueue(</b>
+<b class="nc">&nbsp;                PeriodicWorkRequestBuilder&lt;SynchronizeWorker&gt;(1, TimeUnit.HOURS)</b>
+<b class="nc">&nbsp;                    .setConstraints(</b>
+<b class="nc">&nbsp;                        Constraints.Builder()</b>
+<b class="nc">&nbsp;                            .setRequiredNetworkType(NetworkType.CONNECTED)</b>
+<b class="nc">&nbsp;                            .build()</b>
+&nbsp;                    )
+<b class="nc">&nbsp;                    .addTag(WORK_TAG)</b>
+<b class="nc">&nbsp;                    .build()</b>
+&nbsp;            )
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    fun onResume(isTablet: Boolean) {
+<b class="fc">&nbsp;        this.isTablet = isTablet</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-08 17:11</div>
+</div>
+</body>
+</html>

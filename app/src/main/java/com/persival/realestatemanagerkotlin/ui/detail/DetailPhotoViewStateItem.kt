@@ -1,6 +1,6 @@
 package com.persival.realestatemanagerkotlin.ui.detail
 
-data class DetailViewStateItem(
+data class DetailPhotoViewStateItem(
     val url: String,
     val caption: String
 )

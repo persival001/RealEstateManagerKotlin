@@ -27,23 +27,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private val binding by viewBinding { FragmentDetailBinding.bind(it) }
     private val viewModel by viewModels<DetailViewModel>()
 
-    private var isLatLngExist: Boolean = false
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Fetch the property ID
-        viewModel.fetchAndLoadDetailsForSelectedProperty()
-
-        // Details view is gone if no property selected
-        viewModel.selectedId.observe(viewLifecycleOwner) { propertyId ->
-            if (propertyId == null || propertyId <= 0) {
-                binding.root.visibility = View.GONE
-            } else {
-                binding.root.visibility = View.VISIBLE
-            }
-        }
-
+        
         // Show the property details photos
         val carouselLayoutManager = CarouselLayoutManager()
         binding.carouselRecyclerView.layoutManager = carouselLayoutManager
@@ -51,13 +37,16 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(binding.carouselRecyclerView)
 
-        viewModel.detailItem.observe(viewLifecycleOwner) { detailViewStateItems ->
-            val detailImageAdapter = DetailImageAdapter(requireContext(), detailViewStateItems)
-            binding.carouselRecyclerView.adapter = detailImageAdapter
-        }
-
         // Show the property details
-        viewModel.details.observe(viewLifecycleOwner) { details ->
+        viewModel.detailViewStateLiveData.observe(viewLifecycleOwner) { details ->
+
+            // Details view is gone if no property selected
+            if (details.propertyId <= 0) {
+                binding.root.visibility = View.GONE
+            } else {
+                binding.root.visibility = View.VISIBLE
+            }
+
             binding.roomsTextView.text = details.rooms
             binding.bedroomsTextView.text = details.bedrooms
             binding.bathroomsTextView.text = details.bathrooms
@@ -65,6 +54,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             binding.surfaceTextView.text = details.surface
             binding.locationTextView.text = details.address
             binding.poiTextView.text = details.pointOfInterest
+
+            val detailImageAdapter = DetailImageAdapter(requireContext(), details.pictures)
+            binding.carouselRecyclerView.adapter = detailImageAdapter
 
             val isSoldString = if (details.isSold) {
                 getString(
@@ -97,31 +89,29 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 .override(500, 500)
                 .error(R.drawable.baseline_signal_wifi_connected_no_internet_4_24)
                 .into(binding.mapImageView)
-        }
 
-        // Open the map fragment if clicked
-        viewModel.isLatLngExistLiveData.observe(viewLifecycleOwner) { latLngExist ->
-            isLatLngExist = latLngExist
-        }
-
-        binding.mapImageView.setOnClickListener {
-            if (isLatLngExist) {
-                parentFragmentManager.commit {
-                    replace(this@DetailFragment.id, MapFragment.newInstance(mapImageClicked = true))
-                    addToBackStack(null)
+            // Loan simulator button
+            binding.loanSimulatorButton.setOnClickListener {
+                details.price.toDoubleOrNull()?.let { price ->
+                    val loanSimulatorDialog = LoanSimulatorDialogFragment.newInstance(price)
+                    loanSimulatorDialog.show(parentFragmentManager, "loanSimulatorDialogTag")
                 }
-            } else {
-                Toast.makeText(requireContext(), getString(R.string.invalid_address_message), Toast.LENGTH_SHORT).show()
             }
+
+            binding.mapImageView.setOnClickListener {
+                if (details.isLatLongAvailable) {
+                    parentFragmentManager.commit {
+                        replace(this@DetailFragment.id, MapFragment.newInstance(mapImageClicked = true))
+                        addToBackStack(null)
+                    }
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.invalid_address_message), Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+
         }
 
-        // Loan simulator button
-        binding.loanSimulatorButton.setOnClickListener {
-            viewModel.details.value?.price?.toDoubleOrNull()?.let { price ->
-                val loanSimulatorDialog = LoanSimulatorDialogFragment.newInstance(price)
-                loanSimulatorDialog.show(parentFragmentManager, "loanSimulatorDialogTag")
-            }
-        }
 
     }
 

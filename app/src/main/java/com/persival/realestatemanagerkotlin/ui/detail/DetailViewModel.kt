@@ -1,15 +1,14 @@
 package com.persival.realestatemanagerkotlin.ui.detail
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.liveData
+import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,81 +16,40 @@ class DetailViewModel @Inject constructor(
     private val getPropertyWithPhotoAndPOIUseCase: GetPropertyWithPhotoAndPOIUseCase,
     private val getSelectedPropertyIdUseCase: GetSelectedPropertyIdUseCase,
 ) : ViewModel() {
-    private val selectedIdLiveData = MutableLiveData<Long?>()
-    val selectedId: LiveData<Long?> get() = selectedIdLiveData
 
-    private val detailLiveData = MutableLiveData<DetailViewState>()
-    val details: LiveData<DetailViewState> = detailLiveData
-
-    private val detailItemLiveData = MutableLiveData<List<DetailViewStateItem>>()
-    val detailItem: LiveData<List<DetailViewStateItem>> = detailItemLiveData
-
-    val isLatLngExistLiveData: MutableLiveData<Boolean> = MutableLiveData()
-
-    fun fetchAndLoadDetailsForSelectedProperty() {
-        val id = getSelectedPropertyIdUseCase().value
-        selectedIdLiveData.value = id
-
-        id?.let {
-            loadItemDetails(it)
-            loadDetails(it)
-        }
-    }
-
-    private fun loadDetails(propertyId: Long) {
-        verifyLatLngExistence()
-        viewModelScope.launch {
-            getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { details ->
-
-                val viewState = DetailViewState(
-                    propertyId = details.property.id,
-                    type = details.property.type,
-                    price = details.property.price.toString(),
-                    surface = details.property.area.toString(),
-                    rooms = details.property.rooms.toString(),
-                    bedrooms = details.property.bedrooms.toString(),
-                    bathrooms = details.property.bathrooms.toString(),
-                    description = details.property.description,
-                    address = details.property.address,
-                    pointOfInterest = convertPOIToString(details.pointsOfInterest),
-                    isSold = details.property.isSold,
-                    entryDate = details.property.entryDate,
-                    saleDate = details.property.saleDate ?: "",
-                    agentName = details.property.agentName
+    val detailViewStateLiveData: LiveData<DetailViewState> = liveData {
+        val propertyId = getSelectedPropertyIdUseCase.invoke().firstOrNull() ?: 1L
+        getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { property ->
+            emit(
+                DetailViewState(
+                    propertyId = propertyId,
+                    type = property.property.type,
+                    price = property.property.price.toString(),
+                    surface = property.property.area.toString(),
+                    rooms = property.property.rooms.toString(),
+                    bedrooms = property.property.bedrooms.toString(),
+                    bathrooms = property.property.bathrooms.toString(),
+                    description = property.property.description,
+                    address = property.property.address,
+                    pointOfInterest = convertPOIToString(property.pointsOfInterest),
+                    isSold = property.property.isSold,
+                    entryDate = property.property.entryDate,
+                    saleDate = property.property.saleDate ?: "",
+                    agentName = property.property.agentName,
+                    isLatLongAvailable = property.property.latLng.isNotEmpty(),
+                    pictures = mapPhotosToViewStateItems(property.photos)
                 )
-
-                detailLiveData.value = viewState
-            }
-        }
-    }
-
-    private fun verifyLatLngExistence() {
-        viewModelScope.launch {
-            val propertyId = getSelectedPropertyIdUseCase().value
-            val propertyWithPhotosAndPOIEntity =
-                propertyId?.let { getPropertyWithPhotoAndPOIUseCase.invoke(it).first() }
-            val latLng = propertyWithPhotosAndPOIEntity?.property?.latLng
-
-            if (latLng != null) {
-                isLatLngExistLiveData.value = latLng.isNotEmpty()
-            }
-        }
-    }
-
-    private fun loadItemDetails(propertyId: Long) {
-        viewModelScope.launch {
-            getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { details ->
-
-                val items = details.photos.map { photo ->
-                    DetailViewStateItem(url = photo.photoUrl, caption = photo.description)
-                }
-
-                detailItemLiveData.value = items
-            }
+            )
         }
     }
 
     private fun convertPOIToString(pointsOfInterest: List<PointOfInterestEntity>): String =
         pointsOfInterest.joinToString(", ") { it.poi }
+
+    private fun mapPhotosToViewStateItems(photos: List<PhotoEntity>): List<DetailPhotoViewStateItem> {
+        return photos.map { photo ->
+            DetailPhotoViewStateItem(url = photo.photoUrl, caption = photo.description)
+        }
+    }
 
 }

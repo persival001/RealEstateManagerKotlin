@@ -1,0 +1,289 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PropertiesViewModel</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.persival.realestatemanagerkotlin.ui.properties</a>
+</div>
+
+<h1>Coverage Summary for Class: PropertiesViewModel (com.persival.realestatemanagerkotlin.ui.properties)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PropertiesViewModel</td>
+<td class="coverageStat">
+  <span class="percent">
+    42,9%
+  </span>
+  <span class="absValue">
+    (3/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (11/33)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PropertiesViewModel$getFormattedPoi$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">PropertiesViewModel$properties$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (4/6)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">PropertiesViewModel$properties$1$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">PropertiesViewModel$properties$1$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">PropertiesViewModel$properties$1$invokeSuspend$$inlined$flatMapLatest$1</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    36,4%
+  </span>
+  <span class="absValue">
+    (4/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    34,9%
+  </span>
+  <span class="absValue">
+    (15/43)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.persival.realestatemanagerkotlin.ui.properties
+&nbsp;
+&nbsp;import androidx.lifecycle.LiveData
+&nbsp;import androidx.lifecycle.MutableLiveData
+&nbsp;import androidx.lifecycle.ViewModel
+&nbsp;import androidx.lifecycle.liveData
+&nbsp;import com.persival.realestatemanagerkotlin.domain.conversion.IsEuroConversionEnabledUseCase
+&nbsp;import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
+&nbsp;import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
+&nbsp;import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
+&nbsp;import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+&nbsp;import com.persival.realestatemanagerkotlin.domain.search.GetActiveSearchFilterUseCase
+&nbsp;import com.persival.realestatemanagerkotlin.domain.search.GetSearchedPropertiesUseCase
+&nbsp;import com.persival.realestatemanagerkotlin.domain.search.SetSearchedPropertiesUseCase
+&nbsp;import com.persival.realestatemanagerkotlin.utils.Utils
+&nbsp;import dagger.hilt.android.lifecycle.HiltViewModel
+&nbsp;import kotlinx.coroutines.flow.collectLatest
+&nbsp;import kotlinx.coroutines.flow.combine
+&nbsp;import kotlinx.coroutines.flow.flatMapLatest
+&nbsp;import java.text.NumberFormat
+&nbsp;import java.util.Locale
+&nbsp;import javax.inject.Inject
+&nbsp;
+&nbsp;@HiltViewModel
+&nbsp;class PropertiesViewModel @Inject constructor(
+<b class="fc">&nbsp;    private val getAllPropertiesWithPhotosAndPOIUseCase: GetAllPropertiesWithPhotosAndPOIUseCase,</b>
+<b class="fc">&nbsp;    private val setSelectedPropertyIdUseCase: SetSelectedPropertyIdUseCase,</b>
+&nbsp;    isEuroConversionEnabledUseCase: IsEuroConversionEnabledUseCase,
+<b class="fc">&nbsp;    private val getActiveSearchFilterUseCase: GetActiveSearchFilterUseCase,</b>
+<b class="fc">&nbsp;    private val getSearchedPropertiesUseCase: GetSearchedPropertiesUseCase,</b>
+<b class="fc">&nbsp;    private val setSearchedPropertiesUseCase: SetSearchedPropertiesUseCase,</b>
+<b class="fc">&nbsp;) : ViewModel() {</b>
+&nbsp;
+<b class="fc">&nbsp;    private val propertyIdSelected = MutableLiveData&lt;Long?&gt;()</b>
+&nbsp;
+<b class="fc">&nbsp;    val properties: LiveData&lt;List&lt;PropertyViewStateItem&gt;&gt; = liveData {</b>
+<b class="fc">&nbsp;        combine(</b>
+<b class="fc">&nbsp;            isEuroConversionEnabledUseCase.invoke(),</b>
+<b class="fc">&nbsp;            getActiveSearchFilterUseCase.invoke().flatMapLatest { filter -&gt;</b>
+<b class="nc">&nbsp;                filter?.let { getSearchedPropertiesUseCase.invoke(it) }</b>
+<b class="nc">&nbsp;                    ?: getAllPropertiesWithPhotosAndPOIUseCase.invoke()</b>
+&nbsp;            },
+&nbsp;        ) { isConversionEnabled, propertiesList -&gt;
+<b class="nc">&nbsp;            propertiesList.map { propertyWithPhotosAndPOIEntity -&gt;</b>
+<b class="nc">&nbsp;                transformToViewState(propertyWithPhotosAndPOIEntity, isConversionEnabled)</b>
+&nbsp;            }
+<b class="pc">&nbsp;        }.collectLatest { emit(it) }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun transformToViewState(
+&nbsp;        propertyWithPhotosAndPOIEntity: PropertyWithPhotosAndPOIEntity,
+&nbsp;        isConversionEnabled: Boolean
+&nbsp;    ): PropertyViewStateItem {
+<b class="nc">&nbsp;        val formattedPrice = getFormattedPrice(propertyWithPhotosAndPOIEntity.property.price, isConversionEnabled)</b>
+&nbsp;
+<b class="nc">&nbsp;        return PropertyViewStateItem(</b>
+<b class="nc">&nbsp;            id = propertyWithPhotosAndPOIEntity.property.id,</b>
+<b class="nc">&nbsp;            type = propertyWithPhotosAndPOIEntity.property.type,</b>
+<b class="nc">&nbsp;            address = propertyWithPhotosAndPOIEntity.property.address,</b>
+<b class="nc">&nbsp;            latLng = propertyWithPhotosAndPOIEntity.property.latLng,</b>
+<b class="nc">&nbsp;            price = formattedPrice,</b>
+<b class="nc">&nbsp;            rooms = propertyWithPhotosAndPOIEntity.property.rooms.toString(),</b>
+<b class="nc">&nbsp;            surface = propertyWithPhotosAndPOIEntity.property.area.toString(),</b>
+<b class="nc">&nbsp;            bathrooms = propertyWithPhotosAndPOIEntity.property.bathrooms.toString(),</b>
+<b class="nc">&nbsp;            bedrooms = propertyWithPhotosAndPOIEntity.property.bedrooms.toString(),</b>
+<b class="nc">&nbsp;            poi = getFormattedPoi(propertyWithPhotosAndPOIEntity.pointsOfInterest),</b>
+<b class="nc">&nbsp;            pictureUri = propertyWithPhotosAndPOIEntity.photos.firstOrNull()?.photoUrl ?: &quot;&quot;,</b>
+<b class="nc">&nbsp;            isSold = propertyWithPhotosAndPOIEntity.property.isSold</b>
+&nbsp;        )
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun calculatePriceAndLocale(currentPrice: Int, isConversionEnabled: Boolean): Pair&lt;Int, Locale&gt; {
+<b class="nc">&nbsp;        return if (isConversionEnabled) {</b>
+<b class="nc">&nbsp;            Utils.convertDollarToEuro(currentPrice) to Locale.FRANCE</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            currentPrice to Locale.US</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun getFormattedPrice(currentPrice: Int, isConversionEnabled: Boolean): String {
+<b class="nc">&nbsp;        val (convertedPrice, locale) = calculatePriceAndLocale(currentPrice, isConversionEnabled)</b>
+<b class="nc">&nbsp;        val currencyFormat = NumberFormat.getCurrencyInstance(locale)</b>
+<b class="nc">&nbsp;        currencyFormat.maximumFractionDigits = 0</b>
+<b class="nc">&nbsp;        return currencyFormat.format(convertedPrice)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun getFormattedPoi(pointsOfInterest: List&lt;PointOfInterestEntity&gt;): String {
+<b class="nc">&nbsp;        return pointsOfInterest.joinToString(separator = &quot;, &quot;) { it.poi }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun updateSelectedPropertyId(id: Long?) {
+<b class="fc">&nbsp;        setSelectedPropertyIdUseCase(id)</b>
+<b class="fc">&nbsp;        propertyIdSelected.value = id</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun onResetFilter() {
+<b class="fc">&nbsp;        setSearchedPropertiesUseCase.invoke(null)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-08 17:11</div>
+</div>
+</body>
+</html>

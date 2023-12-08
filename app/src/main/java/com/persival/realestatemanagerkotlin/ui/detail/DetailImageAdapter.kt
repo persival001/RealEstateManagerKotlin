@@ -13,7 +13,7 @@ import com.persival.realestatemanagerkotlin.R
 
 class DetailImageAdapter(
     private val context: Context,
-    private val items: List<DetailViewStateItem>
+    private val items: List<DetailPhotoViewStateItem>
 ) : RecyclerView.Adapter<DetailImageAdapter.DetailImageViewHolder>() {
 
     inner class DetailImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

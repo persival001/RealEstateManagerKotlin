@@ -14,5 +14,7 @@ data class DetailViewState(
     val isSold: Boolean,
     val entryDate: String,
     val saleDate: String,
-    val agentName: String
+    val agentName: String,
+    val isLatLongAvailable: Boolean,
+    val pictures: List<DetailPhotoViewStateItem>
 )
