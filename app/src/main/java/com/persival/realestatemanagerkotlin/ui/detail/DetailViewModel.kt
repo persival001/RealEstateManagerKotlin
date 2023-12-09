@@ -18,28 +18,30 @@ class DetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     val detailViewStateLiveData: LiveData<DetailViewState> = liveData {
-        val propertyId = getSelectedPropertyIdUseCase.invoke().firstOrNull() ?: 1L
-        getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { property ->
-            emit(
-                DetailViewState(
-                    propertyId = propertyId,
-                    type = property.property.type,
-                    price = property.property.price.toString(),
-                    surface = property.property.area.toString(),
-                    rooms = property.property.rooms.toString(),
-                    bedrooms = property.property.bedrooms.toString(),
-                    bathrooms = property.property.bathrooms.toString(),
-                    description = property.property.description,
-                    address = property.property.address,
-                    pointOfInterest = convertPOIToString(property.pointsOfInterest),
-                    isSold = property.property.isSold,
-                    entryDate = property.property.entryDate,
-                    saleDate = property.property.saleDate ?: "",
-                    agentName = property.property.agentName,
-                    isLatLongAvailable = property.property.latLng.isNotEmpty(),
-                    pictures = mapPhotosToViewStateItems(property.photos)
+        val propertyId = getSelectedPropertyIdUseCase.invoke().firstOrNull()
+        if (propertyId != null) {
+            getPropertyWithPhotoAndPOIUseCase.invoke(propertyId).collect { property ->
+                emit(
+                    DetailViewState(
+                        propertyId = propertyId,
+                        type = property.property.type,
+                        price = property.property.price.toString(),
+                        surface = property.property.area.toString(),
+                        rooms = property.property.rooms.toString(),
+                        bedrooms = property.property.bedrooms.toString(),
+                        bathrooms = property.property.bathrooms.toString(),
+                        description = property.property.description,
+                        address = property.property.address,
+                        pointOfInterest = convertPOIToString(property.pointsOfInterest),
+                        isSold = property.property.isSold,
+                        entryDate = property.property.entryDate,
+                        saleDate = property.property.saleDate ?: "",
+                        agentName = property.property.agentName,
+                        isLatLongAvailable = property.property.latLng.isNotEmpty(),
+                        pictures = mapPhotosToViewStateItems(property.photos)
+                    )
                 )
-            )
+            }
         }
     }
 
