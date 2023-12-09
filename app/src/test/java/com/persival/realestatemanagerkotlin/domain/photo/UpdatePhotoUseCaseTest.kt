@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.domain.photo
 
+import com.persival.realestatemanagerkotlin.domain.photo.model.Photo
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -21,14 +22,14 @@ class UpdatePhotoUseCaseTest {
 
     @Test
     fun `invoke updates photoEntity and returns number of rows updated`() = runTest {
-        val photoEntity: PhotoEntity = mockk()
+        val photo: Photo = mockk()
         val rowsUpdated = 1
 
-        coEvery { localRepository.updatePhoto(photoEntity) } returns rowsUpdated
+        coEvery { localRepository.updatePhoto(photo) } returns rowsUpdated
 
-        updatePhotoUseCase.invoke(photoEntity)
+        updatePhotoUseCase.invoke(photo)
 
-        coVerify(exactly = 1) { localRepository.updatePhoto(photoEntity) }
+        coVerify(exactly = 1) { localRepository.updatePhoto(photo) }
     }
 }
 

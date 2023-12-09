@@ -1,6 +1,6 @@
-package com.persival.realestatemanagerkotlin.domain.photo
+package com.persival.realestatemanagerkotlin.domain.photo.model
 
-data class PhotoEntity(
+data class Photo(
     val id: Long = 0,
     val propertyId: Long,
     val description: String,

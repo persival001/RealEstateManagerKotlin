@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.domain.user
 
+import com.persival.realestatemanagerkotlin.domain.user.model.RealEstateAgent
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -7,5 +8,5 @@ import javax.inject.Singleton
 class GetRealEstateAgentUseCase @Inject constructor(
     private val firebaseRepository: FirebaseRepository,
 ) {
-    fun invoke(): RealEstateAgentEntity? = firebaseRepository.getRealEstateAgentIdentity()
+    fun invoke(): RealEstateAgent? = firebaseRepository.getRealEstateAgentIdentity()
 }

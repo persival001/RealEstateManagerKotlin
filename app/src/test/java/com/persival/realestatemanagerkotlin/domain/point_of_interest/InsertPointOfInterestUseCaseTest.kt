@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.domain.point_of_interest
 
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.model.PointOfInterest
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -25,27 +26,27 @@ class InsertPointOfInterestUseCaseTest {
 
     @Test
     fun `invoke returns new id on successful insertion`() = runTest {
-        val pointOfInterestEntity: PointOfInterestEntity = mockk()
+        val pointOfInterest: PointOfInterest = mockk()
         val expectedId = 1L
 
-        coEvery { localRepository.insertPointOfInterest(pointOfInterestEntity) } returns expectedId
+        coEvery { localRepository.insertPointOfInterest(pointOfInterest) } returns expectedId
 
-        val resultId = insertPointOfInterestUseCase.invoke(pointOfInterestEntity)
+        val resultId = insertPointOfInterestUseCase.invoke(pointOfInterest)
 
-        coVerify(exactly = 1) { localRepository.insertPointOfInterest(pointOfInterestEntity) }
+        coVerify(exactly = 1) { localRepository.insertPointOfInterest(pointOfInterest) }
 
         assertEquals(expectedId, resultId)
     }
 
     @Test
     fun `invoke returns null on insertion failure`() = runTest {
-        val pointOfInterestEntity: PointOfInterestEntity = mockk()
+        val pointOfInterest: PointOfInterest = mockk()
 
-        coEvery { localRepository.insertPointOfInterest(pointOfInterestEntity) } returns null
+        coEvery { localRepository.insertPointOfInterest(pointOfInterest) } returns null
 
-        val resultId = insertPointOfInterestUseCase.invoke(pointOfInterestEntity)
+        val resultId = insertPointOfInterestUseCase.invoke(pointOfInterest)
 
-        coVerify(exactly = 1) { localRepository.insertPointOfInterest(pointOfInterestEntity) }
+        coVerify(exactly = 1) { localRepository.insertPointOfInterest(pointOfInterest) }
 
         assertNull(resultId)
     }

@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.domain.search
 
+import com.persival.realestatemanagerkotlin.domain.search.model.Search
 import io.mockk.every
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals
@@ -23,7 +24,7 @@ class GetActiveSearchFilterUseCaseTest {
 
     @Test
     fun `invoke returns StateFlow of SearchEntity from repository`() = runTest {
-        val expectedFlow: StateFlow<SearchEntity?> = flowOf(mockk<SearchEntity>()).stateIn(this)
+        val expectedFlow: StateFlow<Search?> = flowOf(mockk<Search>()).stateIn(this)
 
         every { searchRepository.selectedFilter } returns expectedFlow
 

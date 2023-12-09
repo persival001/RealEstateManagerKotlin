@@ -39,6 +39,8 @@ class LoanSimulatorDialogFragment : DialogFragment() {
 
         val propertyPrice = arguments?.getDouble(ARG_PROPERTY_PRICE) ?: 0.0
 
+        binding.priceTextView.text = getString(R.string.property_price, propertyPrice.toInt().toString())
+
         binding.calculateButton.setOnClickListener {
             val bring = binding.bringEditText.text.toString().toDoubleOrNull() ?: 0.0
             val rate = binding.rateEditText.text.toString().toDoubleOrNull() ?: 0.0

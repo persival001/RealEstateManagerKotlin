@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "property")
-data class PropertyDto(
+data class PropertyEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val type: String,
     val address: String,

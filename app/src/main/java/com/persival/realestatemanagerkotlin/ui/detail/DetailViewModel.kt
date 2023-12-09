@@ -3,8 +3,8 @@ package com.persival.realestatemanagerkotlin.ui.detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
-import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
+import com.persival.realestatemanagerkotlin.domain.photo.model.Photo
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.model.PointOfInterest
 import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,10 +43,10 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun convertPOIToString(pointsOfInterest: List<PointOfInterestEntity>): String =
+    private fun convertPOIToString(pointsOfInterest: List<PointOfInterest>): String =
         pointsOfInterest.joinToString(", ") { it.poi }
 
-    private fun mapPhotosToViewStateItems(photos: List<PhotoEntity>): List<DetailPhotoViewStateItem> {
+    private fun mapPhotosToViewStateItems(photos: List<Photo>): List<DetailPhotoViewStateItem> {
         return photos.map { photo ->
             DetailPhotoViewStateItem(url = photo.photoUrl, caption = photo.description)
         }

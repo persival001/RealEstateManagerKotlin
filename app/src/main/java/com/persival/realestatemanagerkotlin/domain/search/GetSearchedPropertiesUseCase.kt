@@ -1,7 +1,8 @@
 package com.persival.realestatemanagerkotlin.domain.search
 
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
-import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.model.PropertyWithPhotosAndPOI
+import com.persival.realestatemanagerkotlin.domain.search.model.Search
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -10,7 +11,7 @@ import javax.inject.Singleton
 class GetSearchedPropertiesUseCase @Inject constructor(
     private val localRepository: LocalRepository
 ) {
-    fun invoke(params: SearchEntity): Flow<List<PropertyWithPhotosAndPOIEntity>> =
+    fun invoke(params: Search): Flow<List<PropertyWithPhotosAndPOI>> =
         localRepository.getSearchedPropertiesWithPOIs(
             type = params.type,
             minPrice = params.minPrice,
@@ -27,7 +28,7 @@ class GetSearchedPropertiesUseCase @Inject constructor(
             poiGreenSpaces = params.getPoiTypeIfPresent(PointOfInterestType.GREEN_SPACES),
         )
 
-    private fun SearchEntity.getPoiTypeIfPresent(poiType: PointOfInterestType): String? {
+    private fun Search.getPoiTypeIfPresent(poiType: PointOfInterestType): String? {
         return if (this.poi.contains(poiType.type)) poiType.type else null
     }
 

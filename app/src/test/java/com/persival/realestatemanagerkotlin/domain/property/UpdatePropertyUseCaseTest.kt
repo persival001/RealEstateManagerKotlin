@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.domain.property
 
+import com.persival.realestatemanagerkotlin.domain.property.model.Property
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -21,7 +22,7 @@ class UpdatePropertyUseCaseTest {
 
     @Test
     fun `invoke updates property successfully`() = runBlocking {
-        val propertyEntity = PropertyEntity(
+        val property = Property(
             id = 1L,
             type = "Maison",
             address = "123 rue de Exemple",
@@ -37,11 +38,11 @@ class UpdatePropertyUseCaseTest {
             saleDate = null,
             agentName = "John Doe"
         )
-        coEvery { localRepository.updateProperty(propertyEntity) } returns 1
+        coEvery { localRepository.updateProperty(property) } returns 1
 
-        updatePropertyUseCase.invoke(propertyEntity)
+        updatePropertyUseCase.invoke(property)
 
-        coVerify { localRepository.updateProperty(propertyEntity) }
+        coVerify { localRepository.updateProperty(property) }
     }
 
 }

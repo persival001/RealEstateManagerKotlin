@@ -1,6 +1,6 @@
 package com.persival.realestatemanagerkotlin.domain.location.model
 
-data class LocationEntity(
+data class Location(
     val latitude: Double,
     val longitude: Double,
 )

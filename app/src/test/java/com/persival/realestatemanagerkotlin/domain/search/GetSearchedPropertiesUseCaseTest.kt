@@ -1,7 +1,8 @@
 package com.persival.realestatemanagerkotlin.domain.search
 
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
-import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.model.PropertyWithPhotosAndPOI
+import com.persival.realestatemanagerkotlin.domain.search.model.Search
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals
@@ -25,9 +26,9 @@ class GetSearchedPropertiesUseCaseTest {
 
     @Test
     fun `invoke returns properties flow from repository`() = runTest {
-        val searchEntity = mockk<SearchEntity>(relaxed = true)
-        val properties = listOf(mockk<PropertyWithPhotosAndPOIEntity>())
-        val propertiesFlow: Flow<List<PropertyWithPhotosAndPOIEntity>> = flowOf(properties)
+        val search = mockk<Search>(relaxed = true)
+        val properties = listOf(mockk<PropertyWithPhotosAndPOI>())
+        val propertiesFlow: Flow<List<PropertyWithPhotosAndPOI>> = flowOf(properties)
 
         coEvery {
             localRepository.getSearchedPropertiesWithPOIs(
@@ -47,7 +48,7 @@ class GetSearchedPropertiesUseCaseTest {
             )
         } returns propertiesFlow
 
-        val result = getSearchedPropertiesUseCase.invoke(searchEntity).first()
+        val result = getSearchedPropertiesUseCase.invoke(search).first()
 
         assertEquals(properties, result)
     }

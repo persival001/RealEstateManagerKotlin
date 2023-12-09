@@ -14,29 +14,29 @@ import kotlinx.coroutines.flow.Flow
 interface PhotoDao {
 
     @Insert
-    fun insert(photoDto: PhotoDto): Long
+    fun insert(photoEntity: PhotoEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdatePhotos(photo: PhotoDto)
+    suspend fun insertOrUpdatePhotos(photo: PhotoEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(photos: List<PhotoDto>)
+    suspend fun insertAll(photos: List<PhotoEntity>)
 
     @Query("SELECT * FROM photo WHERE propertyId = :propertyId")
-    fun getByPropertyId(propertyId: Long): List<PhotoDto>
+    fun getByPropertyId(propertyId: Long): List<PhotoEntity>
 
     @Query("SELECT * FROM photo")
     fun getAllPhotosAsCursor(): Cursor
 
     @Query("SELECT * FROM photo WHERE isSynced = 0")
-    fun getUnsyncedPhotos(): List<PhotoDto>
+    fun getUnsyncedPhotos(): List<PhotoEntity>
 
     @Transaction
     @Query("SELECT * FROM photo WHERE propertyId = :propertyId")
-    fun getPropertyPhotos(propertyId: Long): Flow<List<PhotoDto>>
+    fun getPropertyPhotos(propertyId: Long): Flow<List<PhotoEntity>>
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun update(photoDto: PhotoDto): Int
+    suspend fun update(photoEntity: PhotoEntity): Int
 
     @Query("UPDATE photo SET photo_url = :photoUrl, description = :description WHERE id = :photoId")
     suspend fun updateByPhotoId(photoId: Long, photoUrl: String, description: String): Int
@@ -45,7 +45,7 @@ interface PhotoDao {
     suspend fun markAsSynced(photoId: Long)
 
     @Delete
-    suspend fun delete(photoDto: PhotoDto)
+    suspend fun delete(photoEntity: PhotoEntity)
 
     @Query("DELETE FROM photo WHERE propertyId = :propertyId AND id = :photoId")
     suspend fun deletePhotoByPropertyIdAndPhotoId(propertyId: Long, photoId: Long)

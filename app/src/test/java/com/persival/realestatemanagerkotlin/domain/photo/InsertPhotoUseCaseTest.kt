@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.domain.photo
 
+import com.persival.realestatemanagerkotlin.domain.photo.model.Photo
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -22,15 +23,15 @@ class InsertPhotoUseCaseTest {
 
     @Test
     fun `invoke inserts photoEntity and returns id`() = runTest {
-        val photoEntity: PhotoEntity = mockk()
+        val photo: Photo = mockk()
         val expectedId = 1L
 
-        coEvery { localRepository.insertPhoto(photoEntity) } returns expectedId
+        coEvery { localRepository.insertPhoto(photo) } returns expectedId
 
-        val resultId = insertPhotoUseCase.invoke(photoEntity)
+        val resultId = insertPhotoUseCase.invoke(photo)
 
         assertEquals(expectedId, resultId)
 
-        coVerify(exactly = 1) { localRepository.insertPhoto(photoEntity) }
+        coVerify(exactly = 1) { localRepository.insertPhoto(photo) }
     }
 }

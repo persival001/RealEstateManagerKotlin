@@ -2,8 +2,8 @@ package com.persival.realestatemanagerkotlin.ui.search
 
 import androidx.lifecycle.ViewModel
 import com.persival.realestatemanagerkotlin.R
-import com.persival.realestatemanagerkotlin.domain.search.SearchEntity
 import com.persival.realestatemanagerkotlin.domain.search.SetSearchedPropertiesUseCase
+import com.persival.realestatemanagerkotlin.domain.search.model.Search
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -22,7 +22,7 @@ class SearchViewModel @Inject constructor(
         checkedChipId: Int,
         poi: List<String>
     ) {
-        val searchEntity = SearchEntity(
+        val search = Search(
             type = if (type.isNullOrEmpty()) null else type,
             minPrice = minPrice,
             maxPrice = maxPrice,
@@ -32,7 +32,7 @@ class SearchViewModel @Inject constructor(
             timeFilter = getAgeOfPropertyRange(checkedChipId),
             poi = poi
         )
-        setSearchedPropertiesUseCase.invoke(searchEntity)
+        setSearchedPropertiesUseCase.invoke(search)
     }
 
     fun onResetFilter() {

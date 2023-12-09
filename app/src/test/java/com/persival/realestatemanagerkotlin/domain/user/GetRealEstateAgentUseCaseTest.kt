@@ -3,6 +3,7 @@ package com.persival.realestatemanagerkotlin.domain.user
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
+import com.persival.realestatemanagerkotlin.domain.user.model.RealEstateAgent
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -22,7 +23,7 @@ class GetRealEstateAgentUseCaseTest {
     @Test
     fun `invoke returns real estate agent identity when available`() {
         // Given
-        val agentIdentity = RealEstateAgentEntity("John Doe", "john@example.com")
+        val agentIdentity = RealEstateAgent("John Doe", "john@example.com")
         every { firebaseRepository.getRealEstateAgentIdentity() } returns agentIdentity
 
         // When

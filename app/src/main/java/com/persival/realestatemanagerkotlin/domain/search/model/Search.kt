@@ -1,6 +1,6 @@
-package com.persival.realestatemanagerkotlin.domain.search
+package com.persival.realestatemanagerkotlin.domain.search.model
 
-data class SearchEntity(
+data class Search(
     val type: String? = "",
     val minPrice: Int?,
     val maxPrice: Int?,

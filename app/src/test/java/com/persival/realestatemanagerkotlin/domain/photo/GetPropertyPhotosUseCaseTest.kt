@@ -3,6 +3,7 @@ package com.persival.realestatemanagerkotlin.domain.photo
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
+import com.persival.realestatemanagerkotlin.domain.photo.model.Photo
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -27,8 +28,8 @@ class GetPropertyPhotosUseCaseTest {
 
     @Test
     fun `invoke returns property photos flow from repository`() = runTest {
-        val mockPhotoEntity = mockk<PhotoEntity>()
-        val testFlow: Flow<List<PhotoEntity>> = flowOf(listOf(mockPhotoEntity))
+        val mockPhoto = mockk<Photo>()
+        val testFlow: Flow<List<Photo>> = flowOf(listOf(mockPhoto))
 
         every { localRepository.getPropertyPhotos(any()) } returns testFlow
 
@@ -37,7 +38,7 @@ class GetPropertyPhotosUseCaseTest {
         val photosList = result.toList()
 
         assertThat(photosList).isNotNull()
-        assertThat(photosList).isEqualTo(listOf(listOf(mockPhotoEntity)))
+        assertThat(photosList).isEqualTo(listOf(listOf(mockPhoto)))
 
         verify { localRepository.getPropertyPhotos(1L) }
     }

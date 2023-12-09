@@ -3,6 +3,7 @@ package com.persival.realestatemanagerkotlin.domain.property
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
+import com.persival.realestatemanagerkotlin.domain.property.model.Property
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -23,7 +24,7 @@ class InsertPropertyUseCaseTest {
 
     @Test
     fun `invoke returns new property id on successful insert`() = runBlocking {
-        val propertyEntity = PropertyEntity(
+        val property = Property(
             id = 0L,
             type = "Maison",
             address = "123 rue de Exemple",
@@ -40,16 +41,16 @@ class InsertPropertyUseCaseTest {
             agentName = "John Doe"
         )
         val expectedId = 1L
-        coEvery { localRepository.insertProperty(propertyEntity) } returns expectedId
+        coEvery { localRepository.insertProperty(property) } returns expectedId
 
-        val result = insertPropertyUseCase.invoke(propertyEntity)
+        val result = insertPropertyUseCase.invoke(property)
 
         assertThat(result).isEqualTo(expectedId)
     }
 
     @Test
     fun `invoke returns null on insert failure`() = runBlocking {
-        val propertyEntity = PropertyEntity(
+        val property = Property(
             id = 0L,
             type = "Maison",
             address = "123 rue de Exemple",
@@ -65,9 +66,9 @@ class InsertPropertyUseCaseTest {
             saleDate = null,
             agentName = "John Doe"
         )
-        coEvery { localRepository.insertProperty(propertyEntity) } returns null
+        coEvery { localRepository.insertProperty(property) } returns null
 
-        val result = insertPropertyUseCase.invoke(propertyEntity)
+        val result = insertPropertyUseCase.invoke(property)
 
         assertThat(result).isNull()
     }

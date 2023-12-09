@@ -8,7 +8,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority
 import com.persival.realestatemanagerkotlin.domain.location.LocationRepository
-import com.persival.realestatemanagerkotlin.domain.location.model.LocationEntity
+import com.persival.realestatemanagerkotlin.domain.location.model.Location
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.channels.awaitClose
@@ -31,7 +31,7 @@ class LocationDataRepository @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    override fun getLocationFlow(): Flow<LocationEntity> = callbackFlow {
+    override fun getLocationFlow(): Flow<Location> = callbackFlow {
         val callback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.lastLocation?.let { location ->
@@ -39,7 +39,7 @@ class LocationDataRepository @Inject constructor(
                         "LocationDataRepository",
                         "Received location update: Latitude=${location.latitude}, Longitude=${location.longitude}"
                     )
-                    trySend(LocationEntity(location.latitude, location.longitude))
+                    trySend(Location(location.latitude, location.longitude))
                 } ?: Log.w("LocationDataRepository", "Received location update is null.")
             }
         }

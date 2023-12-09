@@ -2,7 +2,7 @@ package com.persival.realestatemanagerkotlin.ui.maps
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.persival.realestatemanagerkotlin.domain.location.GetLocationUseCase
-import com.persival.realestatemanagerkotlin.domain.location.model.LocationEntity
+import com.persival.realestatemanagerkotlin.domain.location.model.Location
 import com.persival.realestatemanagerkotlin.domain.permissions.IsGpsActivatedUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshGpsActivationUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshLocationPermissionUseCase
@@ -50,7 +50,7 @@ class MapViewModelTest {
             getSelectedPropertyIdUseCase
         )
 
-        coEvery { getLocationUseCase.invoke() } returns flowOf(LocationEntity(125.45, 54.145))
+        coEvery { getLocationUseCase.invoke() } returns flowOf(Location(125.45, 54.145))
         coEvery { getSelectedPropertyIdUseCase.invoke() } returns MutableStateFlow(1L)
     }
 

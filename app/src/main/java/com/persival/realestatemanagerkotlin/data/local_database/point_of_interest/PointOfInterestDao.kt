@@ -11,22 +11,22 @@ import androidx.room.Update
 interface PointOfInterestDao {
 
     @Insert
-    fun insert(poi: PointOfInterestDto): Long
+    fun insert(poi: PointOfInterestEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(pois: List<PointOfInterestDto>)
+    suspend fun insertAll(pois: List<PointOfInterestEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdatePointsOfInterest(poi: PointOfInterestDto)
+    suspend fun insertOrUpdatePointsOfInterest(poi: PointOfInterestEntity)
 
     @Query("SELECT * FROM point_of_interest")
     fun getAllPointsOfInterestAsCursor(): Cursor
 
     @Query("SELECT * FROM point_of_interest WHERE isSynced = 0")
-    fun getUnsyncedPointsOfInterest(): List<PointOfInterestDto>
+    fun getUnsyncedPointsOfInterest(): List<PointOfInterestEntity>
 
     @Update
-    suspend fun update(poi: PointOfInterestDto): Int
+    suspend fun update(poi: PointOfInterestEntity): Int
 
     @Query("UPDATE point_of_interest SET isSynced = 1 WHERE id = :poiId")
     suspend fun markAsSynced(poiId: Long)

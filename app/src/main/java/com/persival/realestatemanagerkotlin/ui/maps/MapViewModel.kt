@@ -7,7 +7,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import com.google.android.gms.maps.model.LatLng
 import com.persival.realestatemanagerkotlin.domain.location.GetLocationUseCase
-import com.persival.realestatemanagerkotlin.domain.location.model.LocationEntity
+import com.persival.realestatemanagerkotlin.domain.location.model.Location
 import com.persival.realestatemanagerkotlin.domain.permissions.IsGpsActivatedUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshGpsActivationUseCase
 import com.persival.realestatemanagerkotlin.domain.permissions.RefreshLocationPermissionUseCase
@@ -34,7 +34,7 @@ MapViewModel @Inject constructor(
     getSelectedPropertyIdUseCase: GetSelectedPropertyIdUseCase,
 ) : ViewModel() {
 
-    val locationUpdates: LiveData<LocationEntity> = getLocationUseCase.invoke().asLiveData()
+    val locationUpdates: LiveData<Location> = getLocationUseCase.invoke().asLiveData()
 
     val hasNullValues = MutableStateFlow(false)
 

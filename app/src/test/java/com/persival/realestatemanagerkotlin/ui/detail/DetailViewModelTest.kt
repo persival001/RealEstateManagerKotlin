@@ -1,12 +1,12 @@
 package com.persival.realestatemanagerkotlin.ui.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
-import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
+import com.persival.realestatemanagerkotlin.domain.photo.model.Photo
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.model.PointOfInterest
 import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyIdUseCase
-import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
+import com.persival.realestatemanagerkotlin.domain.property.model.Property
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
-import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.model.PropertyWithPhotosAndPOI
 import com.persival.realestatemanagerkotlin.utils_for_tests.TestCoroutineRule
 import com.persival.realestatemanagerkotlin.utils_for_tests.observeForTesting
 import io.mockk.coEvery
@@ -45,8 +45,8 @@ class DetailViewModelTest {
         // Arrange
         val propertyId = 1L
         val propertyIdStateFlow = MutableStateFlow<Long?>(propertyId)
-        val mockProperty = PropertyWithPhotosAndPOIEntity(
-            property = PropertyEntity(
+        val mockProperty = PropertyWithPhotosAndPOI(
+            property = Property(
                 id = propertyId,
                 type = "Maison",
                 address = "123 rue de Exemple",
@@ -63,7 +63,7 @@ class DetailViewModelTest {
                 agentName = "John Doe"
             ),
             photos = listOf(
-                PhotoEntity(
+                Photo(
                     id = 0L,
                     propertyId = propertyId,
                     description = "Façade de la maison",
@@ -71,7 +71,7 @@ class DetailViewModelTest {
                 )
             ),
             pointsOfInterest = listOf(
-                PointOfInterestEntity(
+                PointOfInterest(
                     id = 0L,
                     propertyId = propertyId,
                     poi = "Parc à proximité"

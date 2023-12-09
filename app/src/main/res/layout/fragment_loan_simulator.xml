@@ -5,6 +5,15 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:id="@+id/priceTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/price"
+        android:textAlignment="center"
+        android:textSize="24sp" />
+
     <EditText
         android:id="@+id/bringEditText"
         android:layout_width="match_parent"
@@ -33,6 +42,8 @@
         android:id="@+id/calculateButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_margin"
+        android:layout_marginBottom="@dimen/default_margin"
         android:text="@string/calculate" />
 
     <TextView
@@ -40,6 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/result" />
+        android:textAlignment="center"
+        android:textSize="18sp" />
 
 </LinearLayout>

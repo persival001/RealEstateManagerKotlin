@@ -7,17 +7,17 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.persival.realestatemanagerkotlin.data.local_database.property_with_photos_and_pois.PropertyWithPhotosAndPoisDto
+import com.persival.realestatemanagerkotlin.data.local_database.property_with_photos_and_pois.PropertyWithPhotosAndPoisEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PropertyDao {
 
     @Insert
-    fun insert(propertyDto: PropertyDto): Long
+    fun insert(propertyEntity: PropertyEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(propertyDto: List<PropertyDto>)
+    suspend fun insertAll(propertyEntity: List<PropertyEntity>)
 
     @Query("SELECT * FROM property")
     fun getAllPropertiesAsCursor(): Cursor
@@ -30,7 +30,7 @@ interface PropertyDao {
 
     @Transaction
     @Query("SELECT * FROM property")
-    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPoisDto>>
+    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPoisEntity>>
 
     @Transaction
     @Query(
@@ -90,17 +90,17 @@ AND ((:poiGreenSpaces IS NULL) OR EXISTS (
         poiHospital: String?,
         poiStore: String?,
         poiGreenSpaces: String?,
-    ): Flow<List<PropertyWithPhotosAndPoisDto>>
+    ): Flow<List<PropertyWithPhotosAndPoisEntity>>
 
     @Transaction
     @Query("SELECT * FROM property WHERE id == :propertyId")
-    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPoisDto>
+    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPoisEntity>
 
     @Query("SELECT * FROM property WHERE isSynced == 0")
-    fun getUnsyncedProperties(): List<PropertyDto>
+    fun getUnsyncedProperties(): List<PropertyEntity>
 
     @Update
-    suspend fun update(propertyDto: PropertyDto): Int
+    suspend fun update(propertyEntity: PropertyEntity): Int
 
     @Query("UPDATE property SET isSynced = 1 WHERE id == :propertyId")
     suspend fun markAsSynced(propertyId: Long)

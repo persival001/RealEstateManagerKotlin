@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.persival.realestatemanagerkotlin.domain.conversion.IsEuroConversionEnabledUseCase
-import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.model.PointOfInterest
 import com.persival.realestatemanagerkotlin.domain.property.SetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetAllPropertiesWithPhotosAndPOIUseCase
-import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.model.PropertyWithPhotosAndPOI
 import com.persival.realestatemanagerkotlin.domain.search.GetActiveSearchFilterUseCase
 import com.persival.realestatemanagerkotlin.domain.search.GetSearchedPropertiesUseCase
 import com.persival.realestatemanagerkotlin.domain.search.SetSearchedPropertiesUseCase
@@ -48,24 +48,24 @@ class PropertiesViewModel @Inject constructor(
     }
 
     private fun transformToViewState(
-        propertyWithPhotosAndPOIEntity: PropertyWithPhotosAndPOIEntity,
+        propertyWithPhotosAndPOI: PropertyWithPhotosAndPOI,
         isConversionEnabled: Boolean
     ): PropertyViewStateItem {
-        val formattedPrice = getFormattedPrice(propertyWithPhotosAndPOIEntity.property.price, isConversionEnabled)
+        val formattedPrice = getFormattedPrice(propertyWithPhotosAndPOI.property.price, isConversionEnabled)
 
         return PropertyViewStateItem(
-            id = propertyWithPhotosAndPOIEntity.property.id,
-            type = propertyWithPhotosAndPOIEntity.property.type,
-            address = propertyWithPhotosAndPOIEntity.property.address,
-            latLng = propertyWithPhotosAndPOIEntity.property.latLng,
+            id = propertyWithPhotosAndPOI.property.id,
+            type = propertyWithPhotosAndPOI.property.type,
+            address = propertyWithPhotosAndPOI.property.address,
+            latLng = propertyWithPhotosAndPOI.property.latLng,
             price = formattedPrice,
-            rooms = propertyWithPhotosAndPOIEntity.property.rooms.toString(),
-            surface = propertyWithPhotosAndPOIEntity.property.area.toString(),
-            bathrooms = propertyWithPhotosAndPOIEntity.property.bathrooms.toString(),
-            bedrooms = propertyWithPhotosAndPOIEntity.property.bedrooms.toString(),
-            poi = getFormattedPoi(propertyWithPhotosAndPOIEntity.pointsOfInterest),
-            pictureUri = propertyWithPhotosAndPOIEntity.photos.firstOrNull()?.photoUrl ?: "",
-            isSold = propertyWithPhotosAndPOIEntity.property.isSold
+            rooms = propertyWithPhotosAndPOI.property.rooms.toString(),
+            surface = propertyWithPhotosAndPOI.property.area.toString(),
+            bathrooms = propertyWithPhotosAndPOI.property.bathrooms.toString(),
+            bedrooms = propertyWithPhotosAndPOI.property.bedrooms.toString(),
+            poi = getFormattedPoi(propertyWithPhotosAndPOI.pointsOfInterest),
+            pictureUri = propertyWithPhotosAndPOI.photos.firstOrNull()?.photoUrl ?: "",
+            isSold = propertyWithPhotosAndPOI.property.isSold
         )
     }
 
@@ -84,7 +84,7 @@ class PropertiesViewModel @Inject constructor(
         return currencyFormat.format(convertedPrice)
     }
 
-    private fun getFormattedPoi(pointsOfInterest: List<PointOfInterestEntity>): String {
+    private fun getFormattedPoi(pointsOfInterest: List<PointOfInterest>): String {
         return pointsOfInterest.joinToString(separator = ", ") { it.poi }
     }
 

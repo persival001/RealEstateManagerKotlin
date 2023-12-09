@@ -3,7 +3,7 @@ package com.persival.realestatemanagerkotlin.data.remote_database.firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.persival.realestatemanagerkotlin.domain.user.FirebaseRepository
-import com.persival.realestatemanagerkotlin.domain.user.RealEstateAgentEntity
+import com.persival.realestatemanagerkotlin.domain.user.model.RealEstateAgent
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,10 +18,10 @@ class FirebaseDataRepository @Inject constructor(
     }
 
     // ----- Get real estate agent entity -----
-    override fun getRealEstateAgentIdentity(): RealEstateAgentEntity {
+    override fun getRealEstateAgentIdentity(): RealEstateAgent {
         val firebaseUser = firebaseAuth.currentUser
         return if (firebaseUser != null && firebaseUser.displayName != null) {
-            RealEstateAgentEntity(
+            RealEstateAgent(
                 firebaseUser.uid,
                 firebaseUser.displayName!!
             )

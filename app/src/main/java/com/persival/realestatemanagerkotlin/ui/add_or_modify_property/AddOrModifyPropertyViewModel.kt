@@ -18,16 +18,16 @@ import com.persival.realestatemanagerkotlin.domain.permissions.RefreshStoragePer
 import com.persival.realestatemanagerkotlin.domain.photo.DeletePhotoUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.GetPropertyPhotosUseCase
 import com.persival.realestatemanagerkotlin.domain.photo.InsertPhotoUseCase
-import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
+import com.persival.realestatemanagerkotlin.domain.photo.model.Photo
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.InsertPointOfInterestUseCase
-import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
 import com.persival.realestatemanagerkotlin.domain.point_of_interest.UpdatePointOfInterestUseCase
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.model.PointOfInterest
 import com.persival.realestatemanagerkotlin.domain.property.GetSelectedPropertyIdUseCase
 import com.persival.realestatemanagerkotlin.domain.property.InsertPropertyUseCase
-import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
 import com.persival.realestatemanagerkotlin.domain.property.UpdatePropertyUseCase
+import com.persival.realestatemanagerkotlin.domain.property.model.Property
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.GetPropertyWithPhotoAndPOIUseCase
-import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.model.PropertyWithPhotosAndPOI
 import com.persival.realestatemanagerkotlin.domain.user.GetRealEstateAgentUseCase
 import com.persival.realestatemanagerkotlin.utils.EquatableCallbackWithParam
 import com.persival.realestatemanagerkotlin.utils.Utils
@@ -89,7 +89,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
             val agentEntity = getRealEstateAgentUseCase.invoke()
 
             if (agentEntity != null) {
-                val propertyEntity = PropertyEntity(
+                val property = Property(
                     id = 0,
                     type = addOrModifyPropertyViewState.type,
                     address = addOrModifyPropertyViewState.address,
@@ -107,7 +107,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
                 )
 
                 // Insert property and post the newId to LiveData
-                val newIdDeferred = async { insertPropertyUseCase.invoke(propertyEntity) }
+                val newIdDeferred = async { insertPropertyUseCase.invoke(property) }
                 val newId = newIdDeferred.await()
                 propertyAddStatus.postValue(newId)
 
@@ -115,20 +115,20 @@ class AddOrModifyPropertyViewModel @Inject constructor(
                     // Add Image and description
                     addViewStateItemListFlow.value.forEach { viewStateItem ->
                         if (viewStateItem is AddOrModifyPropertyViewStateItem.Photo) {
-                            val photoEntity = PhotoEntity(
+                            val photo = Photo(
                                 id = viewStateItem.id,
                                 propertyId = newId,
                                 description = viewStateItem.description,
                                 photoUrl = viewStateItem.photoUrl
                             )
-                            insertPhotoUseCase.invoke(photoEntity)
+                            insertPhotoUseCase.invoke(photo)
                         }
                     }
 
                     // Add point of interests
                     addOrModifyPropertyViewState.pointsOfInterest.split(",").forEach {
                         insertPointOfInterestUseCase.invoke(
-                            PointOfInterestEntity(propertyId = newId, poi = it.trim())
+                            PointOfInterest(propertyId = newId, poi = it.trim())
                         )
                     }
                 }
@@ -192,7 +192,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     fun insertImageAndDescription(uri: String, description: String) {
         viewModelScope.launch {
             getSelectedPropertyIdUseCase().value?.let {
-                PhotoEntity(
+                Photo(
                     id = 0,
                     propertyId = it,
                     description = description,
@@ -211,9 +211,9 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     private fun mapPropertyViewStateToPointOfInterestEntity(
         modifyPropertyViewState: AddOrModifyPropertyViewState,
         propertyId: Long
-    ): List<PointOfInterestEntity> {
+    ): List<PointOfInterest> {
         return modifyPropertyViewState.pointsOfInterest.split(",").map { poi ->
-            PointOfInterestEntity(
+            PointOfInterest(
                 propertyId = propertyId,
                 poi = poi.trim()
             )
@@ -224,8 +224,8 @@ class AddOrModifyPropertyViewModel @Inject constructor(
         modifyPropertyViewState: AddOrModifyPropertyViewState,
         agentName: String,
         propertyId: Long
-    ): PropertyEntity {
-        return PropertyEntity(
+    ): Property {
+        return Property(
             propertyId,
             modifyPropertyViewState.type,
             modifyPropertyViewState.address,
@@ -244,7 +244,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
     }
 
     private fun mapPropertyEntityToPropertyViewState(
-        entity: PropertyWithPhotosAndPOIEntity
+        entity: PropertyWithPhotosAndPOI
     ): AddOrModifyPropertyViewState {
         return AddOrModifyPropertyViewState(
             type = entity.property.type,
@@ -262,7 +262,7 @@ class AddOrModifyPropertyViewModel @Inject constructor(
         )
     }
 
-    private fun mapPhotoEntityToViewStateItem(entity: PhotoEntity): AddOrModifyPropertyViewStateItem.Photo {
+    private fun mapPhotoEntityToViewStateItem(entity: Photo): AddOrModifyPropertyViewStateItem.Photo {
         return AddOrModifyPropertyViewStateItem.Photo(
             id = entity.id,
             propertyId = entity.propertyId,

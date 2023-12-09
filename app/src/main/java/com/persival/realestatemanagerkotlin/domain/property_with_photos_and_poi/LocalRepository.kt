@@ -1,25 +1,26 @@
 package com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi
 
-import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
-import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
-import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
+import com.persival.realestatemanagerkotlin.domain.photo.model.Photo
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.model.PointOfInterest
+import com.persival.realestatemanagerkotlin.domain.property.model.Property
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.model.PropertyWithPhotosAndPOI
 import kotlinx.coroutines.flow.Flow
 
 interface LocalRepository {
 
-    suspend fun insertProperty(propertyEntity: PropertyEntity): Long?
+    suspend fun insertProperty(property: Property): Long?
 
-    suspend fun insertPointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Long?
+    suspend fun insertPointOfInterest(pointOfInterest: PointOfInterest): Long?
 
-    suspend fun insertPhoto(photoEntity: PhotoEntity): Long?
+    suspend fun insertPhoto(photo: Photo): Long?
 
-    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOIEntity>>
+    fun getAllProperties(): Flow<List<PropertyWithPhotosAndPOI>>
 
-    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOIEntity>
+    fun getPropertyById(propertyId: Long): Flow<PropertyWithPhotosAndPOI>
 
     fun getAllPropertiesLatLng(): Flow<List<String>>
 
-    fun getPropertyPhotos(propertyId: Long): Flow<List<PhotoEntity>>
+    fun getPropertyPhotos(propertyId: Long): Flow<List<Photo>>
 
     fun getSearchedPropertiesWithPOIs(
         type: String?,
@@ -36,17 +37,17 @@ interface LocalRepository {
         poiStore: String?,
         poiGreenSpaces: String?,
 
-        ): Flow<List<PropertyWithPhotosAndPOIEntity>>
+        ): Flow<List<PropertyWithPhotosAndPOI>>
 
-    suspend fun updateProperty(propertyEntity: PropertyEntity): Int
+    suspend fun updateProperty(property: Property): Int
 
-    suspend fun updatePhoto(photoEntity: PhotoEntity): Int
+    suspend fun updatePhoto(photo: Photo): Int
 
-    suspend fun updatePointOfInterest(pointOfInterestEntity: PointOfInterestEntity): Int
+    suspend fun updatePointOfInterest(pointOfInterest: PointOfInterest): Int
 
     suspend fun updatePointOfInterestWithPropertyId(
         propertyId: Long,
-        pointOfInterestEntities: List<PointOfInterestEntity>
+        pointOfInterestEntities: List<PointOfInterest>
     )
 
     suspend fun deletePhotoByPropertyIdAndPhotoId(propertyId: Long, photoId: Long)

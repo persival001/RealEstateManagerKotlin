@@ -1,6 +1,6 @@
-package com.persival.realestatemanagerkotlin.domain.property
+package com.persival.realestatemanagerkotlin.domain.property.model
 
-data class PropertyEntity(
+data class Property(
     val id: Long,
     val type: String,
     val address: String,

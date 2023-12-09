@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.domain.point_of_interest
 
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.model.PointOfInterest
 import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.LocalRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -22,13 +23,23 @@ class UpdatePointOfInterestUseCaseTest {
     @Test
     fun `invoke calls repository to update points of interest`() = runBlocking {
         val propertyId = 1L
-        val pointOfInterestEntities = listOf<PointOfInterestEntity>()
+        val pointOfInterestEntities = listOf<PointOfInterest>()
 
-        coEvery { localRepository.updatePointOfInterestWithPropertyId(propertyId, pointOfInterestEntities) } returns Unit
+        coEvery {
+            localRepository.updatePointOfInterestWithPropertyId(
+                propertyId,
+                pointOfInterestEntities
+            )
+        } returns Unit
 
         updatePointOfInterestUseCase.invoke(propertyId, pointOfInterestEntities)
 
-        coVerify(exactly = 1) { localRepository.updatePointOfInterestWithPropertyId(propertyId, pointOfInterestEntities) }
+        coVerify(exactly = 1) {
+            localRepository.updatePointOfInterestWithPropertyId(
+                propertyId,
+                pointOfInterestEntities
+            )
+        }
     }
 
 }

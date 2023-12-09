@@ -1,5 +1,6 @@
 package com.persival.realestatemanagerkotlin.domain.search
 
+import com.persival.realestatemanagerkotlin.domain.search.model.Search
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -7,7 +8,7 @@ import javax.inject.Singleton
 class SetSearchedPropertiesUseCase @Inject constructor(
     private val searchRepository: SearchRepository,
 ) {
-    fun invoke(searchEntity: SearchEntity?) {
-        searchRepository.setFilter(searchEntity)
+    fun invoke(search: Search?) {
+        searchRepository.setFilter(search)
     }
 }

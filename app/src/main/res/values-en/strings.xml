@@ -103,7 +103,7 @@
     <string name="take_photo_image">Take photo image</string>
     <string name="loan_simulator">Loan simulator</string>
     <string name="error_message_duration">Duration cannot be zero</string>
-    <string name="monthly_payment_text">Result: Monthly payment = %1$s%2$.2f</string>
+    <string name="monthly_payment_text">Monthly payment : %1$s%2$.2f</string>
     <string name="bring">Bring ($)</string>
     <string name="taux">Rate (%)</string>
     <string name="duration">Duration (month)</string>
@@ -157,5 +157,6 @@
     <string name="clear">Clear</string>
     <string name="filter">Filter</string>
     <string name="all_properties">All properties</string>
+    <string name="property_price">Price : %s $</string>
 
 </resources>

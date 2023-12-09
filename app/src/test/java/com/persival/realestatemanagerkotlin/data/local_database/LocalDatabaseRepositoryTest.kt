@@ -2,21 +2,21 @@ package com.persival.realestatemanagerkotlin.data.local_database
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDao
-import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDto
-import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoDtoMapper
+import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoEntity
+import com.persival.realestatemanagerkotlin.data.local_database.photo.PhotoEntityMapper
 import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDao
-import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDto
-import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestDtoMapper
+import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestEntity
+import com.persival.realestatemanagerkotlin.data.local_database.point_of_interest.PointOfInterestEntityMapper
 import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDao
-import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDto
-import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyDtoMapper
-import com.persival.realestatemanagerkotlin.data.local_database.property_with_photos_and_pois.PropertyWithPhotosAndPoisDto
-import com.persival.realestatemanagerkotlin.data.local_database.property_with_photos_and_pois.PropertyWithPhotosAndPoisDtoMapper
+import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyEntity
+import com.persival.realestatemanagerkotlin.data.local_database.property.PropertyEntityMapper
+import com.persival.realestatemanagerkotlin.data.local_database.property_with_photos_and_pois.PropertyWithPhotosAndPoisEntity
+import com.persival.realestatemanagerkotlin.data.local_database.property_with_photos_and_pois.PropertyWithPhotosAndPoisEntityMapper
 import com.persival.realestatemanagerkotlin.domain.CoroutineDispatcherProvider
-import com.persival.realestatemanagerkotlin.domain.photo.PhotoEntity
-import com.persival.realestatemanagerkotlin.domain.point_of_interest.PointOfInterestEntity
-import com.persival.realestatemanagerkotlin.domain.property.PropertyEntity
-import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.PropertyWithPhotosAndPOIEntity
+import com.persival.realestatemanagerkotlin.domain.photo.model.Photo
+import com.persival.realestatemanagerkotlin.domain.point_of_interest.model.PointOfInterest
+import com.persival.realestatemanagerkotlin.domain.property.model.Property
+import com.persival.realestatemanagerkotlin.domain.property_with_photos_and_poi.model.PropertyWithPhotosAndPOI
 import com.persival.realestatemanagerkotlin.utils_for_tests.TestCoroutineRule
 import io.mockk.coEvery
 import io.mockk.coJustRun
@@ -52,15 +52,15 @@ class LocalDatabaseRepositoryTest {
     private val propertyDao: PropertyDao = mockk()
     private val photoDao: PhotoDao = mockk()
     private val pointOfInterestDao: PointOfInterestDao = mockk()
-    private val propertyDtoMapper: PropertyDtoMapper = mockk()
-    private val photoDtoMapper: PhotoDtoMapper = mockk()
-    private val pointOfInterestDtoMapper: PointOfInterestDtoMapper = mockk()
-    private val propertyWithPhotosAndPoisDtoMapper: PropertyWithPhotosAndPoisDtoMapper = mockk()
+    private val propertyEntityMapper: PropertyEntityMapper = mockk()
+    private val photoEntityMapper: PhotoEntityMapper = mockk()
+    private val pointOfInterestEntityMapper: PointOfInterestEntityMapper = mockk()
+    private val propertyWithPhotosAndPoisEntityMapper: PropertyWithPhotosAndPoisEntityMapper = mockk()
 
     private lateinit var repository: LocalDatabaseRepository
-    private lateinit var propertyEntity: PropertyEntity
-    private lateinit var photoEntity: PhotoEntity
-    private lateinit var pointOfInterestEntity: PointOfInterestEntity
+    private lateinit var property: Property
+    private lateinit var photo: Photo
+    private lateinit var pointOfInterest: PointOfInterest
 
     @Before
     fun setUp() {
@@ -69,24 +69,24 @@ class LocalDatabaseRepositoryTest {
         coJustRun { propertyDao.insert(any()) }
         coJustRun { photoDao.insert(any()) }
         coJustRun { pointOfInterestDao.insert(any()) }
-        coEvery { propertyDtoMapper.mapFromDomainModel(any()) } returns mockk()
-        coEvery { photoDtoMapper.mapFromDomainModel(any()) } returns mockk()
-        coEvery { pointOfInterestDtoMapper.mapFromDomainModel(any()) } returns mockk()
-        coEvery { propertyWithPhotosAndPoisDtoMapper.mapToEntity(any()) } returns mockk()
+        coEvery { propertyEntityMapper.mapPropertyEntityToPropertyDto(any()) } returns mockk()
+        coEvery { photoEntityMapper.mapPhotoEntityToPhotoDto(any()) } returns mockk()
+        coEvery { pointOfInterestEntityMapper.mapPointOfInterestEntityToPointOfInterestDto(any()) } returns mockk()
+        coEvery { propertyWithPhotosAndPoisEntityMapper.mapToEntity(any()) } returns mockk()
 
         repository = LocalDatabaseRepository(
             coroutineDispatcherProvider = coroutineDispatcherProvider,
             propertyDao = propertyDao,
             photoDao = photoDao,
             pointOfInterestDao = pointOfInterestDao,
-            propertyDtoMapper = propertyDtoMapper,
-            photoDtoMapper = photoDtoMapper,
-            pointOfInterestDtoMapper = pointOfInterestDtoMapper,
-            propertyWithPhotosAndPoisDtoMapper = propertyWithPhotosAndPoisDtoMapper
+            propertyEntityMapper = propertyEntityMapper,
+            photoEntityMapper = photoEntityMapper,
+            pointOfInterestEntityMapper = pointOfInterestEntityMapper,
+            propertyWithPhotosAndPoisEntityMapper = propertyWithPhotosAndPoisEntityMapper
         )
 
         // Initialize the Entity instances
-        propertyEntity = PropertyEntity(
+        property = Property(
             id = 0L,
             type = "Maison",
             address = "123 rue de Exemple",
@@ -103,25 +103,25 @@ class LocalDatabaseRepositoryTest {
             agentName = "John Doe"
         )
 
-        photoEntity = PhotoEntity(
+        photo = Photo(
             id = 0L,
             propertyId = 0L,
             description = "Façade de la maison",
             photoUrl = "http://exemple.com/photo.jpg"
         )
 
-        pointOfInterestEntity = PointOfInterestEntity(
+        pointOfInterest = PointOfInterest(
             id = 0L,
             propertyId = 0L,
             poi = "Parc à proximité"
         )
 
-        every { photoDtoMapper.mapToEntity(any()) } answers {
-            PhotoEntity(
-                id = firstArg<PhotoDto>().id,
-                propertyId = firstArg<PhotoDto>().propertyId,
-                description = firstArg<PhotoDto>().description,
-                photoUrl = firstArg<PhotoDto>().photoUrl
+        every { photoEntityMapper.mapPhotoDtoToPhotoEntity(any()) } answers {
+            Photo(
+                id = firstArg<PhotoEntity>().id,
+                propertyId = firstArg<PhotoEntity>().propertyId,
+                description = firstArg<PhotoEntity>().description,
+                photoUrl = firstArg<PhotoEntity>().photoUrl
             )
         }
     }
@@ -129,11 +129,11 @@ class LocalDatabaseRepositoryTest {
     @Test
     fun `insertProperty calls dao and returns id on success`() = testCoroutineRule.runTest {
         // Arrange
-        val propertyDto = propertyDtoMapper.mapFromDomainModel(propertyEntity)
+        val propertyDto = propertyEntityMapper.mapPropertyEntityToPropertyDto(property)
         coEvery { propertyDao.insert(any()) } returns 1L
 
         // Act
-        val resultId = repository.insertProperty(propertyEntity)
+        val resultId = repository.insertProperty(property)
         runCurrent()
 
         // Assert
@@ -148,7 +148,7 @@ class LocalDatabaseRepositoryTest {
         coEvery { propertyDao.insert(any()) } returns expectedFailureId
 
         // Act
-        val resultId = repository.insertProperty(propertyEntity)
+        val resultId = repository.insertProperty(property)
         runCurrent()
 
         // Assert
@@ -159,11 +159,11 @@ class LocalDatabaseRepositoryTest {
     @Test
     fun `insertPhoto calls dao and returns id on success`() = testCoroutineRule.runTest {
         // Arrange
-        val photoDto = photoDtoMapper.mapFromDomainModel(photoEntity)
+        val photoDto = photoEntityMapper.mapPhotoEntityToPhotoDto(photo)
         coEvery { photoDao.insert(any()) } returns 1L  // Assume success is represented by returning ID 1
 
         // Act
-        val resultId = repository.insertPhoto(photoEntity)
+        val resultId = repository.insertPhoto(photo)
         runCurrent()
 
         // Assert
@@ -178,7 +178,7 @@ class LocalDatabaseRepositoryTest {
         coEvery { photoDao.insert(any()) } returns expectedFailureId
 
         // Act
-        val resultId = repository.insertPhoto(photoEntity)
+        val resultId = repository.insertPhoto(photo)
         runCurrent()
 
         // Assert
@@ -189,11 +189,11 @@ class LocalDatabaseRepositoryTest {
     @Test
     fun `insertPointOfInterest calls dao and returns id on success`() = testCoroutineRule.runTest {
         // Arrange
-        val poiDto = pointOfInterestDtoMapper.mapFromDomainModel(pointOfInterestEntity)
+        val poiDto = pointOfInterestEntityMapper.mapPointOfInterestEntityToPointOfInterestDto(pointOfInterest)
         coEvery { pointOfInterestDao.insert(any()) } returns 1L  // Assume success is represented by returning ID 1
 
         // Act
-        val resultId = repository.insertPointOfInterest(pointOfInterestEntity)
+        val resultId = repository.insertPointOfInterest(pointOfInterest)
         runCurrent()
 
         // Assert
@@ -208,7 +208,7 @@ class LocalDatabaseRepositoryTest {
         coEvery { pointOfInterestDao.insert(any()) } returns expectedFailureId
 
         // Act
-        val resultId = repository.insertPointOfInterest(pointOfInterestEntity)
+        val resultId = repository.insertPointOfInterest(pointOfInterest)
         runCurrent()
 
         // Assert
@@ -219,10 +219,10 @@ class LocalDatabaseRepositoryTest {
     @Test
     fun `getAllProperties emits correct data`() = testCoroutineRule.runTest {
         // Arrange
-        val propertyDtoList = listOf(mockk<PropertyWithPhotosAndPoisDto>())
-        val expectedEntityList = listOf(mockk<PropertyWithPhotosAndPOIEntity>())
+        val propertyDtoList = listOf(mockk<PropertyWithPhotosAndPoisEntity>())
+        val expectedEntityList = listOf(mockk<PropertyWithPhotosAndPOI>())
         coEvery { propertyDao.getAllProperties() } returns flowOf(propertyDtoList)
-        coEvery { propertyWithPhotosAndPoisDtoMapper.mapToEntity(any()) } returnsMany expectedEntityList
+        coEvery { propertyWithPhotosAndPoisEntityMapper.mapToEntity(any()) } returnsMany expectedEntityList
 
         // Act
         val results = repository.getAllProperties().toList()
@@ -255,10 +255,10 @@ class LocalDatabaseRepositoryTest {
     fun `getPropertyById emits correct data`() = testCoroutineRule.runTest {
         // Arrange
         val propertyId = 1L
-        val propertyDto = mockk<PropertyWithPhotosAndPoisDto>()
-        val expectedEntity = mockk<PropertyWithPhotosAndPOIEntity>()
+        val propertyDto = mockk<PropertyWithPhotosAndPoisEntity>()
+        val expectedEntity = mockk<PropertyWithPhotosAndPOI>()
         coEvery { propertyDao.getPropertyById(propertyId) } returns flowOf(propertyDto)
-        coEvery { propertyWithPhotosAndPoisDtoMapper.mapToEntity(propertyDto) } returns expectedEntity
+        coEvery { propertyWithPhotosAndPoisEntityMapper.mapToEntity(propertyDto) } returns expectedEntity
 
         // Act
         val result = repository.getPropertyById(propertyId).first()
@@ -320,12 +320,12 @@ class LocalDatabaseRepositoryTest {
     @Test
     fun `getPropertyPhotos emits correct data`() = testCoroutineRule.runTest {
         // Arrange
-        val photoDtoList = listOf(
-            PhotoDto(1, 1, "Description", "url", 123456789, true),
-            PhotoDto(2, 1, "Description 2", "url2", 123456789, false)
+        val photoEntityLists = listOf(
+            PhotoEntity(1, 1, "Description", "url", 123456789, true),
+            PhotoEntity(2, 1, "Description 2", "url2", 123456789, false)
         )
-        val expectedEntityList = photoDtoList.map { photoDtoMapper.mapToEntity(it) }
-        coEvery { photoDao.getPropertyPhotos(any()) } returns flowOf(photoDtoList)
+        val expectedEntityList = photoEntityLists.map { photoEntityMapper.mapPhotoDtoToPhotoEntity(it) }
+        coEvery { photoDao.getPropertyPhotos(any()) } returns flowOf(photoEntityLists)
 
         // Act
         val results = repository.getPropertyPhotos(1L).toList()
@@ -356,80 +356,80 @@ class LocalDatabaseRepositoryTest {
     @Test
     fun `updateProperty calls dao update with correct data and returns result`() = testCoroutineRule.runTest {
         // Arrange
+        val property = mockk<Property>()
         val propertyEntity = mockk<PropertyEntity>()
-        val propertyDto = mockk<PropertyDto>()
         val updateResult = 1 // Assume that if one row was updated, the result is 1
-        coEvery { propertyDao.update(propertyDto) } returns updateResult
-        coEvery { propertyDtoMapper.mapFromDomainModel(propertyEntity) } returns propertyDto
+        coEvery { propertyDao.update(propertyEntity) } returns updateResult
+        coEvery { propertyEntityMapper.mapPropertyEntityToPropertyDto(property) } returns propertyEntity
 
         // Act
-        val result = repository.updateProperty(propertyEntity)
+        val result = repository.updateProperty(property)
 
         // Assert
         assertEquals(updateResult, result)
-        coVerify(exactly = 1) { propertyDao.update(propertyDto) }
+        coVerify(exactly = 1) { propertyDao.update(propertyEntity) }
     }
 
     @Test
     fun `updateProperty returns 0 when no rows are updated`() = testCoroutineRule.runTest {
         // Arrange
+        val property = mockk<Property>()
         val propertyEntity = mockk<PropertyEntity>()
-        val propertyDto = mockk<PropertyDto>()
-        coEvery { propertyDao.update(propertyDto) } returns 0
-        coEvery { propertyDtoMapper.mapFromDomainModel(propertyEntity) } returns propertyDto
+        coEvery { propertyDao.update(propertyEntity) } returns 0
+        coEvery { propertyEntityMapper.mapPropertyEntityToPropertyDto(property) } returns propertyEntity
 
         // Act
-        val updateResult = repository.updateProperty(propertyEntity)
+        val updateResult = repository.updateProperty(property)
 
         // Assert
         assertEquals(0, updateResult)
-        coVerify(exactly = 1) { propertyDao.update(propertyDto) }
+        coVerify(exactly = 1) { propertyDao.update(propertyEntity) }
     }
 
     @Test
     fun `updatePhoto calls dao update with correct data and returns result`() = testCoroutineRule.runTest {
         // Arrange
+        val photo = mockk<Photo>()
         val photoEntity = mockk<PhotoEntity>()
-        val photoDto = mockk<PhotoDto>()
         val updateResult = 1 // Assume that if one row was updated, the result is 1
-        coEvery { photoDao.update(photoDto) } returns updateResult
-        coEvery { photoDtoMapper.mapFromDomainModel(photoEntity) } returns photoDto
+        coEvery { photoDao.update(photoEntity) } returns updateResult
+        coEvery { photoEntityMapper.mapPhotoEntityToPhotoDto(photo) } returns photoEntity
 
         // Act
-        val result = repository.updatePhoto(photoEntity)
+        val result = repository.updatePhoto(photo)
 
         // Assert
         assertEquals(updateResult, result)
-        coVerify(exactly = 1) { photoDao.update(photoDto) }
+        coVerify(exactly = 1) { photoDao.update(photoEntity) }
     }
 
     @Test
     fun `updatePhoto returns 0 when no rows are updated`() = testCoroutineRule.runTest {
         // Arrange
+        val photo = mockk<Photo>()
         val photoEntity = mockk<PhotoEntity>()
-        val photoDto = mockk<PhotoDto>()
-        coEvery { photoDao.update(photoDto) } returns 0 // No rows updated
-        coEvery { photoDtoMapper.mapFromDomainModel(photoEntity) } returns photoDto
+        coEvery { photoDao.update(photoEntity) } returns 0 // No rows updated
+        coEvery { photoEntityMapper.mapPhotoEntityToPhotoDto(photo) } returns photoEntity
 
         // Act
-        val updateResult = repository.updatePhoto(photoEntity)
+        val updateResult = repository.updatePhoto(photo)
 
         // Assert
         assertEquals(0, updateResult)
-        coVerify(exactly = 1) { photoDao.update(photoDto) }
+        coVerify(exactly = 1) { photoDao.update(photoEntity) }
     }
 
     @Test
     fun `updatePointOfInterest calls dao update with correct data and returns result`() = testCoroutineRule.runTest {
         // Arrange
-        val pointOfInterestEntity = mockk<PointOfInterestEntity>()
-        val poiDto = mockk<PointOfInterestDto>()
+        val pointOfInterest = mockk<PointOfInterest>()
+        val poiDto = mockk<PointOfInterestEntity>()
         val updateResult = 1 // Assume that if one row was updated, the result is 1
         coEvery { pointOfInterestDao.update(poiDto) } returns updateResult
-        coEvery { pointOfInterestDtoMapper.mapFromDomainModel(pointOfInterestEntity) } returns poiDto
+        coEvery { pointOfInterestEntityMapper.mapPointOfInterestEntityToPointOfInterestDto(pointOfInterest) } returns poiDto
 
         // Act
-        val result = repository.updatePointOfInterest(pointOfInterestEntity)
+        val result = repository.updatePointOfInterest(pointOfInterest)
 
         // Assert
         assertEquals(updateResult, result)
@@ -439,13 +439,13 @@ class LocalDatabaseRepositoryTest {
     @Test
     fun `updatePointOfInterest returns 0 when no rows are updated`() = testCoroutineRule.runTest {
         // Arrange
-        val pointOfInterestEntity = mockk<PointOfInterestEntity>()
-        val poiDto = mockk<PointOfInterestDto>()
+        val pointOfInterest = mockk<PointOfInterest>()
+        val poiDto = mockk<PointOfInterestEntity>()
         coEvery { pointOfInterestDao.update(poiDto) } returns 0 // No rows updated
-        coEvery { pointOfInterestDtoMapper.mapFromDomainModel(pointOfInterestEntity) } returns poiDto
+        coEvery { pointOfInterestEntityMapper.mapPointOfInterestEntityToPointOfInterestDto(pointOfInterest) } returns poiDto
 
         // Act
-        val updateResult = repository.updatePointOfInterest(pointOfInterestEntity)
+        val updateResult = repository.updatePointOfInterest(pointOfInterest)
 
         // Assert
         assertEquals(0, updateResult)
@@ -456,10 +456,11 @@ class LocalDatabaseRepositoryTest {
     fun `updatePointOfInterestWithPropertyId deletes old POIs and inserts new ones`() = testCoroutineRule.runTest {
         // Arrange
         val propertyId = 1L
-        val pointOfInterestEntities = listOf(mockk<PointOfInterestEntity>(relaxed = true))
-        val poisDto = pointOfInterestEntities.map { pointOfInterestDtoMapper.mapFromDomainModel(it) }
+        val pointOfInterestEntities = listOf(mockk<PointOfInterest>(relaxed = true))
+        val poisDto =
+            pointOfInterestEntities.map { pointOfInterestEntityMapper.mapPointOfInterestEntityToPointOfInterestDto(it) }
 
-        every { pointOfInterestDtoMapper.mapFromDomainModel(any()) } answers { poisDto.first() }
+        every { pointOfInterestEntityMapper.mapPointOfInterestEntityToPointOfInterestDto(any()) } answers { poisDto.first() }
 
         coEvery { pointOfInterestDao.deletePOIsByPropertyId(propertyId) } coAnswers { }
         poisDto.forEach { poiDto ->
@@ -482,11 +483,16 @@ class LocalDatabaseRepositoryTest {
         testCoroutineRule.runTest {
             // Arrange
             val propertyId = 1L
-            val pointOfInterestEntities = listOf(mockk<PointOfInterestEntity>())
-            val poisDto = pointOfInterestEntities.map { pointOfInterestDtoMapper.mapFromDomainModel(it) }
+            val pointOfInterestEntities = listOf(mockk<PointOfInterest>())
+            val poisDto =
+                pointOfInterestEntities.map {
+                    pointOfInterestEntityMapper.mapPointOfInterestEntityToPointOfInterestDto(
+                        it
+                    )
+                }
             val exception = RuntimeException("Database operation failed")
 
-            every { pointOfInterestDtoMapper.mapFromDomainModel(any()) } answers { poisDto.first() }
+            every { pointOfInterestEntityMapper.mapPointOfInterestEntityToPointOfInterestDto(any()) } answers { poisDto.first() }
             coEvery { pointOfInterestDao.deletePOIsByPropertyId(propertyId) } throws exception
             poisDto.forEach { poiDto ->
                 coEvery { pointOfInterestDao.insert(poiDto) } coAnswers { 1L }
