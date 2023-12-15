@@ -44,11 +44,11 @@ This project is currently under development. Watch this space for more updates.
 
 ## UI
 
-# Tab
+## Tab
 ![Tab](https://github.com/persival001/RealEstateManagerKotlin/assets/89270238/2c95de84-bf85-441a-920d-65466cc2bb80)
 ![Tab2](https://github.com/persival001/RealEstateManagerKotlin/assets/89270238/fc99742a-f7d9-4fab-875b-789df7058336)
 
-# Smartphone
+## Smartphone
 ![Search](https://github.com/persival001/RealEstateManagerKotlin/assets/89270238/ece2db9d-4404-44cb-b073-899d5a528945)
 ![Add](https://github.com/persival001/RealEstateManagerKotlin/assets/89270238/3e3c91b8-256f-4d02-b062-0ebb647e8f65)
 ![Screenshot_20231215_173848](https://github.com/persival001/RealEstateManagerKotlin/assets/89270238/be506add-6941-4d31-b561-5ec8cdbcdfa0)
